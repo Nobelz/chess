@@ -5,7 +5,7 @@
  * @author Nobel Zhou
  * @version 1.0, 10/30/20
  */
-public class RookPiece extends ChessPiece implements StraightMove {
+public class RookPiece extends ChessPiece implements StraightMove, Promotable {
 
     /* CONSTRUCTORS */
     /**

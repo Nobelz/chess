@@ -92,5 +92,36 @@ public class PawnPiece extends ChessPiece implements PawnMove, EnPassantMove {
         super.moveDone();
         if (getMoves() == 1)
             setCanEnPassant(true);
+        if (checkPawnPromotion())
+            getChessBoard().invokePromotion(this);
+    }
+    
+    /**
+     * Checks to see if the pawn is eligible to be promoted.
+     * If so, it calls the promote() method in ChessBoard to handle promotions.
+     * @return  If the pawn is eligible to be promoted.
+     * @since 1.0
+     */
+    public boolean checkPawnPromotion() {
+        switch (getSide()) {
+            case NORTH:
+                if (getRow() == 0)
+                    return true;
+                break;
+            case SOUTH:
+                if (getRow() == getChessBoard().numRows() - 1)
+                    return true;
+                break;
+            case WEST:
+                if (getColumn() == getChessBoard().numColumns() - 1)
+                    return true;
+                break;
+            default: //East
+                if (getColumn() == 0)
+                    return true;
+                break;
+        }
+        
+        return false; //Not at the end of the board
     }
 }

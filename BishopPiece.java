@@ -5,7 +5,7 @@
  * @author Nobel Zhou
  * @version 1.0, 10/30/20
  */
-public class BishopPiece extends ChessPiece implements DiagonalMove {
+public class BishopPiece extends ChessPiece implements DiagonalMove, Promotable {
 
     /* CONSTRUCTORS */
     /**

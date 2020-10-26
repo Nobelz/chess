@@ -5,7 +5,7 @@
  * @author Nobel Zhou
  * @version 1.0, 10/30/20
  */
-public class QueenPiece extends ChessPiece implements StraightMove, DiagonalMove {
+public class QueenPiece extends ChessPiece implements StraightMove, DiagonalMove, Promotable {
 
     /* CONSTRUCTORS */
     /**

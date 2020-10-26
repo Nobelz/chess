@@ -4,7 +4,7 @@
  * @author Nobel Zhou (nxz157)
  * @version 1.0, 10/30/20
  */
-public interface EnPassantMove extends CheckMove {
+public interface EnPassantMove {
     /**
      * Returns a boolean representing if the proposed row and column is a valid en passant move from the piece's location.
      * The pawn must be 4 rows from the opposing side.

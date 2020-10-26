@@ -4,7 +4,7 @@
  * @author Nobel Zhou (nxz157)
  * @version 1.0, 10/30/20
  */
-public interface LMove extends NormalMove, CheckMove {
+public interface LMove extends NormalMove {
     /**
      * Returns a boolean representing if the proposed row and column is a valid L move from the piece's location, assuming that the proposed location is unoccupied.
      * @param row       The piece's destination row

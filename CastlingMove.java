@@ -4,7 +4,7 @@
  * @author Nobel Zhou (nxz157)
  * @version 1.0, 10/30/20
  */
-public interface CastlingMove extends CheckMove {
+public interface CastlingMove {
     /**
      * Returns a boolean representing if the proposed row and column is a valid castling move from the piece's location.
      * The only valid move will be 2 spaces to the left or right of the king if north/south and up or down of the king if west/east.
@@ -19,7 +19,7 @@ public interface CastlingMove extends CheckMove {
      */
     public default boolean isValidCastlingMove(int row, int column, ChessPiece cp) {
         //Checks if the piece has moved and if the valid move is 2 squares away in the correct direction
-        if (cp.getMoves() == 0 && (cp.getSide().equals(ChessGame.Side.NORTH) || cp.getSide().equals(ChessGame.Side.SOUTH)) ? cp.getRow() == row && (cp.getColumn() + 2 == column || cp.getColumn() - 2 == column) : cp.getColumn() == column && (cp.getRow() + 2 == row || cp.getRow() - 2 == row)) {
+        if (cp.getMoves() == 0 && ((cp.getSide().equals(ChessGame.Side.NORTH) || cp.getSide().equals(ChessGame.Side.SOUTH)) ? cp.getRow() == row && (cp.getColumn() + 2 == column || cp.getColumn() - 2 == column) : cp.getColumn() == column && (cp.getRow() + 2 == row || cp.getRow() - 2 == row))) {
             //Stores the chess board
             ChessBoard board = cp.getChessBoard();
             //Stores the rook

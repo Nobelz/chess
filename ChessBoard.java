@@ -326,8 +326,12 @@ public class ChessBoard {
         for (int i = 0; i < squares.length; i++) {
             for (int j = 0; j < squares[i].length; j++) {
                 if (hasPiece(i, j) && getPiece(i, j).getSide() != piece.getSide() &&
-                getPiece(i, j).isLegalMove(row, column))
+                getPiece(i, j).isLegalMove(row, column)) {
+                    //Checks for pawn non-capture move because they can't capture right in front of them even though they can move there
+                    if (getPiece(i, j) instanceof PawnPiece && ((PawnPiece) getPiece(i, j)).isLegalNonCaptureMove(i, j))
+                        return false;
                     return true;
+                }
             }
         }
         return false;
@@ -353,7 +357,16 @@ public class ChessBoard {
 
         return king;
     }
-
+    
+    /**
+     * Promotes a ChessPiece representing the pawn to be promoted.
+     * @param piece The piece to be promoted
+     * @since 1.0
+     */
+    public void invokePromotion(ChessPiece piece) {
+        
+    }
+    
     /**
      * Ends the chess game.
      * @param result    The result of the chess game

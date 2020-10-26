@@ -5,7 +5,7 @@
  * @author Nobel Zhou
  * @version 1.0, 10/30/20
  */
-public class KnightPiece extends ChessPiece implements LMove {
+public class KnightPiece extends ChessPiece implements LMove, Promotable {
 
     /* CONSTRUCTORS */
     /**
