@@ -305,16 +305,16 @@ public class EuropeanChess implements ChessGame {
             switch (cp.getSide()) {
                 case NORTH:
                 case SOUTH:
-                if (column == cp.getColumn() + 1)
-                    save = board.simulateRemovePiece(originalRow, originalColumn + 1); //Removes and saves the pawn
-                else
-                    save = board.simulateRemovePiece(originalRow, originalColumn - 1); //Removes and saves the pawn
+                    if (column == originalColumn + 1)
+                        save = board.simulateRemovePiece(originalRow, originalColumn + 1); //Removes and saves the pawn
+                    else
+                        save = board.simulateRemovePiece(originalRow, originalColumn - 1); //Removes and saves the pawn
                 break;
                 default: //East and West
-                if (row == cp.getRow() + 1)
-                    save = board.simulateRemovePiece(originalRow + 1, originalColumn); //Removes and saves the pawn
-                else
-                    save = board.simulateRemovePiece(originalRow - 1, originalColumn); //Removes and saves the pawn
+                    if (row == originalRow + 1)
+                        save = board.simulateRemovePiece(originalRow + 1, originalColumn); //Removes and saves the pawn
+                    else
+                        save = board.simulateRemovePiece(originalRow - 1, originalColumn); //Removes and saves the pawn
                 break;
             }
 
@@ -461,5 +461,17 @@ public class EuropeanChess implements ChessGame {
         System.out.println("Non-Capture");
         if (!king.isInCheck())
             checkStalemate(king);
+    }
+    
+        
+    /**
+     * Promotes the ChessPiece to the desired ChessPiece type.
+     * @param oldPiece  The ChessPiece to be replaced
+     * @param newPiece  The ChessPiece type to be replaced with
+     * @since 1.0
+     */
+    public void promote(ChessPiece oldPiece, ChessPiece newPiece) {
+        oldPiece.getChessBoard().addPiece(newPiece, oldPiece.getRow(), oldPiece.getColumn());
+        System.out.println("Promotion");
     }
 }

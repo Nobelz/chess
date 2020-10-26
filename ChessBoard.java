@@ -1,12 +1,11 @@
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.UIManager;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * <p>Creates a chessboard in a window on the desktop.  The ChessBoard has a ChessBoardDisplay object that determines
@@ -24,11 +23,11 @@ import java.awt.event.ActionEvent;
  */
 public class ChessBoard {
 
-    private JFrame board;                        // the game board
+    private JFrame board;                          // the game board
     private JButton[][] squares;                   // the squares of the board
     private ChessPiece[][] pieces;                 // stores the pieces
     private ChessGame gameRules;                   // global rules for this particular game
-    private ChessBoardDisplay boardDisplay;        // rules for how to draw the chess board
+    private ChessBoardDisplay boardDisplay;        // rules for how to draw the chess board 
 
     /**
      * Builds a board of the desired size, the display parameters, and the rules for the chess game.
@@ -228,6 +227,41 @@ public class ChessBoard {
         return pieces[row][col];
     }
 
+    /**
+     * Represents a promotion button action.
+     * @since 1.0
+     */
+    private class PromotionAction implements ActionListener {
+        //Stores the chess piece that the pawn should be promoted to
+        private ChessPiece promotedPiece;
+        //Stores the chess piece to be promoted
+        private ChessPiece oldPiece;
+        //Stores the JDialog that the JButton is contained in
+        private JDialog promotionWindow;
+        
+        /**
+         * Initializes PromotionAction with the promoted piece.
+         * @param   The chess piece that the pawn should be promoted to
+         * @since 1.0
+         */
+        private PromotionAction(ChessPiece newPiece, ChessPiece oldPiece, JDialog promotionWindow) {
+            promotedPiece = newPiece;
+            this.oldPiece = oldPiece;
+            this.promotionWindow = promotionWindow;
+        }
+
+        /**
+         *  Handle a button click.  The method alternates between selecting a piece
+         *  and selecting any square.  After both are selected, the piece's 
+         *  legalMove is called, and if the move is legal, the piece is moved.
+         *  @param e   the event that triggered the method
+         */
+        public void actionPerformed(ActionEvent e) {
+            ((EuropeanChess) getGameRules()).promote(oldPiece, promotedPiece);
+            promotionWindow.dispose();
+        }
+    }
+
     /** The code the responds when the user clicks on the game board */
     private class ChessAction implements ActionListener {
         private boolean firstPick = true;  // if true, we a selecting a piece
@@ -357,20 +391,72 @@ public class ChessBoard {
 
         return king;
     }
-    
+
     /**
-     * Promotes a ChessPiece representing the pawn to be promoted.
+     * Runs promotion processes by letting user choose from Promotable ChessPieces.
      * @param piece The piece to be promoted
      * @since 1.0
      */
     public void invokePromotion(ChessPiece piece) {
-        
+
+        Runnable promotePiece = new Runnable() {
+            public void run() {
+                //Stores the promotion pieces used for JFrame
+                ChessPiece[] promotionPieces = new ChessPiece[] {new KnightPiece(piece.getSide(), piece.getChessBoard(), -1, -1), new BishopPiece(piece.getSide(), piece.getChessBoard(), -1, -1), new RookPiece(piece.getSide(), piece.getChessBoard(), -1, -1), new QueenPiece(piece.getSide(), piece.getChessBoard(), -1, -1)};
+                //Stores the JButtons used for JFrame
+                JButton[] promotionSquares = new JButton[promotionPieces.length];
+
+                //Stores the popup window
+                JDialog promotionWindow = new JDialog(board);
+                promotionWindow.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); //Disposes on close so we can then interact with main JFrame
+                promotionWindow.setModal(true); //Stops actions in other JFrame until the popup window closes
+
+                //Adds a method that sets the default promotion piece to queen if the user doesn't press the button
+                promotionWindow.addWindowListener(new WindowAdapter() {
+                    public void windowClosing(WindowEvent e) {
+                        if (getPiece(piece.getRow(), piece.getColumn()).equals(piece)) //Checks if the pawn hasn't been promoted yet
+                            ((EuropeanChess) getGameRules()).promote(piece, new QueenPiece(piece.getSide(), piece.getChessBoard(), -1, -1)); //Promotes to queen
+                    }
+                });
+
+                //Stores the layout panel
+                JPanel promotionPanel = new JPanel(new GridLayout(1, promotionPieces.length));
+
+                for (int i = 0; i < promotionPieces.length; i++) {
+                    if (promotionPieces[i] instanceof Promotable) {
+                        promotionSquares[i] = new JButton();
+                        promotionSquares[i].addActionListener(new PromotionAction(promotionPieces[i], piece, promotionWindow)); //Adds event handler to each button
+                        boardDisplay.displayFilledSquare(promotionSquares[i], -1, -1, promotionPieces[i]);
+                        promotionPanel.add(promotionSquares[i]);
+                    }
+                }
+
+                promotionWindow.add(promotionPanel);
+                promotionWindow.setSize(boardDisplay.getSquareSize() * promotionPieces.length, boardDisplay.getSquareSize() + 20);
+                promotionWindow.setTitle("Pawn Promotion");
+
+                promotionWindow.pack();
+                promotionWindow.setVisible(true);
+            }
+        };
+
+        // run the code to change the display on the event dispatch to avoid drawing errors
+        if (SwingUtilities.isEventDispatchThread())
+            promotePiece.run();
+        else {
+            try {
+                SwingUtilities.invokeAndWait(promotePiece);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
     
     /**
      * Ends the chess game.
      * @param result    The result of the chess game
-     * @param side      The side that possibly won the chess game
+     * @param side      The side that possibly won the chess game, may be null if a draw
      * @since 1.0
      */
     public void terminate(EuropeanChess.Result result, ChessGame.Side side) {

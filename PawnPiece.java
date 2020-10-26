@@ -84,7 +84,7 @@ public class PawnPiece extends ChessPiece implements PawnMove, EnPassantMove {
     
     /**
      * Handles any post-move processes, if any, once the pawn's move is completed.
-     * Sets the hasMoved to false so castling and 2 space pawn moves are disallowed.
+     * Allows en passant after 1st move. Note that this also includes 1 and 2 space moves, but that is checked elsewhere.
      * @since 1.0
      */
     @Override
@@ -104,11 +104,11 @@ public class PawnPiece extends ChessPiece implements PawnMove, EnPassantMove {
      */
     public boolean checkPawnPromotion() {
         switch (getSide()) {
-            case NORTH:
+            case SOUTH:
                 if (getRow() == 0)
                     return true;
                 break;
-            case SOUTH:
+            case NORTH:
                 if (getRow() == getChessBoard().numRows() - 1)
                     return true;
                 break;
