@@ -11,7 +11,7 @@ public class Main {
      * @since 1.0
      */
     public static void main(String[] args) {
-        EuropeanChessBoard chessBoard = new EuropeanChessBoard(8, 8, new EuropeanChessDisplay(), new EuropeanChess(ChessGame.Side.SOUTH));
+        ChessBoard chessBoard = new ChessBoard(8, 8, new EuropeanChessDisplay(), new EuropeanChess(ChessGame.Side.SOUTH));
         //Add pawns
         for (int i = 0; i < 8; i++) {
             chessBoard.addPiece(new PawnPiece(ChessGame.Side.SOUTH, chessBoard, 6, i), 6, i);

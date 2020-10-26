@@ -18,9 +18,6 @@ public interface CastlingMove extends CheckMove {
      * @since 1.0
      */
     public default boolean isValidCastlingMove(int row, int column, ChessPiece cp) {
-        //if (cp.getChessBoard().getKing(cp).isInCheck())
-        //    return false; //Castling cannot occur when the king is in check, EVEN if castling would get the king out of check
-            
         //Checks if the piece has moved and if the valid move is 2 squares away in the correct direction
         if (cp.getMoves() == 0 && (cp.getSide().equals(ChessGame.Side.NORTH) || cp.getSide().equals(ChessGame.Side.SOUTH)) ? cp.getRow() == row && (cp.getColumn() + 2 == column || cp.getColumn() - 2 == column) : cp.getColumn() == column && (cp.getRow() + 2 == row || cp.getRow() - 2 == row)) {
             //Stores the chess board
