@@ -489,8 +489,10 @@ public class ChessBoard {
                         break;
                     case FIFTY_MOVE_RULE:
                         resultText = "The game is a draw by the fifty move rule.";
+                        break;
                     default: //THREEFOLD_REPETITION
                         resultText = "The game is a draw by threefold repetition.";
+                        break;
                 }
                 
                 //Shows the JOptionPane
