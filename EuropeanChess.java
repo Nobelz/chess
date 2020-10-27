@@ -23,6 +23,8 @@ public class EuropeanChess implements ChessGame {
     private ChessGame.Side currentSide;
     //Stores the game positions of the whole game
     private ArrayList<ChessPosition> positions;
+    //Stores the number of non-pawn, non-capture moves
+    private int fiftyMoveRule;
 
     /* CONSTRUCTORS */
     /**
@@ -59,6 +61,24 @@ public class EuropeanChess implements ChessGame {
         }
     }
 
+    /**
+     * Returns an int representing the number of consecutive non-capture and non-pawn moves.
+     * @return  The number of consecutive non-capture and non-pawn moves
+     * @since 1.0
+     */
+    public int getFiftyMoveRule() {
+        return fiftyMoveRule;
+    }
+    
+    /**
+     * Sets the fifty move rule count.
+     * @param fiftyMoveRule The new fifty move rule count
+     * @since 1.0
+     */
+    public void setFiftyMoveRule(int fiftyMoveRule) {
+        this.fiftyMoveRule = fiftyMoveRule;
+    }
+    
     /**
      * Returns a ChessGame.Side representing the side that is currently playing.
      * @return  The side that is currently playing
@@ -239,16 +259,27 @@ public class EuropeanChess implements ChessGame {
             if (hasCastled) //Indicates that castling took place
                 afterCastling(king); //Castling processing
 
-            if (save != null) //Indicates that a piece has been captured
+            if (save != null) { //Indicates that a piece has been captured
                 afterCapture(king); //Capture move processing
-            else
+                setFiftyMoveRule(0);
+            } else {
+                //Increment fifty move rule if it was a pawn move
+                if (piece instanceof PawnPiece)
+                    setFiftyMoveRule(0);
+                else
+                    setFiftyMoveRule(getFiftyMoveRule() + 1); //Adds 1 to the 50 move rule
                 afterNonCapture(king); //Non-capture move processing
+            }
             
             ChessPiece[][] pieces = board.getPieces().clone();
             for (int i = 0; i < pieces.length; i++) {
                 pieces[i] = pieces[i].clone();
             }
-                
+            
+            //Checks draw by 50 move rule
+            if (getFiftyMoveRule() == 50)
+                board.terminate(EuropeanChess.Result.FIFTY_MOVE_RULE, null);
+ 
             //Checks draw by three-fold repetition
             if (checkThreeFoldRepetition(new ChessPosition(pieces, getCurrentSide())))
                 board.terminate(EuropeanChess.Result.THREEFOLD_REPETITION, null);
@@ -371,10 +402,9 @@ public class EuropeanChess implements ChessGame {
      * @since 1.0
      */
     public void afterCheck(KingPiece king) {
-        System.out.println("Check");
         //Checks if it's checkmate
         if (!isAbleToMove(king))
-            king.getChessBoard().terminate(EuropeanChess.Result.CHECKMATE, king.getSide());
+            king.getChessBoard().terminate(EuropeanChess.Result.CHECKMATE, king.getOpposingKing().getSide());
     }
 
     /**
@@ -457,7 +487,6 @@ public class EuropeanChess implements ChessGame {
      * @since 1.0
      */
     public void afterCapture(KingPiece king) {
-        System.out.println("Capture");
         if (!king.isInCheck()) {
             if (!isAbleToMove(king) || checkInsufficientMaterial(king))
                 king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
@@ -470,7 +499,6 @@ public class EuropeanChess implements ChessGame {
      * @since 1.0
      */
     public void afterCastling(KingPiece king) {
-        System.out.println("Castle");
         if (!king.isInCheck() && !isAbleToMove(king))
             king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
     }
@@ -481,7 +509,6 @@ public class EuropeanChess implements ChessGame {
      * @since 1.0
      */
     public void afterNonCapture(KingPiece king) {
-        System.out.println("Non-Capture");
         if (!king.isInCheck() && !isAbleToMove(king))
             king.getChessBoard().terminate(EuropeanChess.Result.STALEMATE, null);
     }
@@ -495,6 +522,5 @@ public class EuropeanChess implements ChessGame {
      */
     public void promote(ChessPiece oldPiece, ChessPiece newPiece) {
         oldPiece.getChessBoard().addPiece(newPiece, oldPiece.getRow(), oldPiece.getColumn());
-        System.out.println("Promotion");
     }
 }

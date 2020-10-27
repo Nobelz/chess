@@ -470,7 +470,51 @@ public class ChessBoard {
      */
     public void terminate(EuropeanChess.Result result, ChessGame.Side side) {
         System.out.println(result);
-        board.dispose();
+        System.out.println(side);
+        
+        Runnable resultDialog = new Runnable() {
+            public void run() {
+                //Stores the popup window
+                JDialog dialog = new JDialog(board);
+                dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); //Exits on close so we can then interact with main JFrame
+                
+                String resultText;
+                
+                switch (result) {
+                    case CHECKMATE:
+                        resultText = ((side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East") + " has won the game by checkmate!";
+                        break;
+                    case STALEMATE:
+                        resultText = "The game is a draw by stalemate.";
+                        break;
+                    case INSUFFICIENT_MATERIAL:
+                        resultText = "The game is a draw by insufficient material.";
+                        break;
+                    case FIFTY_MOVE_RULE:
+                        resultText = "The game is a draw by the fifty move rule.";
+                    default: //THREEFOLD_REPETITION
+                        resultText = "The game is a draw by threefold repetition.";
+                }
+                
+                //Shows the JOptionPane
+                JOptionPane.showMessageDialog(board, resultText, "Game Over", JOptionPane.PLAIN_MESSAGE);
+            }
+        };
+
+        // run the code to change the display on the event dispatch to avoid drawing errors
+        if (SwingUtilities.isEventDispatchThread())
+            resultDialog.run();
+        else {
+            try {
+                SwingUtilities.invokeAndWait(resultDialog);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        //Exits program
+        System.exit(0);
     }
 }
 
