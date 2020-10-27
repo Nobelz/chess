@@ -84,10 +84,19 @@ public class EuropeanChess implements ChessGame {
      * @return  The side that is currently playing
      * @since 1.0
      */
-    private ChessGame.Side getCurrentSide() {
+    public ChessGame.Side getCurrentSide() {
         return currentSide;
     }
 
+    /**
+     * Returns a ChessGame.Side representing the side that started.
+     * @return  The side that is currently playing
+     * @since 1.0
+     */
+    public ChessGame.Side getStartingSide() {
+        return startingSide;
+    }
+    
     /** 
      * Determines if it is legal to play a given piece.
      * Only returns true if the piece is on the same side and if the piece has any legal moves to play.

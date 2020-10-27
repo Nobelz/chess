@@ -21,7 +21,7 @@ public class PawnPiece extends ChessPiece implements PawnMove, EnPassantMove {
      * @param column        The pawn piece's starting column
      */
     public PawnPiece(ChessGame.Side side, ChessBoard chessBoard, int row, int column) {
-        super(side, "P", ChessIcon.PAWN, chessBoard, row, column);
+        super(side, "P", (side.equals(((EuropeanChess) chessBoard.getGameRules()).getStartingSide()) ? ChessIcon.WHITE_PAWN : ChessIcon.BLACK_PAWN), chessBoard, row, column);
         canEnPassant = false;
     }
     

@@ -16,7 +16,7 @@ public class KnightPiece extends ChessPiece implements LMove, Promotable {
      * @param column        The knight piece's starting column
      */
     public KnightPiece(ChessGame.Side side, ChessBoard chessBoard, int row, int column) {
-        super(side, "N", ChessIcon.KNIGHT, chessBoard, row, column);
+        super(side, "N", (side.equals(((EuropeanChess) chessBoard.getGameRules()).getStartingSide()) ? ChessIcon.WHITE_KNIGHT : ChessIcon.BLACK_KNIGHT), chessBoard, row, column);
     }
     
     /* METHODS */

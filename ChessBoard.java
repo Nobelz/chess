@@ -469,9 +469,6 @@ public class ChessBoard {
      * @since 1.0
      */
     public void terminate(EuropeanChess.Result result, ChessGame.Side side) {
-        System.out.println(result);
-        System.out.println(side);
-        
         Runnable resultDialog = new Runnable() {
             public void run() {
                 //Stores the popup window

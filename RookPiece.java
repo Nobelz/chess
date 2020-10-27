@@ -16,7 +16,7 @@ public class RookPiece extends ChessPiece implements StraightMove, Promotable {
      * @param column        The rook piece's starting column
      */
     public RookPiece(ChessGame.Side side, ChessBoard chessBoard, int row, int column) {
-        super(side, "R", ChessIcon.ROOK, chessBoard, row, column);
+        super(side, "R", (side.equals(((EuropeanChess) chessBoard.getGameRules()).getStartingSide())? ChessIcon.WHITE_ROOK : ChessIcon.BLACK_ROOK), chessBoard, row, column);
     }
     
     /* METHODS */

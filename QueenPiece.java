@@ -16,7 +16,7 @@ public class QueenPiece extends ChessPiece implements StraightMove, DiagonalMove
      * @param column        The queen piece's starting column
      */
     public QueenPiece(ChessGame.Side side, ChessBoard chessBoard, int row, int column) {
-        super(side, "Q", ChessIcon.QUEEN, chessBoard, row, column);
+        super(side, "Q", (side.equals(((EuropeanChess) chessBoard.getGameRules()).getStartingSide()) ? ChessIcon.WHITE_QUEEN : ChessIcon.BLACK_QUEEN), chessBoard, row, column);
     }
     
     /* METHODS */

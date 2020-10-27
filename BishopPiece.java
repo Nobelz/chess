@@ -16,7 +16,7 @@ public class BishopPiece extends ChessPiece implements DiagonalMove, Promotable 
      * @param column        The bishop piece's starting column
      */
     public BishopPiece(ChessGame.Side side, ChessBoard chessBoard, int row, int column) {
-        super(side, "B", ChessIcon.BISHOP, chessBoard, row, column);
+        super(side, "B", (side.equals(((EuropeanChess) chessBoard.getGameRules()).getStartingSide()) ? ChessIcon.WHITE_BISHOP : ChessIcon.BLACK_BISHOP), chessBoard, row, column);
     }
     
     /* METHODS */

@@ -16,7 +16,7 @@ public class KingPiece extends ChessPiece implements KingMove, CastlingMove {
      * @param column        The king piece's starting column
      */
     public KingPiece(ChessGame.Side side, ChessBoard chessBoard, int row, int column) {
-        super(side, "K", ChessIcon.KING, chessBoard, row, column);
+        super(side, "K", (side.equals(((EuropeanChess) chessBoard.getGameRules()).getStartingSide()) ? ChessIcon.WHITE_KING : ChessIcon.BLACK_KING), chessBoard, row, column);
     }
     
     /* METHODS */
