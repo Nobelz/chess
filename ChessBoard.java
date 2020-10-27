@@ -53,28 +53,28 @@ public class ChessBoard {
         // create the board visuals on the event dispatch thread
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
-                    public void run() {
-                        board = new JFrame();
+                public void run() {
+                    board = new JFrame();
 
-                        // create a grid for the squares and the listener for the user clicks
-                        JPanel panel = new JPanel(new GridLayout(numRows, numColumns));
-                        ActionListener responder = new ChessAction();
+                    // create a grid for the squares and the listener for the user clicks
+                    JPanel panel = new JPanel(new GridLayout(numRows, numColumns));
+                    ActionListener responder = new ChessAction();
 
-                        // create the squares
-                        for (int i = 0; i < numRows; i++) {
-                            for (int j = 0; j < numColumns; j++) {
-                                squares[i][j] = new JButton();
-                                squares[i][j].addActionListener(responder);
-                                boardDisplay.displayEmptySquare(squares[i][j], i, j);
-                                panel.add(squares[i][j]);
-                                pieces[i][j] = null;
-                            }
+                    // create the squares
+                    for (int i = 0; i < numRows; i++) {
+                        for (int j = 0; j < numColumns; j++) {
+                            squares[i][j] = new JButton();
+                            squares[i][j].addActionListener(responder);
+                            boardDisplay.displayEmptySquare(squares[i][j], i, j);
+                            panel.add(squares[i][j]);
+                            pieces[i][j] = null;
                         }
-                        board.add(panel);
-                        board.setSize(boardDisplay.getSquareSize() * numColumns, boardDisplay.getSquareSize() * numRows);
-                        board.setVisible(true);
                     }
-                });
+                    board.add(panel);
+                    board.setSize(boardDisplay.getSquareSize() * numColumns, boardDisplay.getSquareSize() * numRows);
+                    board.setVisible(true);
+                }
+            });
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -88,7 +88,16 @@ public class ChessBoard {
     public ChessGame getGameRules() {
         return gameRules;
     }
-
+    
+    /**
+     * Returns the pieces of the game.
+     * @return  The pieces of the game
+     * @since 1.0
+     */
+    public ChessPiece[][] getPieces() {
+        return pieces;
+    }
+    
     /**
      * Changes the rules of the game
      * @param newRules the new rules for the game

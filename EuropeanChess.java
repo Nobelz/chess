@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Represents a game of European chess.
@@ -7,19 +8,21 @@ import java.util.ArrayList;
  * @version 1.0, 10/30/20
  */
 public class EuropeanChess implements ChessGame {
-
+    
     /** 
      * The result of the game.
      * Can only be checkmate, stalemate, or insufficient material.
      * @since 1.0
      */
-    public enum Result {CHECKMATE, STALEMATE, INSUFFICIENT_MATERIAL};
+    public enum Result {CHECKMATE, STALEMATE, INSUFFICIENT_MATERIAL, THREEFOLD_REPETITION, FIFTY_MOVE_RULE};
 
     /* FIELDS */
     //Stores the starting side; cannot be changed
     private final ChessGame.Side startingSide;
     //Stores the side that is currently playing
     private ChessGame.Side currentSide;
+    //Stores the game positions of the whole game
+    private ArrayList<ChessPosition> positions;
 
     /* CONSTRUCTORS */
     /**
@@ -30,6 +33,7 @@ public class EuropeanChess implements ChessGame {
     public EuropeanChess(ChessGame.Side startingSide) {
         this.startingSide = startingSide;
         currentSide = startingSide;
+        positions = new ArrayList<>();
     }
 
     /* METHODS */
@@ -239,6 +243,15 @@ public class EuropeanChess implements ChessGame {
                 afterCapture(king); //Capture move processing
             else
                 afterNonCapture(king); //Non-capture move processing
+            
+            ChessPiece[][] pieces = board.getPieces().clone();
+            for (int i = 0; i < pieces.length; i++) {
+                pieces[i] = pieces[i].clone();
+            }
+                
+            //Checks draw by three-fold repetition
+            if (checkThreeFoldRepetition(new ChessPosition(pieces, getCurrentSide())))
+                board.terminate(EuropeanChess.Result.THREEFOLD_REPETITION, null);
 
             return true; //Successful move
         } else
@@ -365,27 +378,17 @@ public class EuropeanChess implements ChessGame {
     }
 
     /**
-     * Checks for stalemate.
-     * @param king    The king of the side that is currently playing
-     * @since 1.0
-     */
-    private void checkStalemate(KingPiece king) {
-        if (!isAbleToMove(king))
-            king.getChessBoard().terminate(EuropeanChess.Result.STALEMATE, null);
-    }
-
-    /**
      * Checks for insufficient material.
      * There are only 4 cases for insufficient material:
      * King vs. King
      * King + Knight vs. King
      * King + Bishop vs. King
      * King + Bishop vs. King + Bishop of same color
-     * 
-     * @param king    The king of the side that is currently playing
+     * @param king  The king of the side that is currently playing
+     * @return      If there is insufficient material 
      * @since 1.0
      */
-    private void checkInsufficientMaterial(KingPiece king) {
+    private boolean checkInsufficientMaterial(KingPiece king) {
         //Stores the all of the chess pieces on the board
         ArrayList<ChessPiece> pieces = new ArrayList<>();
 
@@ -400,7 +403,7 @@ public class EuropeanChess implements ChessGame {
 
         //Checks if it's just bare kings
         if (pieces.size() == 2) {
-            king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
+            return true;
         }
 
         //Looks for insufficient material. All insufficient material must have less than 4 pieces on the board
@@ -421,13 +424,33 @@ public class EuropeanChess implements ChessGame {
             //If there are not no more 2 knights and bishops, then that must mean that there are pieces other than knights or bishops. In that case, there is not insufficient material
             if (knights.size() + bishops.size() <= 2) {
                 if (pieces.size() == 3) //King + Knight vs. King or King + Bishop vs. King is insufficient material
-                    king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
+                    return true;
                 else if (bishops.size() == 2 && bishops.get(0).isDarkSquared() == bishops.get(1).isDarkSquared()) //King + Bishop vs. King + Bishop of same color is insufficient material
-                    king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
+                    return true;
             }
         }
+        
+        return false;
     }
-
+    
+    /**
+     * Checks for three-fold repetition.
+     * @param position  The new ChessPosition
+     * @return          If three-fold repeition was found
+     * @since 1.0
+     */
+    private boolean checkThreeFoldRepetition(ChessPosition position) {
+        positions.add(position);
+        
+        //If less than 6 moves have been played (3 for each side), then obviously no three-fold repetition
+        if (positions.size() >= 6) {
+            if (Collections.frequency(positions, position) >= 3) { //3 of the same move
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Runs when a capture move is played. This includes en passant.
      * @param king    The king of the side that is currently playing
@@ -436,8 +459,8 @@ public class EuropeanChess implements ChessGame {
     public void afterCapture(KingPiece king) {
         System.out.println("Capture");
         if (!king.isInCheck()) {
-            checkStalemate(king);
-            checkInsufficientMaterial(king);
+            if (!isAbleToMove(king) || checkInsufficientMaterial(king))
+                king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
         }
     }
 
@@ -448,8 +471,8 @@ public class EuropeanChess implements ChessGame {
      */
     public void afterCastling(KingPiece king) {
         System.out.println("Castle");
-        if (!king.isInCheck())
-            checkStalemate(king);
+        if (!king.isInCheck() && !isAbleToMove(king))
+            king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
     }
 
     /**
@@ -459,8 +482,8 @@ public class EuropeanChess implements ChessGame {
      */
     public void afterNonCapture(KingPiece king) {
         System.out.println("Non-Capture");
-        if (!king.isInCheck())
-            checkStalemate(king);
+        if (!king.isInCheck() && !isAbleToMove(king))
+            king.getChessBoard().terminate(EuropeanChess.Result.STALEMATE, null);
     }
     
         

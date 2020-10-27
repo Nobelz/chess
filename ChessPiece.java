@@ -181,4 +181,33 @@ public abstract class ChessPiece {
             }
         }
     }
+    
+    /**
+     * Compares 2 ChessPieces.
+     * @return  If two ChessPieces are equal
+     * @since 1.0
+     */
+    @Override
+    public boolean equals(Object o) {
+        //Check typecast of 2 chess pieces
+        if (o instanceof ChessPiece) {
+            ChessPiece piece = (ChessPiece) o;
+            
+            //Check location, piece type, and side
+            if (!piece.getLabel().equals(getLabel()) || !piece.getSide().equals(getSide()) || piece.getRow() != getRow() || piece.getColumn() != getColumn())
+                return false;
+            
+            //Checks that all the same moves are available to be done
+            for (int i = 0; i < getChessBoard().numRows(); i++) {
+                for (int j = 0 ; j < getChessBoard().numColumns(); j++) {
+                    if (isLegalMove(i, j) != piece.isLegalMove(i, j))
+                        return false;
+                }
+            }
+            
+            //All things are same
+            return true;
+        } else
+            return false;
+    }
 }
