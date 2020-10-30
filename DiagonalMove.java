@@ -40,6 +40,7 @@ public interface DiagonalMove extends NormalMove {
     
     /**
      * Returns a boolean representing if the proposed row and column and all the squares up to the piece are empty for a diagonal move.
+     * Assumes that row and column is a valid diagonal move from piece.
      * @param row       The piece's destination row
      * @param column    The piece's destination column
      * @param cp        The chess piece
@@ -69,12 +70,5 @@ public interface DiagonalMove extends NormalMove {
         }
         
         return true;
-        
-        /*//If it's right next to the piece then we don't have to check the squares in between for empty pieces; otherwise, we need to make sure the path is clear for the piece
-         if (isValidNonCaptureMove(row, column, cp) && row - cp.getRow() <= 1 && cp.getRow() - row <= 1)
-            return true;
-         else {
-             return isValidNonCaptureMove(row, column, cp) && checkEmptyDiagonalMove((row > cp.getRow()) ? row - 1 : row + 1, (column > cp.getColumn()) ? column - 1 : column + 1, cp);
-         }*/
     }
 }

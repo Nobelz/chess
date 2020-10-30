@@ -43,7 +43,7 @@ public class EuropeanChess implements ChessGame {
      * Flips the side so the other side is playing.
      * @since 1.0
      */
-    private void flipSide() {
+    public void flipSide() {
         //Flips the side to the opposite side
         switch(currentSide) {
             case NORTH:
@@ -201,17 +201,17 @@ public class EuropeanChess implements ChessGame {
                     switch (king.getSide()) {
                         case NORTH:
                         case SOUTH:
-                        if (king.getColumn() + 2 == toColumn)
-                            rook = (RookPiece) board.getPiece(king.getRow(), board.numColumns() - 1); //Kingside rook on the north/south direction
-                        else
-                            rook = (RookPiece) board.getPiece(king.getRow(), 0); //Queenside rook on the north/south direction
-                        break;
+                            if (king.getColumn() + 2 == toColumn)
+                                rook = (RookPiece) board.getPiece(king.getRow(), board.numColumns() - 1); //Kingside rook on the north/south direction
+                            else
+                                rook = (RookPiece) board.getPiece(king.getRow(), 0); //Queenside rook on the north/south direction
+                            break;
                         default: //West and East
-                        if (king.getRow() + 2 == toRow)
-                            rook = (RookPiece) board.getPiece(board.numRows() - 1, king.getColumn()); //Kingside rook on the west/east direction
-                        else
-                            rook = (RookPiece) board.getPiece(0, king.getColumn()); //Queenside rook on the west/east direction
-                        break;
+                            if (king.getRow() + 2 == toRow)
+                                rook = (RookPiece) board.getPiece(board.numRows() - 1, king.getColumn()); //Kingside rook on the west/east direction
+                            else
+                                rook = (RookPiece) board.getPiece(0, king.getColumn()); //Queenside rook on the west/east direction
+                            break;
                     }
 
                     //Removes the king from the original location
@@ -362,13 +362,13 @@ public class EuropeanChess implements ChessGame {
                         save = board.simulateRemovePiece(originalRow, originalColumn + 1); //Removes and saves the pawn
                     else
                         save = board.simulateRemovePiece(originalRow, originalColumn - 1); //Removes and saves the pawn
-                break;
+                    break;
                 default: //East and West
                     if (row == originalRow + 1)
                         save = board.simulateRemovePiece(originalRow + 1, originalColumn); //Removes and saves the pawn
                     else
                         save = board.simulateRemovePiece(originalRow - 1, originalColumn); //Removes and saves the pawn
-                break;
+                    break;
             }
 
             //Stores whether the king is in check

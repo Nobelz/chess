@@ -55,7 +55,8 @@ public class ChessBoard {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
                     board = new JFrame();
-
+                    board.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    
                     // create a grid for the squares and the listener for the user clicks
                     JPanel panel = new JPanel(new GridLayout(numRows, numColumns));
                     ActionListener responder = new ChessAction();
@@ -512,8 +513,16 @@ public class ChessBoard {
             }
         }
         
-        //Exits program
-        System.exit(0);
+        close();
+    }
+    
+    /**
+     * Closes the chess board.
+     * @since 1.0
+     */
+    public void close() {
+        board.setVisible(false);
+        board.dispose();
     }
 }
 

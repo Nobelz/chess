@@ -14,7 +14,7 @@ public interface NormalMove {
      * @since 1.0
      */
     public default boolean isValidNonCaptureMove(int row, int column, ChessPiece cp) {
-        return row < cp.getChessBoard().numRows() && column < cp.getChessBoard().numColumns() && !cp.getChessBoard().hasPiece(row, column);
+        return row < cp.getChessBoard().numRows() && column < cp.getChessBoard().numColumns() && row >= 0 && column >= 0 && !cp.getChessBoard().hasPiece(row, column);
     }
     
     /**
@@ -26,6 +26,6 @@ public interface NormalMove {
      * @since 1.0
      */
     public default boolean isValidCaptureMove(int row, int column, ChessPiece cp) {
-        return row < cp.getChessBoard().numRows() && column < cp.getChessBoard().numColumns() && cp.getChessBoard().hasPiece(row, column) && !cp.getChessBoard().getPiece(row, column).getSide().equals(cp.getSide());
+        return row < cp.getChessBoard().numRows() && column < cp.getChessBoard().numColumns() && row >= 0 && column >= 0 && cp.getChessBoard().hasPiece(row, column) && !cp.getChessBoard().getPiece(row, column).getSide().equals(cp.getSide());
     }
 }

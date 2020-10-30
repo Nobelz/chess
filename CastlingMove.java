@@ -57,7 +57,7 @@ public interface CastlingMove {
             }
             
             //Checks if the piece at the location exists, is a rook, and the rook hasn't moved
-            if (rook != null && rook instanceof RookPiece && rook.getMoves() == 0) {
+            if (rook != null && rook instanceof RookPiece && rook.getMoves() == 0 && rook.getSide().equals(cp.getSide())) {
                 switch (cp.getSide()) {
                     case NORTH:
                     case SOUTH:

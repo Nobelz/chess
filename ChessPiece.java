@@ -184,7 +184,8 @@ public abstract class ChessPiece {
     
     /**
      * Compares 2 ChessPieces.
-     * @return  If two ChessPieces are equal
+     * Assumes the chess board's dimensions are equal. 
+     * @return  If the two ChessPieces are equal
      * @since 1.0
      */
     @Override
@@ -205,8 +206,8 @@ public abstract class ChessPiece {
                 }
             }
             
-            //All things are same
-            return true;
+            //Check for location
+            return getRow() == piece.getRow() && getColumn() == piece.getColumn();
         } else
             return false;
     }

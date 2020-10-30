@@ -22,16 +22,28 @@ enum ChessIcon implements Icon {
     BLACK_BISHOP(new ImageIcon("Assets/BlackBishop.png")), 
     BLACK_PAWN(new ImageIcon("Assets/BlackPawn.png"));
     
+    /* FIELDS */
+    //Stores the icon itself
     private final ImageIcon icon;
     
+    /* CONSTRUCTORS */
+    
+    /**
+     * Creates a ChessIcon from an Icon.
+     * @param icon  The icon
+     * @since 1.0
+     */
     private ChessIcon(ImageIcon icon) {
         this.icon = icon;
     }
+    
+    /* METHODS */
     
     /**
      * Paints the chess icon.
      * @since 1.0
      */
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         icon.paintIcon(c, g, x, y);
     }
@@ -41,6 +53,7 @@ enum ChessIcon implements Icon {
      * @return  The height of the chess icon
      * @since 1.0
      */
+    @Override
     public int getIconHeight() {
         return icon.getIconHeight();
     }
@@ -50,6 +63,7 @@ enum ChessIcon implements Icon {
      * @return  The width of the chess icon
      * @since 1.0
      */
+    @Override
     public int getIconWidth() {
         return icon.getIconWidth();
     }
