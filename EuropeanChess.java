@@ -277,7 +277,7 @@ public class EuropeanChess implements ChessGame {
                     setFiftyMoveRule(0);
                 else
                     setFiftyMoveRule(getFiftyMoveRule() + 1); //Adds 1 to the 50 move rule
-                afterNonCapture(king); //Non-capture move processing
+                afterNonCapture(king, hasCastled); //Non-capture move processing
             }
             
             ChessPiece[][] pieces = board.getPieces().clone();
@@ -286,12 +286,16 @@ public class EuropeanChess implements ChessGame {
             }
             
             //Checks draw by 50 move rule
-            if (getFiftyMoveRule() == 50)
+            if (getFiftyMoveRule() == 50) {
+                Sound.playSound("Draw.wav");
                 board.terminate(EuropeanChess.Result.FIFTY_MOVE_RULE, null);
- 
+            }
+                 
             //Checks draw by three-fold repetition
-            if (checkThreeFoldRepetition(new ChessPosition(pieces, getCurrentSide())))
+            if (checkThreeFoldRepetition(new ChessPosition(pieces, getCurrentSide()))) {
+                Sound.playSound("Draw.wav");
                 board.terminate(EuropeanChess.Result.THREEFOLD_REPETITION, null);
+            } 
 
             return true; //Successful move
         } else
@@ -412,8 +416,11 @@ public class EuropeanChess implements ChessGame {
      */
     public void afterCheck(KingPiece king) {
         //Checks if it's checkmate
-        if (!isAbleToMove(king))
+        if (!isAbleToMove(king)) {
+            Sound.playSound("Checkmate.wav");
             king.getChessBoard().terminate(EuropeanChess.Result.CHECKMATE, king.getOpposingKing().getSide());
+        } else
+            Sound.playSound("Check.wav");
     }
 
     /**
@@ -497,8 +504,11 @@ public class EuropeanChess implements ChessGame {
      */
     public void afterCapture(KingPiece king) {
         if (!king.isInCheck()) {
-            if (!isAbleToMove(king) || checkInsufficientMaterial(king))
+            if (!isAbleToMove(king) || checkInsufficientMaterial(king)) {
+                Sound.playSound("Draw.wav");
                 king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
+            } else 
+                Sound.playSound("Capture.wav");
         }
     }
 
@@ -508,18 +518,28 @@ public class EuropeanChess implements ChessGame {
      * @since 1.0
      */
     public void afterCastling(KingPiece king) {
-        if (!king.isInCheck() && !isAbleToMove(king))
+        if (!king.isInCheck() && !isAbleToMove(king)) {
+            Sound.playSound("Draw.wav");
             king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
+        } else 
+            Sound.playSound("Castling.wav");
     }
 
     /**
      * Runs when a normal, non-capture move is played.
-     * @param king    The king of the side that is currently playing
+     * @param king          The king of the side that is currently playing
+     * @param isCastle      If the the non-capture move was a castle
      * @since 1.0
      */
-    public void afterNonCapture(KingPiece king) {
-        if (!king.isInCheck() && !isAbleToMove(king))
-            king.getChessBoard().terminate(EuropeanChess.Result.STALEMATE, null);
+    public void afterNonCapture(KingPiece king, boolean isCastle) {
+        if (!king.isInCheck()) {
+            if (!isAbleToMove(king)) {
+                Sound.playSound("Draw.wav");
+                 king.getChessBoard().terminate(EuropeanChess.Result.STALEMATE, null);
+            }
+            if (!isCastle)
+                Sound.playSound("Move.wav");
+        }
     }
     
         

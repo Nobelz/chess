@@ -1,6 +1,8 @@
 import javax.swing.ImageIcon;
 import javax.swing.Icon;
 import java.awt.*;
+import javax.imageio.*;
+import java.io.InputStream;
 
 /**
  * Represents a chess piece icon.
@@ -9,22 +11,22 @@ import java.awt.*;
  * @version 2.0, 10/30/20
  */
 enum ChessIcon implements Icon {
-    WHITE_KNIGHT(new ImageIcon("Assets/WhiteKnight.png")), 
-    WHITE_ROOK(new ImageIcon("Assets/WhiteRook.png")), 
-    WHITE_QUEEN(new ImageIcon("Assets/WhiteQueen.png")), 
-    WHITE_KING(new ImageIcon("Assets/WhiteKing.png")), 
-    WHITE_BISHOP(new ImageIcon("Assets/WhiteBishop.png")), 
-    WHITE_PAWN(new ImageIcon("Assets/WhitePawn.png")),
-    BLACK_KNIGHT(new ImageIcon("Assets/BlackKnight.png")), 
-    BLACK_ROOK(new ImageIcon("Assets/BlackRook.png")), 
-    BLACK_QUEEN(new ImageIcon("Assets/BlackQueen.png")), 
-    BLACK_KING(new ImageIcon("Assets/BlackKing.png")), 
-    BLACK_BISHOP(new ImageIcon("Assets/BlackBishop.png")), 
-    BLACK_PAWN(new ImageIcon("Assets/BlackPawn.png"));
+    WHITE_KNIGHT("WhiteKnight.png"), 
+    WHITE_ROOK("WhiteRook.png"), 
+    WHITE_QUEEN("WhiteQueen.png"), 
+    WHITE_KING("WhiteKing.png"), 
+    WHITE_BISHOP("WhiteBishop.png"), 
+    WHITE_PAWN("WhitePawn.png"),
+    BLACK_KNIGHT("BlackKnight.png"), 
+    BLACK_ROOK("BlackRook.png"), 
+    BLACK_QUEEN("BlackQueen.png"), 
+    BLACK_KING("BlackKing.png"), 
+    BLACK_BISHOP("BlackBishop.png"), 
+    BLACK_PAWN("BlackPawn.png");
     
     /* FIELDS */
     //Stores the icon itself
-    private final ImageIcon icon;
+    private ImageIcon icon = null;
     
     /* CONSTRUCTORS */
     
@@ -33,8 +35,10 @@ enum ChessIcon implements Icon {
      * @param icon  The icon
      * @since 1.0
      */
-    private ChessIcon(ImageIcon icon) {
-        this.icon = icon;
+    private ChessIcon(String fileName) {
+        try {
+            icon = new ImageIcon(ImageIO.read(Main.class.getResourceAsStream("/Assets/" + fileName)));
+        } catch (Exception e) {}
     }
     
     /* METHODS */
