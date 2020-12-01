@@ -38,7 +38,7 @@ enum ChessIcon implements Icon {
      */
     ChessIcon(String fileName) {
         try {
-            icon = new ImageIcon(ImageIO.read(getClass().getResource("/resources/images/" + fileName)));
+            icon = new ImageIcon(ImageIO.read(getClass().getResource("/images/" + fileName)));
         } catch (Exception e) {
             e.printStackTrace();
         }
