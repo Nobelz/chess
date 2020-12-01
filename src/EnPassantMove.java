@@ -9,17 +9,18 @@ public interface EnPassantMove {
      * Returns a boolean representing if the proposed row and column is a valid en passant move from the piece's location.
      * The pawn must be 4 rows from the opposing side.
      * The pawn must also be right next to a pawn that just moved 2 spaces.
-     * @param row       The piece's destination row
-     * @param column    The piece's destination column
-     * @param cp        The chess piece
-     * @return          Whether the proposed location is a valid en passant move
+     *
+     * @param row    The piece's destination row
+     * @param column The piece's destination column
+     * @param cp     The chess piece
+     * @return Whether the proposed location is a valid en passant move
      * @since 1.0
      */
-    public default boolean isValidEnPassantMove(int row, int column, ChessPiece cp) {
+    default boolean isValidEnPassantMove(int row, int column, ChessPiece cp) {
         //Checks to see if the proposed move is within the chess board bounds
         if (row >= cp.getChessBoard().numRows() || column >= cp.getChessBoard().numColumns())
             return false;
-         
+
         //Checks if pawn is in the correct column and row
         switch (cp.getSide()) {
             case SOUTH:
@@ -43,7 +44,7 @@ public interface EnPassantMove {
                     return false;
                 break;
         }
-        
+
         //Checks to see if the proposed move is diagonally from the pawn in the forward direction
         switch (cp.getSide()) {
             case SOUTH:
@@ -63,7 +64,7 @@ public interface EnPassantMove {
                     return false;
                 break;
         }
-        
+
         //Stores the pawn to be captured by en passant
         PawnPiece pawn;
         //Checks to see if an opposing pawn is right next to the piece
@@ -100,7 +101,7 @@ public interface EnPassantMove {
                 }
                 break;
         }
-        
+
         //Checks to see if the pawn just moved
         return (pawn.getMoves() == 1 && pawn.getCanEnPassant());
     }

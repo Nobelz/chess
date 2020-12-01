@@ -9,14 +9,16 @@
 public interface PawnMove extends NormalMove {
     /**
      * Returns a boolean representing if the proposed row and column is a valid straight move from the piece's location, assuming that the proposed location is unoccupied.
-     * @param row       The piece's destination row
-     * @param column    The piece's destination column
-     * @param cp        The chess piece
-     * @return          Whether the proposed location is a valid straight move, assuming it is unoccupied
+     *
+     * @param row    The piece's destination row
+     * @param column The piece's destination column
+     * @param cp     The chess piece
+     * @return Whether the proposed location is a valid straight move, assuming it is unoccupied
      * @since 1.0
      */
-    public default boolean isValidPawnNonCaptureMove(int row, int column, ChessPiece cp) {
+    default boolean isValidPawnNonCaptureMove(int row, int column, ChessPiece cp) {
         //Checks if the square is empty
+        //Square not empty or square doesn't exist
         if (isValidNonCaptureMove(row, column, cp)) {
             //Checks the forward 1 space for each side
             switch (cp.getSide()) {
@@ -37,7 +39,7 @@ public interface PawnMove extends NormalMove {
                         return true;
                     break;
             }
-            
+
             //Checks forward 2 spaces for each side if and only if the pawn hasn't been moved yet
             if (cp.getMoves() == 0) {
                 switch (cp.getSide()) {
@@ -59,22 +61,22 @@ public interface PawnMove extends NormalMove {
                         break;
                 }
             }
-            
-            return false; //Doesn't match any pawn move
-        } else
-            return false; //Square not empty or square doesn't exist
-        
+
+        }
+        return false; //Doesn't match any pawn move
+
     }
-    
+
     /**
      * Returns a boolean representing if the proposed row and column is a valid straight move from the piece's location, assuming that the proposed location is occupied.
-     * @param row       The piece's destination row
-     * @param column    The piece's destination column
-     * @param cp        The chess piece
-     * @return          Whether the proposed location is a valid straight move, assuming it is unoccupied
+     *
+     * @param row    The piece's destination row
+     * @param column The piece's destination column
+     * @param cp     The chess piece
+     * @return Whether the proposed location is a valid straight move, assuming it is unoccupied
      * @since 1.0
      */
-    public default boolean isValidPawnCaptureMove(int row, int column, ChessPiece cp) {
+    default boolean isValidPawnCaptureMove(int row, int column, ChessPiece cp) {
         //Checks if the square is occupied by opposing side
         if (isValidCaptureMove(row, column, cp)) {
             //Checks to see if the proposed move is diagonally from the pawn in the forward direction

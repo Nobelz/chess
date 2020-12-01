@@ -8,13 +8,14 @@ import java.util.Collections;
  * @version 1.0, 10/30/20
  */
 public class EuropeanChess implements ChessGame {
-    
-    /** 
+
+    /**
      * The result of the game.
      * Can only be checkmate, stalemate, or insufficient material.
+     *
      * @since 1.0
      */
-    public enum Result {CHECKMATE, STALEMATE, INSUFFICIENT_MATERIAL, THREEFOLD_REPETITION, FIFTY_MOVE_RULE};
+    public enum Result {CHECKMATE, STALEMATE, INSUFFICIENT_MATERIAL, THREEFOLD_REPETITION, FIFTY_MOVE_RULE}
 
     /* FIELDS */
     //Stores the starting side; cannot be changed
@@ -22,14 +23,16 @@ public class EuropeanChess implements ChessGame {
     //Stores the side that is currently playing
     private ChessGame.Side currentSide;
     //Stores the game positions of the whole game
-    private ArrayList<ChessPosition> positions;
+    private final ArrayList<ChessPosition> positions;
     //Stores the number of non-pawn, non-capture moves
     private int fiftyMoveRule;
 
     /* CONSTRUCTORS */
+
     /**
      * Initializes European chess rules.
-     * @param startingSide  The side who starts
+     *
+     * @param startingSide The side who starts
      * @since 1.0
      */
     public EuropeanChess(ChessGame.Side startingSide) {
@@ -39,49 +42,54 @@ public class EuropeanChess implements ChessGame {
     }
 
     /* METHODS */
+
     /**
      * Flips the side so the other side is playing.
+     *
      * @since 1.0
      */
     public void flipSide() {
         //Flips the side to the opposite side
-        switch(currentSide) {
+        switch (currentSide) {
             case NORTH:
-            currentSide = ChessGame.Side.SOUTH;
-            break;
+                currentSide = ChessGame.Side.SOUTH;
+                break;
             case SOUTH:
-            currentSide = ChessGame.Side.NORTH;
-            break;
+                currentSide = ChessGame.Side.NORTH;
+                break;
             case WEST:
-            currentSide = ChessGame.Side.EAST;
-            break;
+                currentSide = ChessGame.Side.EAST;
+                break;
             default: //East
-            currentSide = ChessGame.Side.WEST;
-            break;
+                currentSide = ChessGame.Side.WEST;
+                break;
         }
     }
 
     /**
      * Returns an int representing the number of consecutive non-capture and non-pawn moves.
-     * @return  The number of consecutive non-capture and non-pawn moves
+     *
+     * @return The number of consecutive non-capture and non-pawn moves
      * @since 1.0
      */
     public int getFiftyMoveRule() {
         return fiftyMoveRule;
     }
-    
+
     /**
      * Sets the fifty move rule count.
+     *
      * @param fiftyMoveRule The new fifty move rule count
      * @since 1.0
      */
     public void setFiftyMoveRule(int fiftyMoveRule) {
         this.fiftyMoveRule = fiftyMoveRule;
     }
-    
+
     /**
      * Returns a ChessGame.Side representing the side that is currently playing.
-     * @return  The side that is currently playing
+     *
+     * @return The side that is currently playing
      * @since 1.0
      */
     public ChessGame.Side getCurrentSide() {
@@ -90,19 +98,21 @@ public class EuropeanChess implements ChessGame {
 
     /**
      * Returns a ChessGame.Side representing the side that started.
-     * @return  The side that is currently playing
+     *
+     * @return The side that is currently playing
      * @since 1.0
      */
     public ChessGame.Side getStartingSide() {
         return startingSide;
     }
-    
-    /** 
+
+    /**
      * Determines if it is legal to play a given piece.
      * Only returns true if the piece is on the same side and if the piece has any legal moves to play.
-     * @param piece   the piece to be played
-     * @param row     the row of the square the piece is on
-     * @param column  the column of the square the piece is on
+     *
+     * @param piece  the piece to be played
+     * @param row    the row of the square the piece is on
+     * @param column the column of the square the piece is on
      * @return true if the piece is allowed to move on this turn
      */
     public boolean legalPieceToPlay(ChessPiece piece, int row, int column) {
@@ -128,14 +138,15 @@ public class EuropeanChess implements ChessGame {
      * Checks to make sure that move doesn't result in check.
      */
     public boolean isGoodMove(int row, int column, ChessPiece piece) {
-        return check(row, column, piece) && (!(piece instanceof CastlingMove) || (((CastlingMove) piece).isValidCastlingMove(row, column, piece) ? !piece.getChessBoard().getKing(piece).isInCheck() : true));
+        return check(row, column, piece) && (!(piece instanceof CastlingMove) || (!((CastlingMove) piece).isValidCastlingMove(row, column, piece) || !piece.getChessBoard().getKing(piece).isInCheck()));
     }
-    
-    /** 
+
+    /**
      * Moves a piece to a new position.
-     * @param piece     the piece to move
-     * @param toRow     the row of the square the piece is moving to
-     * @param toColumn  the column of the square the piece is moving to
+     *
+     * @param piece    the piece to move
+     * @param toRow    the row of the square the piece is moving to
+     * @param toColumn the column of the square the piece is moving to
      * @return true if the move was made, false if the move was not made
      */
     public boolean makeMove(ChessPiece piece, int toRow, int toColumn) {
@@ -171,17 +182,17 @@ public class EuropeanChess implements ChessGame {
                     switch (pawn.getSide()) {
                         case NORTH:
                         case SOUTH:
-                        if (toColumn == originalColumn + 1)
-                            save = board.removePiece(originalRow, originalColumn + 1); //Removes and saves the pawn
-                        else
-                            save = board.removePiece(originalRow, originalColumn - 1); //Removes and saves the pawn
-                        break;
+                            if (toColumn == originalColumn + 1)
+                                save = board.removePiece(originalRow, originalColumn + 1); //Removes and saves the pawn
+                            else
+                                save = board.removePiece(originalRow, originalColumn - 1); //Removes and saves the pawn
+                            break;
                         default: //East and West
-                        if (toRow == originalRow + 1)
-                            save = board.removePiece(originalRow + 1, originalColumn); //Removes and saves the pawn
-                        else
-                            save = board.removePiece(originalRow - 1, originalColumn); //Removes and saves the pawn
-                        break;
+                            if (toRow == originalRow + 1)
+                                save = board.removePiece(originalRow + 1, originalColumn); //Removes and saves the pawn
+                            else
+                                save = board.removePiece(originalRow - 1, originalColumn); //Removes and saves the pawn
+                            break;
                     }
                 }
             }
@@ -194,7 +205,7 @@ public class EuropeanChess implements ChessGame {
                 RookPiece rook;
 
                 //Checks for valid castling move
-                if (king.isValidCastlingMove(toRow, toColumn, king)) {                 
+                if (king.isValidCastlingMove(toRow, toColumn, king)) {
                     /* Gets the rook based on the direction
                      * Note that I'm not checking for the rook again because that was already checked for in CastlingMove
                      */
@@ -217,7 +228,7 @@ public class EuropeanChess implements ChessGame {
                     //Removes the king from the original location
                     board.removePiece(king.getRow(), king.getColumn());
                     //Moves the king to the new space
-                    board.addPiece(king, toRow, toColumn);                    
+                    board.addPiece(king, toRow, toColumn);
                     //Removes the rook from the original location
                     board.removePiece(rook.getRow(), rook.getColumn());
 
@@ -225,21 +236,21 @@ public class EuropeanChess implements ChessGame {
                     switch (king.getSide()) {
                         case NORTH:
                         case SOUTH:
-                        if (king.getColumn() < rook.getColumn()) //Kingside
-                            board.addPiece(rook, king.getRow(), king.getColumn() - 1);
-                        else //Queenside
-                            board.addPiece(rook, king.getRow(), king.getColumn() + 1);
-                        break;
+                            if (king.getColumn() < rook.getColumn()) //Kingside
+                                board.addPiece(rook, king.getRow(), king.getColumn() - 1);
+                            else //Queenside
+                                board.addPiece(rook, king.getRow(), king.getColumn() + 1);
+                            break;
                         default: //West and East
-                        if (king.getRow() < rook.getRow()) //Kingside
-                            board.addPiece(rook, king.getRow() - 1, king.getColumn());
-                        else //Queenside
-                            board.addPiece(rook, king.getRow() + 1, king.getColumn());
-                        break;
+                            if (king.getRow() < rook.getRow()) //Kingside
+                                board.addPiece(rook, king.getRow() - 1, king.getColumn());
+                            else //Queenside
+                                board.addPiece(rook, king.getRow() + 1, king.getColumn());
+                            break;
                     }
 
-                    //Rook final processing; the king was the central piece so it will be done lated
-                    rook.moveDone();   
+                    //Rook final processing; the king was the central piece so it will be done later
+                    rook.moveDone();
                     hasCastled = true;
                 }
             }
@@ -277,37 +288,38 @@ public class EuropeanChess implements ChessGame {
                     setFiftyMoveRule(0);
                 else
                     setFiftyMoveRule(getFiftyMoveRule() + 1); //Adds 1 to the 50 move rule
-                afterNonCapture(king, hasCastled); //Non-capture move processing
+                afterNonCapture(king); //Non-capture move processing
             }
-            
+
             ChessPiece[][] pieces = board.getPieces().clone();
             for (int i = 0; i < pieces.length; i++) {
                 pieces[i] = pieces[i].clone();
             }
-            
+
             //Checks draw by 50 move rule
             if (getFiftyMoveRule() == 50) {
                 //Sound.playSound("Draw.wav");
                 board.terminate(EuropeanChess.Result.FIFTY_MOVE_RULE, null);
             }
-                 
+
             //Checks draw by three-fold repetition
             if (checkThreeFoldRepetition(new ChessPosition(pieces, getCurrentSide()))) {
                 //Sound.playSound("Draw.wav");
                 board.terminate(EuropeanChess.Result.THREEFOLD_REPETITION, null);
-            } 
+            }
 
             return true; //Successful move
         } else
             return false; //Unsuccessful move
     }
 
-    /** 
+    /**
      * Checks for any moves in a position.
-     * @param piece     A piece of the game
-     * @return          If there are any moves in the position for the side of the piece. If false, either stalemate or checkmate will result, resulting in the end of the game
+     *
+     * @param piece A piece of the game
+     * @return If there are any moves in the position for the side of the piece. If false, either stalemate or checkmate will result, resulting in the end of the game
      */
-    public boolean isAbleToMove(ChessPiece piece) {
+    public boolean cannotMove(ChessPiece piece) {
         //Stores the same side's pieces
         ArrayList<ChessPiece> pieces = new ArrayList<>();
 
@@ -323,20 +335,21 @@ public class EuropeanChess implements ChessGame {
         //Iterates through each of the same side pieces
         for (ChessPiece cp : pieces) {
             if (legalPieceToPlay(cp, cp.getRow(), cp.getColumn()))
-                return true;
+                return false;
         }
 
         //No move to play
-        return false;
+        return true;
     }
 
     /**
      * Returns a boolean representing if the move will not result in the king being in check.
      * Assumes that the move is a legal move.
-     * @param row       The piece's destination row
-     * @param column    The piece's destination column
-     * @param cp        The chess piece
-     * @return          Whether the proposed location is a valid king move, assuming it is unoccupied; returns true if it doesn't result in the king in check
+     *
+     * @param row    The piece's destination row
+     * @param column The piece's destination column
+     * @param cp     The chess piece
+     * @return Whether the proposed location is a valid king move, assuming it is unoccupied; returns true if it doesn't result in the king in check
      * @since 1.0
      */
     public boolean check(int row, int column, ChessPiece cp) {
@@ -356,7 +369,7 @@ public class EuropeanChess implements ChessGame {
             //Removes the piece from the original location
             board.simulateRemovePiece(originalRow, originalColumn);
             //Moves the piece; note, we do not have to store the replaced piece because by very definition of the en passant move, the space has to be empty
-            board.simulateAddPiece(cp, row, column);            
+            board.simulateAddPiece(cp, row, column);
 
             //Removes the adjacent pawn from the board
             switch (cp.getSide()) {
@@ -411,16 +424,17 @@ public class EuropeanChess implements ChessGame {
 
     /**
      * Runs when a move results in a check.
-     * @param king    The king that is in check
+     *
+     * @param king The king that is in check
      * @since 1.0
      */
     public void afterCheck(KingPiece king) {
         //Checks if it's checkmate
-        if (!isAbleToMove(king)) {
+        if (cannotMove(king)) {
             //Sound.playSound("Checkmate.wav");
             king.getChessBoard().terminate(EuropeanChess.Result.CHECKMATE, king.getOpposingKing().getSide());
         } //else
-            //Sound.playSound("Check.wav");
+        //Sound.playSound("Check.wav");
     }
 
     /**
@@ -430,8 +444,9 @@ public class EuropeanChess implements ChessGame {
      * King + Knight vs. King
      * King + Bishop vs. King
      * King + Bishop vs. King + Bishop of same color
-     * @param king  The king of the side that is currently playing
-     * @return      If there is insufficient material 
+     *
+     * @param king The king of the side that is currently playing
+     * @return If there is insufficient material
      * @since 1.0
      */
     private boolean checkInsufficientMaterial(KingPiece king) {
@@ -455,9 +470,9 @@ public class EuropeanChess implements ChessGame {
         //Looks for insufficient material. All insufficient material must have less than 4 pieces on the board
         if (pieces.size() <= 4) {
             //Stores the all of the knight pieces on the board
-            ArrayList<KnightPiece> knights = new ArrayList<>(); 
-            //Stores the all of the biushop pieces on the board
-            ArrayList<BishopPiece> bishops = new ArrayList<>(); 
+            ArrayList<KnightPiece> knights = new ArrayList<>();
+            //Stores the all of the bishop pieces on the board
+            ArrayList<BishopPiece> bishops = new ArrayList<>();
 
             //Looks for pieces that are knights or bishops
             for (ChessPiece piece : pieces) {
@@ -469,84 +484,87 @@ public class EuropeanChess implements ChessGame {
 
             //If there are not no more 2 knights and bishops, then that must mean that there are pieces other than knights or bishops. In that case, there is not insufficient material
             if (knights.size() + bishops.size() <= 2) {
+                //King + Bishop vs. King + Bishop of same color is insufficient material
                 if (pieces.size() == 3) //King + Knight vs. King or King + Bishop vs. King is insufficient material
                     return true;
-                else if (bishops.size() == 2 && bishops.get(0).isDarkSquared() == bishops.get(1).isDarkSquared()) //King + Bishop vs. King + Bishop of same color is insufficient material
-                    return true;
+                else return bishops.size() == 2 && bishops.get(0).isDarkSquared() == bishops.get(1).isDarkSquared();
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Checks for three-fold repetition.
-     * @param position  The new ChessPosition
-     * @return          If three-fold repeition was found
+     *
+     * @param position The new ChessPosition
+     * @return If three-fold repetition was found
      * @since 1.0
      */
     private boolean checkThreeFoldRepetition(ChessPosition position) {
         positions.add(position);
-        
+
         //If less than 6 moves have been played (3 for each side), then obviously no three-fold repetition
         if (positions.size() >= 6) {
-            if (Collections.frequency(positions, position) >= 3) { //3 of the same move
-                return true;
-            }
+            //3 of the same move
+            return Collections.frequency(positions, position) >= 3;
         }
         return false;
     }
-    
+
     /**
      * Runs when a capture move is played. This includes en passant.
-     * @param king    The king of the side that is currently playing
+     *
+     * @param king The king of the side that is currently playing
      * @since 1.0
      */
     public void afterCapture(KingPiece king) {
         if (!king.isInCheck()) {
-            if (!isAbleToMove(king) || checkInsufficientMaterial(king)) {
+            if (cannotMove(king) || checkInsufficientMaterial(king)) {
                 //Sound.playSound("Draw.wav");
                 king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
             } //else
-                //Sound.playSound("Capture.wav");
+            //Sound.playSound("Capture.wav");
         }
     }
 
     /**
      * Runs when a castling move is played.
-     * @param king    The king of the side that is currently playing
+     *
+     * @param king The king of the side that is currently playing
      * @since 1.0
      */
     public void afterCastling(KingPiece king) {
-        if (!king.isInCheck() && !isAbleToMove(king)) {
+        if (!king.isInCheck() && cannotMove(king)) {
             //Sound.playSound("Draw.wav");
             king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
         } //else
-            //Sound.playSound("Castling.wav");
+        //Sound.playSound("Castling.wav");
     }
 
     /**
      * Runs when a normal, non-capture move is played.
-     * @param king          The king of the side that is currently playing
-     * @param isCastle      If the the non-capture move was a castle
+     *
+     * @param king The king of the side that is currently playing
      * @since 1.0
      */
-    public void afterNonCapture(KingPiece king, boolean isCastle) {
+    public void afterNonCapture(KingPiece king) { //boolean isCastle previous parameter relic
         if (!king.isInCheck()) {
-            if (!isAbleToMove(king)) {
+            if (cannotMove(king)) {
                 //Sound.playSound("Draw.wav");
-                 king.getChessBoard().terminate(EuropeanChess.Result.STALEMATE, null);
+                king.getChessBoard().terminate(EuropeanChess.Result.STALEMATE, null);
             }
             //if (!isCastle)
-                //Sound.playSound("Move.wav");
+            //Sound.playSound("Move.wav");
         }
     }
-    
-        
+
+
     /**
      * Promotes the ChessPiece to the desired ChessPiece type.
-     * @param oldPiece  The ChessPiece to be replaced
-     * @param newPiece  The ChessPiece type to be replaced with
+     *
+     * @param oldPiece The ChessPiece to be replaced
+     * @param newPiece The ChessPiece type to be replaced with
      * @since 1.0
      */
     public void promote(ChessPiece oldPiece, ChessPiece newPiece) {

@@ -2,7 +2,7 @@
  * Represents a bishop chess piece.
  * Dictates how a bishop can move.
  *
- * @author Nobel Zhou
+ * @author Nobel Zhou (nxz157)
  * @version 1.0, 10/30/20
  */
 public class BishopPiece extends ChessPiece implements DiagonalMove, Promotable {
