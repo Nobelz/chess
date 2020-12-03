@@ -17,7 +17,7 @@ public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMov
      *
      * @param side          the king piece's side
      * @param chessBoard    the chess board the king piece is on
-     * @param icon          the chess piece's icon
+     * @param icon          the king piece's icon
      * @param row           the king piece's starting row
      * @param column        the king piece's starting column
      * @since 1.0
@@ -86,7 +86,7 @@ public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMov
             // Stores the column of the rook move
             int rookColumn = getColumn();
             // Stores the rook
-            RookPiece rook = null;
+            RookPiece rook = getRook(row, column, this);
 
             // Sets the proposed location of the rook
             switch (getSide()) {

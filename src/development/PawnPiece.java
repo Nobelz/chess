@@ -15,8 +15,10 @@ public class PawnPiece extends ChessPiece implements CanPawnMove, CanEnPassantMo
      *
      * @param side          the pawn piece's side
      * @param chessBoard    the chess board the pawn piece is on
+     * @param icon          the pawn piece's icon
      * @param row           the pawn piece's starting row
      * @param column        the pawn piece's starting column
+     * @since 1.0
      */
     public PawnPiece(ChessGame.Side side, ChessBoard chessBoard, ChessIcon icon, int row, int column) {
         super(side, "P", icon, chessBoard, row, column);

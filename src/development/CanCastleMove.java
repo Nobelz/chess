@@ -1,7 +1,5 @@
 package development;
 
-import java.rmi.NoSuchObjectException;
-
 /**
  * <p>Represents the ability to make a castling move in chess.</p>
  *
@@ -74,7 +72,7 @@ public interface CanCastleMove extends CanMove {
             }
 
             // Checks if the piece at the location exists, is a rook, hasn't moved, and is the same side as the king
-            if (rook != null && rook.getNumMoves == 0 && rook.getSide().equals(cp.getSide())) {
+            if (rook != null && rook.getNumMoves() == 0 && rook.getSide().equals(cp.getSide())) {
                 // Checks to make sure space between king and rook is empty
                 switch (cp.getSide()) {
                     case NORTH:
@@ -133,7 +131,6 @@ public interface CanCastleMove extends CanMove {
                     } else { // Queenside rook on the north/south direction
                         return (RookPiece) cp.getChessBoard().getPiece(cp.getRow(), 0);
                     }
-                    break;
                 default: // East and West
                     if (cp.getRow() + 2 == row) { // Kingside rook on the west/east direction
                         return (RookPiece) cp.getChessBoard().getPiece(cp.getChessBoard().getGameRules().getNumRows() - 1, cp.getColumn());
