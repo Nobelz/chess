@@ -4,7 +4,7 @@ package development;
  * <p>Represents a chess piece.</p>
  * <p>Dictates properties of the chess piece as well as how it moves.</p>
  *
- * @author Nobel Zhou
+ * @author Nobel Zhou (nxz157)
  * @version 2.0, 12/2/2020
  */
 public abstract class ChessPiece {
@@ -33,6 +33,83 @@ public abstract class ChessPiece {
 
     // Stores if the piece moved last turn
     private boolean justMoved;
+    //endregion
+
+    //region NESTED TYPES
+    /**
+     * <p>Represents a proposed move that allows the program to properly execute that move.</p>
+     *
+     * @author Nobel Zhou (nxz157)
+     * @version 1.0, 12/2/2020
+     */
+    protected class ProposedMove {
+        // Stores the piece to be moved
+        private final ChessPiece movedPiece;
+
+        // Stores the piece to be captured, if any
+        private final ChessPiece removedPiece;
+
+        // Stores the new row of the piece to be moved
+        private final int row;
+
+        // Stores the new column of the piece to be moved
+        private final int column;
+
+        /**
+         * <p>Creates a <code>ProposedMove</code> object from 2 pieces and a proposed location.</p>
+         *
+         * @param movedPiece    the proposed move's primary piece to be moved
+         * @param removedPiece  the proposed move's piece to be removed or captured
+         * @param row           the new row of the piece to be moved
+         * @param column        the new column of the piece to be moved
+         * @since 1.0
+         */
+        public ProposedMove(ChessPiece movedPiece, ChessPiece removedPiece, int row, int column) {
+            this.movedPiece = movedPiece;
+            this.removedPiece = removedPiece;
+            this.row = row;
+            this.column = column;
+        }
+
+        /**
+         * <p>Returns the piece that is going to be moved.</p>
+         *
+         * @return  the piece to be moved
+         * @since 1.0
+         */
+        public ChessPiece getMovedPiece() {
+            return movedPiece;
+        }
+
+        /**
+         * <p>Returns the piece that is going to be removed or captured, if any.</p>
+         *
+         * @return  the piece to be captured, <code>null</code> if no capture
+         * @since 1.0
+         */
+        public ChessPiece getRemovedPiece() {
+            return removedPiece;
+        }
+
+        /**
+         * <p>Returns the row of the proposed move.</p>
+         *
+         * @return  the new row
+         * @since 1.0
+         */
+        public int getRow() {
+            return row;
+        }
+
+        /**
+         * <p>Returns the column of the proposed move.</p>
+         *
+         * @return  the new column
+         */
+        public int getColumn() {
+            return column;
+        }
+    }
     //endregion
 
     //region CONSTRUCTORS
@@ -247,6 +324,20 @@ public abstract class ChessPiece {
             return getRow() == piece.getRow() && getColumn() == piece.getColumn();
         } else
             return false;
+    }
+
+    /**
+     * <p>Returns an array of <code>ProposedMove</code> objects that shows how to move the pieces.</p>
+     * <p>Will always return at least 1 <code>ProposedMove</code>, but in the case of moves that require 2 or more pieces,
+     * like castling moves, it might have more than 1; thus, this is an array.</p>
+     *
+     * @param row       the row of the move
+     * @param column    the column of the move
+     * @return          an array of <code>ProposedMove</code> objects that show how to move the pieces
+     * @since 1.0
+     */
+    public ProposedMove[] getMoveInstructions(int row, int column) {
+        return new ProposedMove[] {new ProposedMove(this, getChessBoard().getPiece(row, column), row, column)};
     }
     //endregion
 }

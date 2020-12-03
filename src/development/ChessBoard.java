@@ -95,4 +95,15 @@ public interface ChessBoard {
      */
     boolean squareThreatened(int row, int column, ChessPiece piece);
     //endregion
+
+    //region DEFAULT METHODS
+    /**
+     * <p>Displays promotion window by letting user choose from <code>ChessPieces</code> that are <code>Promotable</code>.</p>
+     * <p>This does nothing by default because some chessboards will not have to handle promotion.</p>
+     *
+     * @param piece the piece to be promoted
+     * @since 1.0
+     */
+    default void invokePromotion(ChessPiece piece) {}
+    //endregion
 }

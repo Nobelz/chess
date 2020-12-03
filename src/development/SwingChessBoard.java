@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
  * <p>Represents a <code>ChessBoard</code>> that uses Java Swing implementation.</p<
  * <p>The Swing chessboard uses a <code>SwingChessBoardDisplay</code> to determine how
  * the chessboard should be displayed.</p>
- * <p>The chessboard uses a <code>EuropeanGame</code> object to determine how the chess
+ * <p>The chessboard uses a <code>ChessGame</code> object to determine how the chess
  * game should be played.</p>
  *
  * @author Nobel Zhou (nxz157)
