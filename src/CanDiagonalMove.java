@@ -1,5 +1,3 @@
-package development;
-
 /**
  * <code>Represents the ability to make a diagonal move in chess.</code>
  *

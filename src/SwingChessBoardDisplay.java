@@ -1,5 +1,3 @@
-package development;
-
 import javax.swing.*;
 
 /**

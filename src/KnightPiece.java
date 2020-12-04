@@ -1,51 +1,53 @@
 /**
- * Represents a knight chess piece.
- * Dictates how a knight can move.
+ * <p>Represents a knight chess piece.</p>
+ * <p>Dictates how a knight can move.</p>
  *
  * @author Nobel Zhou
  * @version 1.0, 10/30/20
  */
-public class KnightPiece extends ChessPiece implements LMove, Promotable {
+public class KnightPiece extends ChessPiece implements CanLMove, Promotable {
 
-    /* CONSTRUCTORS */
-
+    //region CONSTRUCTORS
     /**
-     * Initializes a knight piece based on the given side, chess board, and location.
+     * <p>Initializes a knight piece based on the given side, chess board, and location.</p>
      *
-     * @param side       The knight piece's side
-     * @param chessBoard The chess board the knight piece is on
-     * @param row        The knight piece's starting row
-     * @param column     The knight piece's starting column
+     * @param side          the knight piece's side
+     * @param chessBoard    the chess board the knight piece is on
+     * @param icon          the knight piece's icon
+     * @param row           the knight piece's starting row
+     * @param column        the knight piece's starting column
+     * @since 1.0
      */
-    public KnightPiece(ChessGame.Side side, ChessBoard chessBoard, int row, int column) {
-        super(side, "N", (side.equals(((EuropeanChess) chessBoard.getGameRules()).getStartingSide()) ? ChessIcon.WHITE_KNIGHT : ChessIcon.BLACK_KNIGHT), chessBoard, row, column);
+    public KnightPiece(ChessGame.Side side, ChessBoard chessBoard, ChessIcon icon, int row, int column) {
+        super(side, "N", icon, chessBoard, row, column);
     }
+    //endregion
 
-    /* METHODS */
-
+    //region METHODS
     /**
-     * Returns a boolean representing if the proposed move is legal, assuming that it is unoccupied.
+     * <p>Returns a boolean representing if the proposed move is legal, assuming that it is unoccupied.</p>
      *
-     * @param row    The knight piece's destination row
-     * @param column The knight piece's destination column
-     * @return If the knight piece's proposed move is legal or not, assuming it is unoccupied
+     * @param row       the knight piece's destination row
+     * @param column    the knight piece's destination column
+     * @return          <code>true</code> if the knight piece's proposed move is legal, assuming it is unoccupied
      * @since 1.0
      */
     @Override
     public boolean isLegalNonCaptureMove(int row, int column) {
-        return isValidLNonCaptureMove(row, column, this);
+        return isValidLMove(row, column, this);
     }
 
     /**
-     * Returns a boolean representing if the proposed move is legal, assuming that it is occupied.
+     * <p>Returns a boolean representing if the proposed move is legal, assuming that it is occupied.</p>
      *
-     * @param row    The knight piece's destination row
-     * @param column The knight piece's destination column
-     * @return If the knight piece's proposed move is legal or not, assuming it is occupied
+     * @param row       the knight piece's destination row
+     * @param column    the knight piece's destination column
+     * @return          <code>true</code> if the knight piece's proposed move is legal, assuming it is occupied
      * @since 1.0
      */
     @Override
     public boolean isLegalCaptureMove(int row, int column) {
-        return isValidLCaptureMove(row, column, this);
+        return isValidLMove(row, column, this);
     }
+    //endregion
 }

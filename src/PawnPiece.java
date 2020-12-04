@@ -1,54 +1,49 @@
 /**
- * Represents a pawn chess piece.
- * Dictates how a pawn can move.
- * Includes en passant rule.
+ * <p>Represents a pawn chess piece.</p>
+ * <p>Dictates how a pawn can move.</p>
  *
  * @author Nobel Zhou
- * @version 1.0, 10/30/20
+ * @version 1.0, 12/2/20
  */
-public class PawnPiece extends ChessPiece implements PawnMove, EnPassantMove {
+public class PawnPiece extends ChessPiece implements CanPawnMove, CanEnPassantMove {
 
-    /* FIELDS */
-    //Stores if the pawn can be captured by en passant; in other words, it checks if the move was the immediate previous move. Note that this does not check for single or double moves, as that is checked within the EnPassantMove interface
-    private boolean canEnPassant;
-
-    /* CONSTRUCTORS */
-
+    //region CONSTRUCTORS
     /**
-     * Initializes a pawn piece based on the given side, chess board, and location.
+     * <p>Initializes a pawn piece based on the given side, chess board, and location.</p>
      *
-     * @param side       The pawn piece's side
-     * @param chessBoard The chess board the pawn piece is on
-     * @param row        The pawn piece's starting row
-     * @param column     The pawn piece's starting column
+     * @param side          the pawn piece's side
+     * @param chessBoard    the chess board the pawn piece is on
+     * @param icon          the pawn piece's icon
+     * @param row           the pawn piece's starting row
+     * @param column        the pawn piece's starting column
+     * @since 1.0
      */
-    public PawnPiece(ChessGame.Side side, ChessBoard chessBoard, int row, int column) {
-        super(side, "P", (side.equals(((EuropeanChess) chessBoard.getGameRules()).getStartingSide()) ? ChessIcon.WHITE_PAWN : ChessIcon.BLACK_PAWN), chessBoard, row, column);
-        canEnPassant = false;
+    public PawnPiece(ChessGame.Side side, ChessBoard chessBoard, ChessIcon icon, int row, int column) {
+        super(side, "P", icon, chessBoard, row, column);
     }
+    //endregion
 
-    /* METHODS */
-
+    //region METHODS
     /**
-     * Returns a boolean representing if the pawn piece's proposed move is legal or not.
+     * <p>Returns a boolean representing if the pawn piece's proposed move is legal or not.</p>
      *
-     * @param toRow    The pawn piece's destination row
-     * @param toColumn The pawn piece's destination column
-     * @return If the pawn piece's proposed move is legal or not
+     * @param toRow     the pawn piece's destination row
+     * @param toColumn  the pawn piece's destination column
+     * @return          <code>true</code> if the pawn piece's proposed move is legal
      * @since 1.0
      */
     @Override
     public boolean isLegalMove(int toRow, int toColumn) {
-        //Checks also if it's a legal en passant move
+        // Checks also if it's a legal en passant move
         return super.isLegalMove(toRow, toColumn) || isValidEnPassantMove(toRow, toColumn, this);
     }
 
     /**
-     * Returns a boolean representing if the proposed move is legal, assuming that it is unoccupied.
+     * <p>Returns a boolean representing if the proposed move is legal, assuming that it is unoccupied.</p>
      *
-     * @param row    The pawn piece's destination row
-     * @param column The pawn piece's destination column
-     * @return If the pawn piece's proposed move is legal or not, assuming it is unoccupied
+     * @param row       the pawn piece's destination row
+     * @param column    the pawn piece's destination column
+     * @return          <code>true</code> if the pawn piece's proposed move is legal, assuming it is unoccupied
      * @since 1.0
      */
     @Override
@@ -57,11 +52,11 @@ public class PawnPiece extends ChessPiece implements PawnMove, EnPassantMove {
     }
 
     /**
-     * Returns a boolean representing if the proposed move is legal, assuming that it is occupied.
+     * <p>Returns a boolean representing if the proposed move is legal, assuming that it is occupied.</p>
      *
-     * @param row    The pawn piece's destination row
-     * @param column The pawn piece's destination column
-     * @return If the pawn piece's proposed move is legal or not, assuming it is occupied
+     * @param row       the pawn piece's destination row
+     * @param column    the pawn piece's destination column
+     * @return          <code>true</code> if the pawn piece's proposed move is legal, assuming it is occupied
      * @since 1.0
      */
     @Override
@@ -70,68 +65,58 @@ public class PawnPiece extends ChessPiece implements PawnMove, EnPassantMove {
     }
 
     /**
-     * Returns a boolean representing if the pawn can be captured via en passant.
-     *
-     * @return If the pawn piece can be captured via en passant
-     * @since 1.0
-     */
-    public boolean getCanEnPassant() {
-        return canEnPassant;
-    }
-
-    /**
-     * Sets if the pawn can be captured via en passant.
-     *
-     * @param canEnPassant If the pawn piece can now be captured by en passant.
-     * @since 1.0
-     */
-    public void setCanEnPassant(boolean canEnPassant) {
-        this.canEnPassant = canEnPassant;
-    }
-
-
-    /**
-     * Handles any post-move processes, if any, once the pawn's move is completed.
-     * Allows en passant after 1st move. Note that this also includes 1 and 2 space moves, but that is checked elsewhere.
+     * <p>Handles any post-move processes, if any, once the pawn's move is completed.</p>
+     * <p>Handles and checks for promotions.</p>
      *
      * @since 1.0
      */
     @Override
     public void moveDone() {
         super.moveDone();
-        if (getMoves() == 1)
-            setCanEnPassant(true);
         if (checkPawnPromotion())
             getChessBoard().invokePromotion(this);
     }
 
     /**
-     * Checks to see if the pawn is eligible to be promoted.
-     * If so, it calls the promote() method in ChessBoard to handle promotions.
+     * <p>Checks to see if the pawn is eligible to be promoted.</p>
      *
-     * @return If the pawn is eligible to be promoted.
+     * @return  <code>true</code> if the pawn is eligible to be promoted
      * @since 1.0
      */
-    public boolean checkPawnPromotion() {
+    private boolean checkPawnPromotion() {
         switch (getSide()) {
             case SOUTH:
-                if (getRow() == 0)
-                    return true;
-                break;
+                return getRow() == 0;
             case NORTH:
-                if (getRow() == getChessBoard().numRows() - 1)
-                    return true;
-                break;
+                return getRow() == getChessBoard().getGameRules().getNumRows() - 1;
             case WEST:
-                if (getColumn() == getChessBoard().numColumns() - 1)
-                    return true;
-                break;
-            default: //East
-                if (getColumn() == 0)
-                    return true;
-                break;
+                return getColumn() == getChessBoard().getGameRules().getNumColumns() - 1;
+            default: // East
+                return getColumn() == 0;
         }
-
-        return false; //Not at the end of the board
     }
+
+    /**
+     * <p>Returns an array of <code>ChessPiece.ProposedMove</code> objects that shows how to move the pawn pieces.</p>
+     * <p>For pawn pieces, this includes handling en passant moves.</p>
+     *
+     * @param row       the row of the move
+     * @param column    the column of the move
+     * @return          an array of <code>ChessPiece.ProposedMove</code> objects that show how to move the pawn pieces
+     * @since 1.0
+     */
+    @Override
+    public ProposedMove[] getMoveInstructions(int row, int column) {
+        // Checks for en passant move
+        if (isValidEnPassantMove(row, column, this)) {
+            // Stores the removed pawn
+            PawnPiece removed = getCapturedEnPassantPawn(row, column, this);
+
+            return new ProposedMove[] {
+                    new ProposedMove(this, removed, row, column, false)
+            };
+        } else
+            return new ChessPiece.ProposedMove[] {new ProposedMove(this, getChessBoard().getPiece(row, column), row, column, false)};
+    }
+    //endregion
 }

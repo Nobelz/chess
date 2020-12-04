@@ -1,5 +1,3 @@
-package development;
-
 /**
  * <p>Represents the ability to make a castling move in chess.</p>
  *

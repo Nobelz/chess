@@ -2,74 +2,68 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Represents a game of European chess.
+ * <p>Represents the ruleset for a game of Indo-European chess.</p>
  *
  * @author Nobel Zhou (nxz157)
- * @version 1.0, 10/30/20
+ * @version 2.0, 12/2/20
  */
 public class EuropeanChess implements ChessGame {
 
-    /**
-     * The result of the game.
-     * Can only be checkmate, stalemate, or insufficient material.
-     *
-     * @since 1.0
-     */
-    public enum Result {CHECKMATE, STALEMATE, INSUFFICIENT_MATERIAL, THREEFOLD_REPETITION, FIFTY_MOVE_RULE}
+    //region FIELDS
+    // Stores the starting side; cannot be changed
+    private final Side startingSide;
 
-    /* FIELDS */
-    //Stores the starting side; cannot be changed
-    private final ChessGame.Side startingSide;
-    //Stores the side that is currently playing
-    private ChessGame.Side currentSide;
-    //Stores the game positions of the whole game
+    // Stores the side that is currently playing
+    private Side currentSide;
+
+    // Stores the game positions of the whole game
     private final ArrayList<ChessPosition> positions;
-    //Stores the number of non-pawn, non-capture moves
+
+    // Stores the number of non-pawn, non-capture moves in succession; used for determining the 50 move rule
     private int fiftyMoveRule;
+    //endregion
 
-    /* CONSTRUCTORS */
-
+    //region CONSTRUCTORS
     /**
-     * Initializes European chess rules.
+     * <p>Initializes the rules of Indo-European chess.</p>
      *
-     * @param startingSide The side who starts
+     * @param startingSide  the side who starts
      * @since 1.0
      */
-    public EuropeanChess(ChessGame.Side startingSide) {
+    public EuropeanChess(Side startingSide) {
         this.startingSide = startingSide;
         currentSide = startingSide;
         positions = new ArrayList<>();
     }
+    //endregion
 
-    /* METHODS */
-
+    //region METHODS
     /**
-     * Flips the side so the other side is playing.
+     * <p>Flips the side so the other side is playing.</p>
      *
      * @since 1.0
      */
     public void flipSide() {
-        //Flips the side to the opposite side
+        // Flips the side to the opposite side
         switch (currentSide) {
             case NORTH:
-                currentSide = ChessGame.Side.SOUTH;
+                currentSide = Side.SOUTH;
                 break;
             case SOUTH:
-                currentSide = ChessGame.Side.NORTH;
+                currentSide = Side.NORTH;
                 break;
             case WEST:
-                currentSide = ChessGame.Side.EAST;
+                currentSide = Side.EAST;
                 break;
-            default: //East
-                currentSide = ChessGame.Side.WEST;
-                break;
+            default: // East
+                currentSide = Side.WEST;
         }
     }
 
     /**
-     * Returns an int representing the number of consecutive non-capture and non-pawn moves.
+     * <p>Returns an int representing the number of consecutive non-capture and non-pawn moves.</p>
      *
-     * @return The number of consecutive non-capture and non-pawn moves
+     * @return  the number of consecutive non-capture and non-pawn moves
      * @since 1.0
      */
     public int getFiftyMoveRule() {
@@ -77,9 +71,9 @@ public class EuropeanChess implements ChessGame {
     }
 
     /**
-     * Sets the fifty move rule count.
+     * <p>Sets the fifty move rule count.</p>
      *
-     * @param fiftyMoveRule The new fifty move rule count
+     * @param fiftyMoveRule     the new fifty move rule count
      * @since 1.0
      */
     public void setFiftyMoveRule(int fiftyMoveRule) {
@@ -87,226 +81,93 @@ public class EuropeanChess implements ChessGame {
     }
 
     /**
-     * Returns a ChessGame.Side representing the side that is currently playing.
+     * <p>Returns a <code>ChessGame.Side</code> representing the side that is currently playing.</p>
      *
-     * @return The side that is currently playing
+     * @return  the side that is currently playing
      * @since 1.0
      */
+    @Override
     public ChessGame.Side getCurrentSide() {
         return currentSide;
     }
 
     /**
-     * Returns a ChessGame.Side representing the side that started.
+     * <p>Returns a <code>ChessGame.Side</code> representing the side that started.</p>
      *
-     * @return The side that is currently playing
+     * @return  the side that started
      * @since 1.0
      */
+    @Override
     public ChessGame.Side getStartingSide() {
         return startingSide;
     }
 
     /**
-     * Determines if it is legal to play a given piece.
-     * Only returns true if the piece is on the same side and if the piece has any legal moves to play.
+     * <p>Determines if it is legal to play a given piece.</p>
+     * <p>Only returns <code>true</code> if the piece is on the same side and if the piece has any legal moves to play.</p>
      *
-     * @param piece  the piece to be played
-     * @param row    the row of the square the piece is on
-     * @param column the column of the square the piece is on
-     * @return true if the piece is allowed to move on this turn
+     * @param piece     the piece to be played
+     * @param row       the row of the square the piece is on
+     * @param column    the column of the square the piece is on
+     * @return          <code>true</code> if the piece is allowed to move on this turn
      */
+    @Override
     public boolean legalPieceToPlay(ChessPiece piece, int row, int column) {
-        //Checks if the piece is the correct side
+        // Checks if the piece is the correct side
         if (!piece.getSide().equals(currentSide))
             return false;
 
-        //Checks for a legal move throughout the whole chess board
-        for (int i = 0; i < piece.getChessBoard().numRows(); i++) {
-            for (int j = 0; j < piece.getChessBoard().numColumns(); j++) {
-                //Checks if the piece has a legal move at the row and column specified; also checks for the castling move and if the king is in check
-                if ((i != row || j != column) && piece.isLegalMove(i, j) && isGoodMove(i, j, piece))
+        // Checks for a legal move throughout the whole chess board
+        for (int i = 0; i < getNumRows(); i++) {
+            for (int j = 0; j < getNumColumns(); j++) {
+                // Checks if the piece has a legal move at the row and column specified
+                if ((i != row || j != column) && piece.isLegalMove(i, j) && isCheckMove(i, j, piece))
                     return true;
             }
         }
 
-        return false; //No legal move to play
+        return false; // No legal move to play
     }
 
     /**
-     * Determines if it is legal to play a certain move.
-     * Checks to make sure castling move isn't already in check.
-     * Checks to make sure that move doesn't result in check.
-     */
-    public boolean isGoodMove(int row, int column, ChessPiece piece) {
-        return check(row, column, piece) && (!(piece instanceof CastlingMove) || (!((CastlingMove) piece).isValidCastlingMove(row, column, piece) || !piece.getChessBoard().getKing(piece).isInCheck()));
-    }
-
-    /**
-     * Moves a piece to a new position.
+     * <p>Moves a piece to a new position.</p>
      *
-     * @param piece    the piece to move
-     * @param toRow    the row of the square the piece is moving to
-     * @param toColumn the column of the square the piece is moving to
-     * @return true if the move was made, false if the move was not made
+     * @param piece     the piece to move
+     * @param toRow     the row of the square the piece is moving to
+     * @param toColumn  the column of the square the piece is moving to
+     * @return          <code>true</code> if the move was made
      */
+    @Override
     public boolean makeMove(ChessPiece piece, int toRow, int toColumn) {
-        //Stores the chess board
-        ChessBoard board = piece.getChessBoard();
+        // Checks if the move can be played
+        if (isCheckMove(toRow, toColumn, piece)) {
+            // Stores the chess board
+            ChessBoard board = piece.getChessBoard();
+            // Stores the move instructions
+            ChessPiece.ProposedMove[] moveInstructions = piece.getMoveInstructions(toRow, toColumn);
 
-        if (piece.isLegalMove(toRow, toColumn) && isGoodMove(toRow, toColumn, piece)) {
-            //Some move is being done
-            //Stores the removed chess piece, if any
-            ChessPiece save = null;
-            //Stores if the move was a castle
-            boolean hasCastled = false;
-
-            //Checks for en passant move which requires special processing
-            if (piece instanceof PawnPiece) {
-                //Stores piece as a pawn
-                PawnPiece pawn = (PawnPiece) piece;
-
-                //Checks for valid en passant move
-                if (pawn.isValidEnPassantMove(toRow, toColumn, pawn)) {
-                    //Stores the original row
-                    int originalRow = pawn.getRow();
-                    //Stores the original column
-                    int originalColumn = pawn.getColumn();
-
-                    //Removes the pawn from the original location
-                    board.removePiece(pawn.getRow(), pawn.getColumn());
-
-                    //Moves the pawn to the new space
-                    board.addPiece(pawn, toRow, toColumn);
-
-                    //Removes the adjacent pawn from the board
-                    switch (pawn.getSide()) {
-                        case NORTH:
-                        case SOUTH:
-                            if (toColumn == originalColumn + 1)
-                                save = board.removePiece(originalRow, originalColumn + 1); //Removes and saves the pawn
-                            else
-                                save = board.removePiece(originalRow, originalColumn - 1); //Removes and saves the pawn
-                            break;
-                        default: //East and West
-                            if (toRow == originalRow + 1)
-                                save = board.removePiece(originalRow + 1, originalColumn); //Removes and saves the pawn
-                            else
-                                save = board.removePiece(originalRow - 1, originalColumn); //Removes and saves the pawn
-                            break;
-                    }
-                }
-            }
-
-            //Checks for castling move which requires special processing
-            if (piece instanceof KingPiece) {
-                //Stores piece as a king
-                KingPiece king = (KingPiece) piece;
-                //Stores the rook to be changed
-                RookPiece rook;
-
-                //Checks for valid castling move
-                if (king.isValidCastlingMove(toRow, toColumn, king)) {
-                    /* Gets the rook based on the direction
-                     * Note that I'm not checking for the rook again because that was already checked for in CastlingMove
-                     */
-                    switch (king.getSide()) {
-                        case NORTH:
-                        case SOUTH:
-                            if (king.getColumn() + 2 == toColumn)
-                                rook = (RookPiece) board.getPiece(king.getRow(), board.numColumns() - 1); //Kingside rook on the north/south direction
-                            else
-                                rook = (RookPiece) board.getPiece(king.getRow(), 0); //Queenside rook on the north/south direction
-                            break;
-                        default: //West and East
-                            if (king.getRow() + 2 == toRow)
-                                rook = (RookPiece) board.getPiece(board.numRows() - 1, king.getColumn()); //Kingside rook on the west/east direction
-                            else
-                                rook = (RookPiece) board.getPiece(0, king.getColumn()); //Queenside rook on the west/east direction
-                            break;
-                    }
-
-                    //Removes the king from the original location
-                    board.removePiece(king.getRow(), king.getColumn());
-                    //Moves the king to the new space
-                    board.addPiece(king, toRow, toColumn);
-                    //Removes the rook from the original location
-                    board.removePiece(rook.getRow(), rook.getColumn());
-
-                    //Finds and moves the rook based on the direction
-                    switch (king.getSide()) {
-                        case NORTH:
-                        case SOUTH:
-                            if (king.getColumn() < rook.getColumn()) //Kingside
-                                board.addPiece(rook, king.getRow(), king.getColumn() - 1);
-                            else //Queenside
-                                board.addPiece(rook, king.getRow(), king.getColumn() + 1);
-                            break;
-                        default: //West and East
-                            if (king.getRow() < rook.getRow()) //Kingside
-                                board.addPiece(rook, king.getRow() - 1, king.getColumn());
-                            else //Queenside
-                                board.addPiece(rook, king.getRow() + 1, king.getColumn());
-                            break;
-                    }
-
-                    //Rook final processing; the king was the central piece so it will be done later
-                    rook.moveDone();
-                    hasCastled = true;
-                }
-            }
-
-            //Checks for non-capture moves
-            if (piece.isLegalNonCaptureMove(toRow, toColumn)) {
-                board.removePiece(piece.getRow(), piece.getColumn());
-                board.addPiece(piece, toRow, toColumn);
-            } else if (piece.isLegalCaptureMove(toRow, toColumn)) { //Checks for capture moves
-                save = board.removePiece(toRow, toColumn);
-                board.removePiece(piece.getRow(), piece.getColumn());
-                board.addPiece(piece, toRow, toColumn);
-            }
-
-            //Processing after move done section
-
-            piece.moveDone(); //Piece processing
-            flipSide(); //Now opposite player's turn
-
-            //Gets the king piece of the player's whose turn it is now
-            KingPiece king = board.getKing(piece).getOpposingKing();
-
-            if (king.isInCheck()) //Indicates that check happened
-                afterCheck(king); //Check processing
-
-            if (hasCastled) //Indicates that castling took place
-                afterCastling(king); //Castling processing
-
-            if (save != null) { //Indicates that a piece has been captured
-                afterCapture(king); //Capture move processing
-                setFiftyMoveRule(0);
-            } else {
-                //Increment fifty move rule if it was a pawn move
-                if (piece instanceof PawnPiece)
-                    setFiftyMoveRule(0);
+            for (ChessPiece.ProposedMove instruction : moveInstructions) {
+                // Checks for capture move
+                if (!instruction.isReversible())
+                    setFiftyMoveRule(0); // Capture just took place; reset fifty move rule counter
                 else
-                    setFiftyMoveRule(getFiftyMoveRule() + 1); //Adds 1 to the 50 move rule
-                afterNonCapture(king); //Non-capture move processing
+                    setFiftyMoveRule(getFiftyMoveRule() + 1);
+                // Simulates the move to check if king is in check
+                board.removePiece(instruction.getMovedPiece().getRow(), instruction.getMovedPiece().getColumn());
+                ChessPiece save = instruction.getRemovedPiece();
+                if (save != null)
+                    board.removePiece(save.getRow(), save.getColumn());
+                board.addPiece(instruction.getMovedPiece(), instruction.getRow(), instruction.getColumn());
+
+                // Piece post-move processing
+                instruction.getMovedPiece().moveDone();
             }
 
-            ChessPiece[][] pieces = board.getPieces().clone();
-            for (int i = 0; i < pieces.length; i++) {
-                pieces[i] = pieces[i].clone();
-            }
+            // Adds the new position to the ArrayList of ChessPositions to check for threefold repetition later
+            positions.add(board.generateChessPosition());
 
-            //Checks draw by 50 move rule
-            if (getFiftyMoveRule() == 50) {
-                //Sound.playSound("Draw.wav");
-                board.terminate(EuropeanChess.Result.FIFTY_MOVE_RULE, null);
-            }
-
-            //Checks draw by three-fold repetition
-            if (checkThreeFoldRepetition(new ChessPosition(pieces, getCurrentSide()))) {
-                //Sound.playSound("Draw.wav");
-                board.terminate(EuropeanChess.Result.THREEFOLD_REPETITION, null);
-            }
+            //Now opposite player's turn
+            flipSide();
 
             return true; //Successful move
         } else
@@ -314,164 +175,250 @@ public class EuropeanChess implements ChessGame {
     }
 
     /**
-     * Checks for any moves in a position.
+     * <p>Returns a boolean representing if the move will result in the king being in check.</p>
+     * <p>Also returns <code>true</code> if the move is not a valid move.</p>
      *
-     * @param piece A piece of the game
-     * @return If there are any moves in the position for the side of the piece. If false, either stalemate or checkmate will result, resulting in the end of the game
+     * @param row       the piece's destination row
+     * @param column    the piece's destination column
+     * @param cp        the chess piece
+     * @return          <code>true</code> if the move results in the king being in check
+     * @since 1.0
      */
-    public boolean cannotMove(ChessPiece piece) {
-        //Stores the same side's pieces
+    @Override
+    public boolean isCheckMove(int row, int column, ChessPiece cp) {
+        // Checks if it's a valid move
+        if (cp.isLegalMove(row, column)) {
+            // Stores the chess board
+            ChessBoard board = cp.getChessBoard();
+            // Stores the move instructions
+            ChessPiece.ProposedMove[] moveInstructions = cp.getMoveInstructions(row, column);
+            // Stores the original rows of the pieces to be moved
+            int[] originalRows = new int[moveInstructions.length];
+            // Stores the original columns of the pieces to be moved
+            int[] originalColumns = new int[moveInstructions.length];
+
+            for (int i = 0; i < moveInstructions.length; i++) {
+                ChessPiece.ProposedMove instruction = moveInstructions[i];
+                originalRows[i] = instruction.getMovedPiece().getRow();
+                originalColumns[i] = instruction.getMovedPiece().getColumn();
+
+                // Simulates the move to check if king is in check
+                board.simulateRemovePiece(originalRows[i], originalColumns[i]);
+                if (instruction.getRemovedPiece() != null)
+                    board.simulateRemovePiece(instruction.getRemovedPiece().getRow(), instruction.getRemovedPiece().getColumn());
+                board.simulateAddPiece(instruction.getMovedPiece(), instruction.getRow(), instruction.getColumn());
+            }
+
+            // Checks to see if the king is in check
+            boolean isInCheck = ((KingPiece) cp.getChessBoard().getCentralPiece(cp)).isInCheck();
+
+            for (int i = 0; i < moveInstructions.length; i++) {
+                ChessPiece.ProposedMove instruction = moveInstructions[i];
+
+                // Reverts the move
+                board.simulateRemovePiece(instruction.getRow(), instruction.getColumn());
+                if (instruction.getRemovedPiece() != null)
+                    board.simulateAddPiece(instruction.getRemovedPiece(), instruction.getRemovedPiece().getRow(), instruction.getRemovedPiece().getColumn());
+                board.simulateAddPiece(instruction.getMovedPiece(), originalRows[i], originalColumns[i]);
+            }
+
+            return !isInCheck;
+        } else
+            return false; // Not a valid move
+    }
+
+    /**
+     * <p>Returns the number of rows in the chessboard.</p>
+     *
+     * @return  the number of rows in the chessboard
+     * @since 1.0
+     */
+    @Override
+    public int getNumRows() {
+        return 8;
+    }
+
+    /**
+     * <p>Returns the number of columns in the chessboard.</p>
+     *
+     * @return  the number of columns in the chessboard
+     * @since 1.0
+     */
+    @Override
+    public int getNumColumns() {
+        return 8;
+    }
+
+    /**
+     * <p>Handles ending conditions of the Indo-European chess game.</p>
+     *
+     * @param board         the chess board
+     * @param centralPiece  the central piece to check the ending conditions
+     * @since 1.0
+     */
+    @Override
+    public void handleEndConditions(ChessBoard board, ChessPiece centralPiece) {
+        // Gets the king piece of the player's whose turn it is now
+        KingPiece king = ((KingPiece) centralPiece).getOpposingKings()[0];
+
+        // Checks for ending conditions
+        checkCheckmate(king);
+        checkStalemate(king);
+        checkInsufficientMaterial(king);
+        checkThreefoldRepetition(king.getChessBoard());
+        checkFiftyMoveRule(king.getChessBoard());
+    }
+
+    /**
+     * <p>Generates all the legal moves that can be played.</p>
+     *
+     * @param piece a chess piece of the board
+     * @return      an array of <code>Move</code> objects that can be played
+     * @since 1.0
+     */
+    public ChessMove[] generateMoves(ChessPiece piece) {
+        // Stores the same side's pieces
+        ChessPiece[] pieces = getSameSidePieces(piece);
+
+        // Stores all the available moves
+        ArrayList<ChessMove> moves = new ArrayList<>();
+
+        //Iterates through each of the same side pieces
+        for (ChessPiece cp : pieces) {
+            if (legalPieceToPlay(cp, cp.getRow(), cp.getColumn())) {
+                for (int i = 0; i < getNumRows(); i++) {
+                    for (int j = 0; j < getNumColumns(); j++) {
+                        if (cp.isLegalMove(i, j) && isCheckMove(i, j, cp))
+                            moves.add(new ChessMove(cp, i, j));
+                    }
+                }
+            }
+        }
+
+        // Change to array format
+        return moves.toArray(new ChessMove[0]);
+    }
+
+    /**
+     * <p>Checks for any moves in a position.</p>
+     * <p>If there are no moves for the position, the end result is either stalemate or checkmate.</p>
+     *
+     * @param piece a piece of the game
+     * @return      <code>true</code> if there are no moves in the position for the side of the piece
+     * @since 1.0
+     */
+    private boolean cannotMove(ChessPiece piece) {
+        // Stores the same side's pieces
+        ChessPiece[] pieces = getSameSidePieces(piece);
+
+        // Iterates through each of the same side pieces
+        for (ChessPiece cp : pieces) {
+            if (legalPieceToPlay(cp, cp.getRow(), cp.getColumn()))
+                return false;
+        }
+
+        // No move to play
+        return true;
+    }
+
+    /**
+     * <p>Gets all of the pieces that are on the same side as the parameter piece.</p>
+     *
+     * @param piece a piece of the game
+     * @return      an array of <code>ChessPiece</code> that contains all the pieces for that side
+     */
+    private ChessPiece[] getSameSidePieces(ChessPiece piece) {
+        // Stores the same side's pieces
         ArrayList<ChessPiece> pieces = new ArrayList<>();
 
-        //Iterates for each square of the chess board in search of a piece
-        for (int i = 0; i < piece.getChessBoard().numRows(); i++) {
-            for (int j = 0; j < piece.getChessBoard().numColumns(); j++) {
+        for (int i = 0; i < getNumRows(); i++) {
+            for (int j = 0; j < getNumColumns(); j++) {
                 //Looks for same side piece in the chess board
                 if (piece.getChessBoard().hasPiece(i, j) && piece.getChessBoard().getPiece(i, j).getSide().equals(piece.getSide()))
                     pieces.add(piece.getChessBoard().getPiece(i, j));
             }
         }
 
-        //Iterates through each of the same side pieces
-        for (ChessPiece cp : pieces) {
-            if (legalPieceToPlay(cp, cp.getRow(), cp.getColumn()))
-                return false;
-        }
-
-        //No move to play
-        return true;
+        return pieces.toArray(new ChessPiece[0]);
     }
 
     /**
-     * Returns a boolean representing if the move will not result in the king being in check.
-     * Assumes that the move is a legal move.
+     * <p>Checks for checkmate.</p>
      *
-     * @param row    The piece's destination row
-     * @param column The piece's destination column
-     * @param cp     The chess piece
-     * @return Whether the proposed location is a valid king move, assuming it is unoccupied; returns true if it doesn't result in the king in check
+     * @param king  the king piece that is subject to checkmate
      * @since 1.0
      */
-    public boolean check(int row, int column, ChessPiece cp) {
-        //Stores the chess board
-        ChessBoard board = cp.getChessBoard();
-        //Stores the removed chess piece
-        ChessPiece save;
-        //Stores the king piece of the same side
-        KingPiece king = board.getKing(cp);
-        //Stores the original row of the piece
-        int originalRow = cp.getRow();
-        //Stores the original column of the piece
-        int originalColumn = cp.getColumn();
-
-        //Checks en passant move
-        if (cp instanceof PawnPiece && ((PawnPiece) cp).isValidEnPassantMove(row, column, cp)) {
-            //Removes the piece from the original location
-            board.simulateRemovePiece(originalRow, originalColumn);
-            //Moves the piece; note, we do not have to store the replaced piece because by very definition of the en passant move, the space has to be empty
-            board.simulateAddPiece(cp, row, column);
-
-            //Removes the adjacent pawn from the board
-            switch (cp.getSide()) {
-                case NORTH:
-                case SOUTH:
-                    if (column == originalColumn + 1)
-                        save = board.simulateRemovePiece(originalRow, originalColumn + 1); //Removes and saves the pawn
-                    else
-                        save = board.simulateRemovePiece(originalRow, originalColumn - 1); //Removes and saves the pawn
-                    break;
-                default: //East and West
-                    if (row == originalRow + 1)
-                        save = board.simulateRemovePiece(originalRow + 1, originalColumn); //Removes and saves the pawn
-                    else
-                        save = board.simulateRemovePiece(originalRow - 1, originalColumn); //Removes and saves the pawn
-                    break;
-            }
-
-            //Stores whether the king is in check
-            boolean inCheck = king.isInCheck();
-
-            //Reverts to original position
-            //Removes the pawn
-            board.simulateRemovePiece(row, column);
-            //Adds the pawn back to the original location
-            board.simulateAddPiece(cp, originalRow, originalColumn);
-            //Adds the captured pawn back to the original location
-            board.simulateAddPiece(save, save.getRow(), save.getColumn());
-
-            return !inCheck; //Returns if the move is valid for check
-        } else { //Checks all other moves
-            //Removes the piece from the original location
-            board.simulateRemovePiece(originalRow, originalColumn);
-            //Moves the piece and stores the replaced piece
-            save = board.simulateAddPiece(cp, row, column);
-
-            //Stores whether the king is in check
-            boolean inCheck = king.isInCheck();
-
-            //Reverts to original position
-            //Removes the piece
-            board.simulateRemovePiece(row, column);
-            //Adds the piece back to the original location
-            board.simulateAddPiece(cp, originalRow, originalColumn);
-            //Adds the captured piece back to the original location
-            if (save != null)
-                board.simulateAddPiece(save, save.getRow(), save.getColumn());
-
-            return !inCheck; //Returns if the move is valid for check
-        }
+    private void checkCheckmate(KingPiece king) {
+        if (cannotMove(king) && king.isInCheck())
+            king.getChessBoard().terminate(ChessResult.CHECKMATE, king.getOpposingKings()[0].getSide());
     }
 
     /**
-     * Runs when a move results in a check.
+     * <p>Checks for stalemate.</p>
      *
-     * @param king The king that is in check
-     * @since 1.0
+     * @param king  the king piece that is subject to stalemate
      */
-    public void afterCheck(KingPiece king) {
-        //Checks if it's checkmate
-        if (cannotMove(king)) {
-            //Sound.playSound("Checkmate.wav");
-            king.getChessBoard().terminate(EuropeanChess.Result.CHECKMATE, king.getOpposingKing().getSide());
-        } //else
-        //Sound.playSound("Check.wav");
+    private void checkStalemate(KingPiece king) {
+        if (cannotMove(king) && !king.isInCheck())
+            king.getChessBoard().terminate(ChessResult.STALEMATE, null);
     }
 
     /**
-     * Checks for insufficient material.
-     * There are only 4 cases for insufficient material:
-     * King vs. King
-     * King + Knight vs. King
-     * King + Bishop vs. King
-     * King + Bishop vs. King + Bishop of same color
+     * <p>Checks for draw by threefold repetition.</p>
      *
-     * @param king The king of the side that is currently playing
-     * @return If there is insufficient material
+     * @param board  the chessboard
      * @since 1.0
      */
-    private boolean checkInsufficientMaterial(KingPiece king) {
-        //Stores the all of the chess pieces on the board
+    private void checkThreefoldRepetition(ChessBoard board) {
+        if (positions.size() >= 6 && Collections.frequency(positions, positions.get(positions.size() - 1)) >= 3)
+            board.terminate(ChessResult.THREEFOLD_REPETITION, null);
+    }
+
+    /**
+     * <p>Checks for draw by the fifty move rule.</p>
+     *
+     * @param board the chessboard
+     * @since 1.0
+     */
+    private void checkFiftyMoveRule(ChessBoard board) {
+        if (getFiftyMoveRule() >= 50)
+            board.terminate(ChessResult.FIFTY_MOVE_RULE, null);
+    }
+
+    /**
+     * <p>Checks for insufficient material.</p>
+     * <p>There are only 4 cases for insufficient material:</p>
+     * <p>King vs. King</p>
+     * <p>King + Knight vs. King</p>
+     * <p>King + Bishop vs. King</p>
+     * <p>King + Bishop vs. King + Bishop of same color</p>
+     *
+     * @param king  the king of the side that is currently playing
+     * @since 1.0
+     */
+    private void checkInsufficientMaterial(KingPiece king) {
+        // Stores the all of the chess pieces on the board
         ArrayList<ChessPiece> pieces = new ArrayList<>();
 
-        //Iterates for each square of the chess board in search of a piece
-        for (int i = 0; i < king.getChessBoard().numRows(); i++) {
-            for (int j = 0; j < king.getChessBoard().numColumns(); j++) {
+        // Iterates for each square of the chess board in search of a piece
+        for (int i = 0; i < getNumRows(); i++) {
+            for (int j = 0; j < getNumColumns(); j++) {
                 //Looks for same side piece in the chess board
                 if (king.getChessBoard().hasPiece(i, j))
                     pieces.add(king.getChessBoard().getPiece(i, j));
             }
         }
 
-        //Checks if it's just bare kings
+        // Checks if it's just bare kings
         if (pieces.size() == 2) {
-            return true;
+            king.getChessBoard().terminate(ChessResult.INSUFFICIENT_MATERIAL, null);
         }
 
-        //Looks for insufficient material. All insufficient material must have less than 4 pieces on the board
+        // Looks for insufficient material. All insufficient material must have less than 4 pieces on the board
         if (pieces.size() <= 4) {
-            //Stores the all of the knight pieces on the board
+            // Stores the all of the knight pieces on the board
             ArrayList<KnightPiece> knights = new ArrayList<>();
-            //Stores the all of the bishop pieces on the board
+            // Stores the all of the bishop pieces on the board
             ArrayList<BishopPiece> bishops = new ArrayList<>();
 
             //Looks for pieces that are knights or bishops
@@ -482,92 +429,65 @@ public class EuropeanChess implements ChessGame {
                     knights.add((KnightPiece) piece);
             }
 
-            //If there are not no more 2 knights and bishops, then that must mean that there are pieces other than knights or bishops. In that case, there is not insufficient material
+            // If there are not no more 2 knights and bishops, then that must mean that there are pieces other than knights or bishops. In that case, there is not insufficient material
             if (knights.size() + bishops.size() <= 2) {
-                //King + Bishop vs. King + Bishop of same color is insufficient material
-                if (pieces.size() == 3) //King + Knight vs. King or King + Bishop vs. King is insufficient material
-                    return true;
-                else return bishops.size() == 2 && bishops.get(0).isDarkSquared() == bishops.get(1).isDarkSquared();
+                // King + Bishop vs. King + Bishop of same color is insufficient material
+                if (pieces.size() == 3 || (bishops.size() == 2 && bishops.get(0).isDarkSquared() == bishops.get(1).isDarkSquared()))
+                    king.getChessBoard().terminate(ChessResult.INSUFFICIENT_MATERIAL, null);
             }
         }
-
-        return false;
     }
 
     /**
-     * Checks for three-fold repetition.
+     * <p>Promotes the <code>ChessPiece</code> to the desired <code>ChessPiece</code> type.</p>
      *
-     * @param position The new ChessPosition
-     * @return If three-fold repetition was found
+     * @param oldPiece  the <code>ChessPiece</code> to be replaced
+     * @param newPiece  the <code>ChessPiece</code> type to be replaced with
      * @since 1.0
      */
-    private boolean checkThreeFoldRepetition(ChessPosition position) {
-        positions.add(position);
-
-        //If less than 6 moves have been played (3 for each side), then obviously no three-fold repetition
-        if (positions.size() >= 6) {
-            //3 of the same move
-            return Collections.frequency(positions, position) >= 3;
-        }
-        return false;
-    }
-
-    /**
-     * Runs when a capture move is played. This includes en passant.
-     *
-     * @param king The king of the side that is currently playing
-     * @since 1.0
-     */
-    public void afterCapture(KingPiece king) {
-        if (!king.isInCheck()) {
-            if (cannotMove(king) || checkInsufficientMaterial(king)) {
-                //Sound.playSound("Draw.wav");
-                king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
-            } //else
-            //Sound.playSound("Capture.wav");
-        }
-    }
-
-    /**
-     * Runs when a castling move is played.
-     *
-     * @param king The king of the side that is currently playing
-     * @since 1.0
-     */
-    public void afterCastling(KingPiece king) {
-        if (!king.isInCheck() && cannotMove(king)) {
-            //Sound.playSound("Draw.wav");
-            king.getChessBoard().terminate(EuropeanChess.Result.INSUFFICIENT_MATERIAL, null);
-        } //else
-        //Sound.playSound("Castling.wav");
-    }
-
-    /**
-     * Runs when a normal, non-capture move is played.
-     *
-     * @param king The king of the side that is currently playing
-     * @since 1.0
-     */
-    public void afterNonCapture(KingPiece king) { //boolean isCastle previous parameter relic
-        if (!king.isInCheck()) {
-            if (cannotMove(king)) {
-                //Sound.playSound("Draw.wav");
-                king.getChessBoard().terminate(EuropeanChess.Result.STALEMATE, null);
-            }
-            //if (!isCastle)
-            //Sound.playSound("Move.wav");
-        }
-    }
-
-
-    /**
-     * Promotes the ChessPiece to the desired ChessPiece type.
-     *
-     * @param oldPiece The ChessPiece to be replaced
-     * @param newPiece The ChessPiece type to be replaced with
-     * @since 1.0
-     */
+    @Override
     public void promote(ChessPiece oldPiece, ChessPiece newPiece) {
         oldPiece.getChessBoard().addPiece(newPiece, oldPiece.getRow(), oldPiece.getColumn());
+    }
+
+    /**
+     * <p>Starts a game of Indo-European chess in the North-South orientation.</p>
+     *
+     * @param chessBoard    the chess board
+     * @since 1.0
+     */
+    @Override
+    public void startGame(ChessBoard chessBoard) {
+        // Pawns
+        for (int i = 0; i < 8; i++) {
+            chessBoard.addPiece(new PawnPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.WHITE_PAWN, 6, i), 6, i);
+            chessBoard.addPiece(new PawnPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_PAWN, 1, i), 1, i);
+        }
+
+        // Rooks
+        chessBoard.addPiece(new RookPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.WHITE_ROOK, 7, 0), 7, 0);
+        chessBoard.addPiece(new RookPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.WHITE_ROOK, 7, 7), 7, 7);
+        chessBoard.addPiece(new RookPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_ROOK, 0, 0), 0, 0);
+        chessBoard.addPiece(new RookPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_ROOK, 0, 7), 0, 7);
+
+        // Knights
+        chessBoard.addPiece(new KnightPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.WHITE_KNIGHT, 7, 1), 7, 1);
+        chessBoard.addPiece(new KnightPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.WHITE_KNIGHT, 7, 6), 7, 6);
+        chessBoard.addPiece(new KnightPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_KNIGHT, 0, 1), 0, 1);
+        chessBoard.addPiece(new KnightPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_KNIGHT, 0, 6), 0, 6);
+
+        // Bishops
+        chessBoard.addPiece(new BishopPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.WHITE_BISHOP, 7, 2), 7, 2);
+        chessBoard.addPiece(new BishopPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.WHITE_BISHOP, 7, 5), 7, 5);
+        chessBoard.addPiece(new BishopPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_BISHOP, 0, 2), 0, 2);
+        chessBoard.addPiece(new BishopPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_BISHOP, 0, 5), 0, 5);
+
+        // Queens
+        chessBoard.addPiece(new QueenPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.WHITE_QUEEN, 7, 3), 7, 3);
+        chessBoard.addPiece(new QueenPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_QUEEN, 0, 3), 0, 3);
+
+        // Kings
+        chessBoard.addPiece(new KingPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.WHITE_KING, 7, 4), 7, 4);
+        chessBoard.addPiece(new KingPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_KING, 0, 4), 0, 4);
     }
 }

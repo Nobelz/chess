@@ -1,5 +1,3 @@
-package development;
-
 import javax.swing.*;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
@@ -95,7 +93,7 @@ public class SwingChessBoard implements ChessBoard {
                             if (boardDisplay.shouldDisplayPossibleMoves()) {
                                 for (int i = 0; i < getGameRules().getNumRows(); i++) {
                                     for (int j = 0; j < getGameRules().getNumColumns(); j++) {
-                                        if (getPiece(row, col).isLegalMove(i, j) && !getGameRules().check(i, j, getPiece(row, col)))
+                                        if (getPiece(row, col).isLegalMove(i, j) && getGameRules().isCheckMove(i, j, getPiece(row, col)))
                                             boardDisplay.highlightSquare(true, squares[i][j], i, j, pieces[row][col]);
                                     }
                                 }

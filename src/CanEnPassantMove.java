@@ -1,5 +1,3 @@
-package development;
-
 /**
  * <p>Represents the ability to make an en passant move in chess.</p>
  *

@@ -1,5 +1,3 @@
-package development;
-
 /**
  * <p>Represents a move in chess.</p>
  *

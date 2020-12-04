@@ -1,5 +1,3 @@
-package development;
-
 /**
  * <p>Represents the ability to make a single move in chess.</p>
  * <p>A single move is a move of one space in any direction, including diagonal.</p>

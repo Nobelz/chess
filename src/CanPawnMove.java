@@ -1,5 +1,3 @@
-package development;
-
 /**
  * <p>Represents the ability to make a pawn move in chess.</p>
  * <p>A pawn move is a move of one space (or two spaces if the pawn hasn't moved yet) in the forward direction.</p>

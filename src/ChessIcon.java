@@ -1,14 +1,15 @@
-import javax.swing.ImageIcon;
-import javax.swing.Icon;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
-import javax.imageio.*;
 
 /**
- * Represents a chess piece icon.
- * All image icons for the chess pieces are attributed to user CBurnett from Wikimedia Commons, which can be found <a href="https://commons.wikimedia.org/wiki/Category:PNG_chess_pieces/Standard_transparent">here</a>, licensed under the <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">Creative Commons Attribution-Share Alike 3.0 Unported</a> license.
+ * <p>Represents a chess piece icon.</p>
+ * <p></p>All image icons for the chess pieces are attributed to user CBurnett from Wikimedia Commons, which can be found
+ * <a href="https://commons.wikimedia.org/wiki/Category:PNG_chess_pieces/Standard_transparent">here</a>,
+ * licensed under the <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">Creative Commons Attribution-Share Alike 3.0 Unported</a> license.</p>
  *
  * @author Nobel Zhou (nxz157)
- * @version 2.0, 10/30/20
+ * @version 2.0, 12/2/20
  */
 enum ChessIcon implements Icon {
     WHITE_KNIGHT("WhiteKnight.png"),
@@ -24,16 +25,16 @@ enum ChessIcon implements Icon {
     BLACK_BISHOP("BlackBishop.png"),
     BLACK_PAWN("BlackPawn.png");
 
-    /* FIELDS */
-    //Stores the icon itself
+    //region FIELDS
+    // Stores the icon in an ImageIcon, to be used with Swing implementations
     private ImageIcon icon = null;
+    //endregion
 
-    /* CONSTRUCTORS */
-
+    //region CONSTRUCTORS
     /**
-     * Creates a ChessIcon from a file name.
+     * <p>Creates a <code>ChessIcon</code> from a file name.</p>
      *
-     * @param fileName the file name of the icon image
+     * @param fileName  the file name of the icon image
      * @since 1.0
      */
     ChessIcon(String fileName) {
@@ -43,12 +44,16 @@ enum ChessIcon implements Icon {
             e.printStackTrace();
         }
     }
+    //endregion
 
-    /* METHODS */
-
+    //region METHODS
     /**
-     * Paints the chess icon.
+     * <p>Paints the chess icon.</p>
      *
+     * @param c has properties useful for painting
+     * @param g the graphics object
+     * @param x the x coordinate
+     * @param y the y coordinate
      * @since 1.0
      */
     @Override
@@ -57,9 +62,9 @@ enum ChessIcon implements Icon {
     }
 
     /**
-     * Returns an int representing the chess icon's height.
+     * <p>Returns an int representing the chess icon's height.</p>
      *
-     * @return The height of the chess icon
+     * @return  the height of the chess icon
      * @since 1.0
      */
     @Override
@@ -68,13 +73,14 @@ enum ChessIcon implements Icon {
     }
 
     /**
-     * Returns an int representing the chess icon's width.
+     * <p>Returns an int representing the chess icon's width.</p>
      *
-     * @return The width of the chess icon
+     * @return  the width of the chess icon
      * @since 1.0
      */
     @Override
     public int getIconWidth() {
         return icon.getIconWidth();
     }
+    //endregion
 }
