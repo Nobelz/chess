@@ -42,7 +42,7 @@ public abstract class ChessPiece {
      * @author Nobel Zhou (nxz157)
      * @version 1.0, 12/2/2020
      */
-    protected class ProposedMove {
+    protected static class ProposedMove {
         // Stores the piece to be moved
         private final ChessPiece movedPiece;
 
@@ -55,6 +55,9 @@ public abstract class ChessPiece {
         // Stores the new column of the piece to be moved
         private final int column;
 
+        // Stores if the move can be reversible (can the move be manually reversed?)
+        private final boolean isReversible;
+
         /**
          * <p>Creates a <code>ProposedMove</code> object from 2 pieces and a proposed location.</p>
          *
@@ -62,13 +65,15 @@ public abstract class ChessPiece {
          * @param removedPiece  the proposed move's piece to be removed or captured
          * @param row           the new row of the piece to be moved
          * @param column        the new column of the piece to be moved
+         * @param isReversible  if the proposed move is reversible
          * @since 1.0
          */
-        public ProposedMove(ChessPiece movedPiece, ChessPiece removedPiece, int row, int column) {
+        public ProposedMove(ChessPiece movedPiece, ChessPiece removedPiece, int row, int column, boolean isReversible) {
             this.movedPiece = movedPiece;
             this.removedPiece = removedPiece;
             this.row = row;
             this.column = column;
+            this.isReversible = isReversible;
         }
 
         /**
@@ -108,6 +113,15 @@ public abstract class ChessPiece {
          */
         public int getColumn() {
             return column;
+        }
+
+        /**
+         * <p>Returns a boolean representing if the proposed move is reversible.</p>
+         *
+         * @return  <code>true</code> if the proposed move is reversible
+         */
+        public boolean isReversible() {
+            return isReversible;
         }
     }
     //endregion
@@ -327,17 +341,19 @@ public abstract class ChessPiece {
     }
 
     /**
-     * <p>Returns an array of <code>ProposedMove</code> objects that shows how to move the pieces.</p>
-     * <p>Will always return at least 1 <code>ProposedMove</code>, but in the case of moves that require 2 or more pieces,
+     * <p>Returns an array of <code>ChessPiece.ProposedMove</code> objects that shows how to move the pieces.</p>
+     * <p>Will always return at least 1 <code>ChessPiece.ProposedMove</code>, but in the case of moves that require 2 or more pieces,
      * like castling moves, it might have more than 1; thus, this is an array.</p>
      *
      * @param row       the row of the move
      * @param column    the column of the move
-     * @return          an array of <code>ProposedMove</code> objects that show how to move the pieces
+     * @return          an array of <code>ChessPiece.ProposedMove</code> objects that show how to move the pieces
      * @since 1.0
      */
     public ProposedMove[] getMoveInstructions(int row, int column) {
-        return new ProposedMove[] {new ProposedMove(this, getChessBoard().getPiece(row, column), row, column)};
+        // Stores if the proposed move is reversible
+        boolean reversible = (!getChessBoard().hasPiece(row, column) || getChessBoard().getPiece(row, column).getSide() == getSide());
+        return new ProposedMove[] {new ProposedMove(this, getChessBoard().getPiece(row, column), row, column, reversible)};
     }
     //endregion
 }

@@ -99,12 +99,12 @@ public class PawnPiece extends ChessPiece implements CanPawnMove, CanEnPassantMo
     }
 
     /**
-     * <p>Returns an array of <code>ProposedMove</code> objects that shows how to move the pawn pieces.</p>
+     * <p>Returns an array of <code>ChessPiece.ProposedMove</code> objects that shows how to move the pawn pieces.</p>
      * <p>For pawn pieces, this includes handling en passant moves.</p>
      *
      * @param row       the row of the move
      * @param column    the column of the move
-     * @return          an array of <code>ProposedMove</code> objects that show how to move the pawn pieces
+     * @return          an array of <code>ChessPiece.ProposedMove</code> objects that show how to move the pawn pieces
      * @since 1.0
      */
     @Override
@@ -115,10 +115,10 @@ public class PawnPiece extends ChessPiece implements CanPawnMove, CanEnPassantMo
             PawnPiece removed = getCapturedEnPassantPawn(row, column, this);
 
             return new ProposedMove[] {
-                    new ProposedMove(this, removed, row, column)
+                    new ProposedMove(this, removed, row, column, false)
             };
         } else
-            return super.getMoveInstructions(row, column);
+            return new ChessPiece.ProposedMove[] {new ProposedMove(this, getChessBoard().getPiece(row, column), row, column, false)};
     }
     //endregion
 }

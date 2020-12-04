@@ -30,14 +30,14 @@ public interface CanStraightMove extends CanMove {
                     // Iterates for each square, starting at right and going left
                     for (int i = column; i > cp.getColumn(); i--) {
                         // If not a valid non-capture move, return false
-                        if (!cp.getChessBoard().hasPiece(row, i))
+                        if (!isValidMove(row, i, cp) || cp.getChessBoard().hasPiece(row, i))
                             return false;
                     }
                 } else { // Left movement
                     // Iterates for each square, starting at left and going right
                     for (int i = column; i < cp.getColumn(); i++) {
                         //If not a valid non-capture move, return false
-                        if (!cp.getChessBoard().hasPiece(row, i))
+                        if (!isValidMove(row, i, cp) || cp.getChessBoard().hasPiece(row, i))
                             return false;
                     }
                 }
@@ -46,14 +46,14 @@ public interface CanStraightMove extends CanMove {
                     // Iterates for each square, starting at down and going up
                     for (int i = row; i > cp.getRow(); i--) {
                         // If not a valid non-capture move, return false
-                        if (!cp.getChessBoard().hasPiece(i, column))
+                        if (!isValidMove(i, column, cp) || cp.getChessBoard().hasPiece(i, column))
                             return false;
                     }
                 } else { // Up movement
                     // Iterates for each square, starting at up and going down
                     for (int i = row; i < cp.getRow(); i++) {
                         // If not a valid non-capture move, return false
-                        if (!cp.getChessBoard().hasPiece(i, column))
+                        if (!isValidMove(i, column, cp) || cp.getChessBoard().hasPiece(i, column))
                             return false;
                     }
                 }

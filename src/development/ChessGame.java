@@ -8,6 +8,7 @@ package development;
  * @version 1.0, 12/2/2020
  */
 public interface ChessGame {
+
     //region NESTED TYPES
     /**
      * <p>Represents the "side" of the player the piece belongs to.</p>
@@ -19,6 +20,22 @@ public interface ChessGame {
     //endregion
 
     //region ABSTRACT METHODS
+    /**
+     * <p>Returns a <code>ChessGame.Side</code> representing the side that is currently playing.</p>
+     *
+     * @return  the side that is currently playing
+     * @since 1.0
+     */
+    Side getCurrentSide();
+
+    /**
+     * <p>Returns a <code>ChessGame.Side</code> representing the side that started.</p>
+     *
+     * @return  the side that started
+     * @since 1.0
+     */
+    Side getStartingSide();
+
     /**
      * <p>Determines if it is legal to play a given piece.</p>
      *
@@ -41,6 +58,20 @@ public interface ChessGame {
      * @since 1.0
      */
     boolean makeMove(ChessPiece piece, int toRow, int toColumn);
+
+    /**
+     * <p>Checks if the move will result in check.</p>
+     * <p>Calls the <code>ChessPiece</code>'s <code>isLegalMove</code> function to make sure the move is legal before
+     * checking if it results in the central piece being in check.</p>
+     * <p>Also returns <code>true</code> if the move is not a valid move.</p>
+     *
+     * @param row       the row of the square the piece is moving to
+     * @param column    the column of the square the piece is moving to
+     * @param piece     the chess piece to move
+     * @return          <code>true</code> if the move results in the central piece being in check
+     * @since 1.0
+     */
+    boolean check(int row, int column, ChessPiece piece);
 
     /**
      * <p>Returns the number of rows in the chessboard.</p>
@@ -66,6 +97,24 @@ public interface ChessGame {
      * @since 1.0
      */
     void startGame(ChessBoard board);
+
+    /**
+     * <p>Handles ending conditions of the chess game.</p>
+     *
+     * @param board         the chess board
+     * @param centralPiece  the central piece to check the ending conditions
+     * @since 1.0
+     */
+    void handleEndConditions(ChessBoard board, ChessPiece centralPiece);
+
+    /**
+     * <p>Generates all the legal moves that can be played.</p>
+     *
+     * @param piece a chess piece of the board
+     * @return      an array of <code>Move</code> objects that can be played
+     * @since 1.0
+     */
+    ChessMove[] generateMoves(ChessPiece piece);
     //endregion
 
     //region DEFAULT METHODS
@@ -86,5 +135,15 @@ public interface ChessGame {
     default boolean canChangeSelection(ChessPiece piece, int row, int column) {
         return true;
     }
+
+    /**
+     * <p>Promotes the <code>ChessPiece</code> to the desired <code>ChessPiece</code> type.</p>
+     * <p>This does nothing by default because not all chessboards have to deal with promotion.</p>
+     *
+     * @param oldPiece  the <code>ChessPiece</code> to be replaced
+     * @param newPiece  the <code>ChessPiece</code> type to be replaced with
+     * @since 1.0
+     */
+    default void promote(ChessPiece oldPiece, ChessPiece newPiece) {}
     //endregion
 }

@@ -18,6 +18,7 @@ public class RookPiece extends ChessPiece implements CanStraightMove, Promotable
      * @param icon          the rook piece's icon
      * @param row           the rook piece's starting row
      * @param column        the rook piece's starting column
+     * @since 1.0
      */
     public RookPiece(ChessGame.Side side, ChessBoard chessBoard, ChessIcon icon, int row, int column) {
         super(side, "R", icon, chessBoard, row, column);

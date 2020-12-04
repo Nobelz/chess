@@ -39,7 +39,7 @@ public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMov
     @Override
     public boolean isLegalMove(int toRow, int toColumn) {
         // Checks also if it's a legal castling move
-        return super.isLegalMove(toRow, toColumn) || isValidCastlingMove(toRow, toColumn, this);
+        return super.isLegalMove(toRow, toColumn) || (isValidCastlingMove(toRow, toColumn, this) && !isInCheck());
     }
 
     /**
@@ -69,13 +69,13 @@ public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMov
     }
 
     /**
-     * <p>Returns an array of <code>ProposedMove</code> objects that shows how to move the king pieces.</p>
-     * <p>Will always return at least 1 <code>ProposedMove</code>, but in the case of moves that require 2 or more pieces,
+     * <p>Returns an array of <code>ChessPiece.ProposedMove</code> objects that shows how to move the king pieces.</p>
+     * <p>Will always return at least 1 <code>ChessPiece.ProposedMove</code>, but in the case of moves that require 2 or more pieces,
      * like castling moves, it might have more than 1; thus, this is an array.</p>
      *
      * @param row       the row of the move
      * @param column    the column of the move
-     * @return          an array of <code>ProposedMove</code> objects that show how to move the king pieces
+     * @return          an array of <code>ChessPiece.ProposedMove</code> objects that show how to move the king pieces
      * @since 1.0
      */
     @Override
@@ -99,8 +99,8 @@ public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMov
             }
 
             return new ProposedMove[] {
-                    new ProposedMove(getRook(row, column, this), null, rookRow, rookColumn),
-                    new ProposedMove(this, null, row, column)
+                    new ProposedMove(getRook(row, column, this), null, rookRow, rookColumn, true),
+                    new ProposedMove(this, null, row, column, true)
             };
         } else
             return super.getMoveInstructions(row, column); // Regular king move
@@ -140,7 +140,7 @@ public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMov
         }
 
         // Returns in array form
-        return (KingPiece[]) opposingKings.toArray();
+        return opposingKings.toArray(new KingPiece[0]);
     }
     //endregion
 }

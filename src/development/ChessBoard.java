@@ -94,6 +94,33 @@ public interface ChessBoard {
      * @return          <code>true</code> if the chess piece is threatened by the opposing side's pieces
      */
     boolean squareThreatened(int row, int column, ChessPiece piece);
+
+    /**
+     * <p>Returns a <code>ChessPiece</code> that represents the central piece of the game, based on the passed in
+     * piece's side.</p>
+     *
+     * @param piece a piece of the game that has the same side as the central piece
+     * @return      the central piece of the same side
+     * @since 1.0
+     */
+    ChessPiece getCentralPiece(ChessPiece piece);
+
+    /**
+     * <p>Generates a <code>ChessPosition</code> object for the chessboard position.</p>
+     *
+     * @return  the <code>ChessPosition</code> for the chessboard
+     * @since 1.0
+     */
+    ChessPosition generateChessPosition();
+
+    /**
+     * <p>Handles how to stop the chess game.</p>
+     *
+     * @param result    the result of the chess game
+     * @param side      the side of the winning player, if there was one
+     * @since 1.0
+     */
+    void terminate(ChessResult result, ChessGame.Side side);
     //endregion
 
     //region DEFAULT METHODS

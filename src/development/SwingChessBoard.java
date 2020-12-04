@@ -20,19 +20,19 @@ public class SwingChessBoard implements ChessBoard {
 
     //region FIELDS
     // Stores the Swing chessboard display window
-    private JFrame board;
+    protected JFrame board;
 
     // Stores the squares of the Swing chessboard
-    private JButton[][] squares;
+    private final JButton[][] squares;
 
     // Stores the pieces of the Swing chessboard
-    private ChessPiece[][] pieces;
+    private final ChessPiece[][] pieces;
 
     // Stores the rules for the Swing chessboard
-    private ChessGame gameRules;
+    private final ChessGame gameRules;
 
     // Stores the display rules for the Swing chessboard
-    private SwingChessBoardDisplay boardDisplay;
+    protected SwingChessBoardDisplay boardDisplay;
     //endregion
 
     //region CONSTRUCTORS
@@ -41,6 +41,7 @@ public class SwingChessBoard implements ChessBoard {
      *
      * @param boardDisplay the display rules for the Swing chessboard
      * @param gameRules    the game rules for the Swing chessboard
+     * @since 1.0
      */
     public SwingChessBoard(SwingChessBoardDisplay boardDisplay, ChessGame gameRules) {
         // Allows users on Mac to change button background
@@ -60,13 +61,14 @@ public class SwingChessBoard implements ChessBoard {
         try {
             SwingUtilities.invokeAndWait(() -> {
                 board = new JFrame();
+                board.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
                 // Uses GridLayout to display the squares
                 JPanel panel = new JPanel(new GridLayout(gameRules.getNumRows(), gameRules.getNumColumns()));
 
                 ActionListener responder = new ActionListener() {
                     // Stores whether we are selecting the piece
-                    private boolean firstPick = true;  // if true, we a selecting a piece
+                    private boolean firstPick = true;  // If true, we a selecting a piece
 
                     // Stores the row of the piece
                     private int pieceRow;
@@ -93,7 +95,7 @@ public class SwingChessBoard implements ChessBoard {
                             if (boardDisplay.shouldDisplayPossibleMoves()) {
                                 for (int i = 0; i < getGameRules().getNumRows(); i++) {
                                     for (int j = 0; j < getGameRules().getNumColumns(); j++) {
-                                        if (getPiece(row, col).isLegalMove(i, j))
+                                        if (getPiece(row, col).isLegalMove(i, j) && !getGameRules().check(i, j, getPiece(row, col)))
                                             boardDisplay.highlightSquare(true, squares[i][j], i, j, pieces[row][col]);
                                     }
                                 }
@@ -114,7 +116,11 @@ public class SwingChessBoard implements ChessBoard {
                         // the selection is reset
                         if (row == pieceRow && col == pieceCol) {
                             firstPick = true;
-                            boardDisplay.highlightSquare(false, squares[pieceRow][pieceCol], pieceRow, pieceCol, pieces[pieceRow][pieceCol]);
+                            for (int i = 0; i < getGameRules().getNumRows(); i++) {
+                                for (int j = 0; j < getGameRules().getNumColumns(); j++) {
+                                    boardDisplay.highlightSquare(false, squares[i][j], i, j, pieces[i][j]);
+                                }
+                            }
                             return;
                         }
 
@@ -124,8 +130,19 @@ public class SwingChessBoard implements ChessBoard {
                         // Checks to see if the move was made or if it wasn't made, if the user can select a new
                         // piece; if so, the selection is reset
                         if (moveMade || getGameRules().canChangeSelection(pieces[pieceRow][pieceCol], pieceRow, pieceCol)) {
-                            boardDisplay.highlightSquare(false, squares[pieceRow][pieceCol], pieceRow, pieceCol, pieces[pieceRow][pieceCol]);
+                            for (int i = 0; i < getGameRules().getNumRows(); i++) {
+                                for (int j = 0; j < getGameRules().getNumColumns(); j++) {
+                                    boardDisplay.highlightSquare(false, squares[i][j], i, j, pieces[i][j]);
+                                }
+                            }
+
                             firstPick = true;
+                        }
+
+                        // Checks to see if a move was made; if it was, ending conditions are checked
+                        if (moveMade) {
+                            // Runs code on different thread to it from blocking the Event Dispatch Thread
+                            new Thread(() -> getGameRules().handleEndConditions(SwingChessBoard.this, getCentralPiece(pieces[row][col]))).start();
                         }
                     }
 
@@ -315,6 +332,102 @@ public class SwingChessBoard implements ChessBoard {
             }
         }
         return false;
+    }
+
+    /**
+     * <p>Returns a <code>KingPiece</code> that represents the central piece of the game, based on the passed in
+     * piece's side.</p>
+     *
+     * @param piece a piece of the game that has the same side as the central piece
+     * @return      the central piece of the same side
+     * @since 1.0
+     */
+    @Override
+    public KingPiece getCentralPiece(ChessPiece piece) {
+        // Stores the king piece of the same side; placeholder needed
+        KingPiece king = null; // This will never return because we always know that a king with the same side will be present
+
+        // Iterates the chess board to look for the same side king piece
+        for (int i = 0; i < getGameRules().getNumRows(); i++) {
+            for (int j = 0; j < getGameRules().getNumColumns(); j++) {
+                // Looks for same side king piece
+                if (hasPiece(i, j) && getPiece(i, j) instanceof KingPiece && getPiece(i, j).getSide().equals(piece.getSide()))
+                    king = (KingPiece) getPiece(i, j);
+            }
+        }
+
+        return king;
+    }
+
+    /**
+     * <p>Generates a <code>ChessPosition</code> object for the chessboard position.</p>
+     *
+     * @return  the <code>ChessPosition</code> for the chessboard
+     * @since 1.0
+     */
+    @Override
+    public ChessPosition generateChessPosition() {
+        // Clones the pieces to put into a ChessPosition
+        ChessPiece[][] chessPieces = pieces.clone();
+        for (int i = 0; i < chessPieces.length; i++) {
+            chessPieces[i] = chessPieces[i].clone();
+        }
+
+        return new ChessPosition(chessPieces, getGameRules().getCurrentSide());
+    }
+
+    /**
+     * <p>Handles how to stop the chess game.</p>
+     *
+     * @param result    the result of the chess game
+     * @param side      the side of the winning player, if there was one
+     * @since 1.0
+     */
+    @Override
+    public void terminate(ChessResult result, ChessGame.Side side) {
+        Runnable resultDialog = () -> {
+            // Stores the popup window
+            JDialog dialog = new JDialog(board);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); // Exits on close so we can then interact with main JFrame
+
+            String resultText;
+
+            switch (result) {
+                case CHECKMATE:
+                    resultText = ((side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East") + " has won the game by checkmate!";
+                    break;
+                case STALEMATE:
+                    resultText = "The game is a draw by stalemate.";
+                    break;
+                case INSUFFICIENT_MATERIAL:
+                    resultText = "The game is a draw by insufficient material.";
+                    break;
+                case FIFTY_MOVE_RULE:
+                    resultText = "The game is a draw by the fifty move rule.";
+                    break;
+                case THREEFOLD_REPETITION:
+                    resultText = "The game is a draw by threefold repetition.";
+                    break;
+                default: // Not handled as of yet
+                    resultText = result.toString();
+            }
+
+            // Shows the JOptionPane
+            JOptionPane.showMessageDialog(board, resultText, "Game Over", JOptionPane.PLAIN_MESSAGE);
+        };
+
+        // Runs the code on Event Dispatch Thread
+        if (SwingUtilities.isEventDispatchThread())
+            resultDialog.run();
+        else {
+            try {
+                SwingUtilities.invokeAndWait(resultDialog);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        board.dispose();
     }
 }
 

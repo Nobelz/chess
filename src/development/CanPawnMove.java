@@ -21,7 +21,7 @@ public interface CanPawnMove extends CanMove {
      */
     default boolean isValidPawnNonCaptureMove(int row, int column, ChessPiece cp) {
         // Checks if the square is empty
-        if (isValidMove(row, column, cp)) {
+        if (isValidMove(row, column, cp) && !cp.getChessBoard().hasPiece(row, column)) {
             // Checks the forward 1 space for each side
             switch (cp.getSide()) {
                 case NORTH:

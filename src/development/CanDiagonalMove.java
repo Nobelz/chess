@@ -28,18 +28,18 @@ public interface CanDiagonalMove extends CanMove {
             for (int i = 0; i < Math.abs(cp.getColumn() - column); i++) {
                 if (row > cp.getRow()) { // South movement
                     if (column > cp.getColumn()) { // Southeast movement
-                        if (!cp.getChessBoard().hasPiece(row - i, column - i))
+                        if (!isValidMove(row - i, column - i, cp) || cp.getChessBoard().hasPiece(row - i, column - i))
                             return false;
                     } else { // Southwest movement
-                        if (!cp.getChessBoard().hasPiece(row - i, column + i))
+                        if (!isValidMove(row - i, column + i, cp) || cp.getChessBoard().hasPiece(row - i, column + i))
                             return false;
                     }
                 } else { // North movement
                     if (column > cp.getColumn()) { // Northeast movement
-                        if (!cp.getChessBoard().hasPiece(row + i, column - i))
+                        if (!isValidMove(row + i, column - i, cp) || cp.getChessBoard().hasPiece(row + i, column - i))
                             return false;
                     } else { // Northwest movement
-                        if (!cp.getChessBoard().hasPiece(row + i, column + i))
+                        if (!isValidMove(row + i, column + i, cp) || cp.getChessBoard().hasPiece(row + i, column + i))
                             return false;
                     }
                 }
