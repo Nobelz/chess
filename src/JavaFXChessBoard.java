@@ -1,15 +1,17 @@
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
+import javafx.scene.control.Dialog;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-
-import javax.swing.*;
+import javafx.event.ActionEvent;
 
 /**
  * <p>Represents a <code>ChessBoard</code>> that uses Java FX implementation.</p<
@@ -24,17 +26,20 @@ import javax.swing.*;
 public class JavaFXChessBoard extends Application implements ChessBoard {
 
     //region FIELDS
-    // Stores the squares of the Swing chessboard
+    // Stores the squares of the JavaFX chessboard
     private Button[][] squares;
 
-    // Stores the pieces of the Swing chessboard
+    // Stores the pieces of the JavaFX chessboard
     private ChessPiece[][] pieces;
 
-    // Stores the rules for the Swing chessboard
+    // Stores the rules for the JavaFX chessboard
     private ChessGame gameRules;
 
-    // Stores the display rules for the Swing chessboard
+    // Stores the display rules for the JavaFX chessboard
     private JavaFXChessBoardDisplay boardDisplay;
+
+    // Stores the primary stage of the JavaFX chessboard
+    private static Stage primaryStage;
     //endregion
 
     //region METHODS
@@ -56,6 +61,8 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
      */
     @Override
     public void start(Stage primaryStage) {
+        JavaFXChessBoard.primaryStage = primaryStage;
+
         try {
             // Checks the game type from function parameters: it's either Indo-European chess or Xiangqi
             switch (getParameters().getRaw().get(0)) {
@@ -245,17 +252,7 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
 
         Runnable addPiece = () -> boardDisplay.displayFilledSquare(squares[row][column], row, column, piece);
 
-        // Changes the display on the Application Thread
-        if (Platform.isFxApplicationThread())
-            addPiece.run();
-        else {
-            try {
-                System.out.println("Ope");
-                Platform.runLater(addPiece);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        addPiece.run();
     }
 
     /**
@@ -289,18 +286,7 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
 
         Runnable removePiece = () -> boardDisplay.displayEmptySquare(squares[row][column], row, column);
 
-        // Changes the display on the Application Thread
-        if (Platform.isFxApplicationThread())
-            removePiece.run();
-        else {
-            try {
-                System.out.println("Ope");
-                Platform.runLater(removePiece);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
+        removePiece.run();
         return save;
     }
 
@@ -373,6 +359,44 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
     @Override
     public void terminate(ChessResult result, ChessGame.Side side) {
 
+        Platform.runLater(() -> {
+            // Stores the popup window
+            Alert resultDialog = new Alert(Alert.AlertType.NONE, "", ButtonType.OK);
+            resultDialog.setTitle("Game Over");
+            resultDialog.setHeaderText(null);
+            resultDialog.setOnCloseRequest(e -> primaryStage.close());
+
+            String resultText;
+
+            // Stores the player who won
+            final String s = (side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East";
+
+            switch (result) {
+                case CHECKMATE:
+                    resultText = s + " has won the game by checkmate!";
+                    break;
+                case STALEMATE:
+                    if (side != null) {
+                        resultText = s + " has won the game by stalemate!";
+                    } else
+                        resultText = "The game is a draw by stalemate.";
+                    break;
+                case INSUFFICIENT_MATERIAL:
+                    resultText = "The game is a draw by insufficient material.";
+                    break;
+                case FIFTY_MOVE_RULE:
+                    resultText = "The game is a draw by the fifty move rule.";
+                    break;
+                case THREEFOLD_REPETITION:
+                    resultText = "The game is a draw by threefold repetition.";
+                    break;
+                default: // Not handled as of yet
+                    resultText = result.toString();
+            }
+
+            resultDialog.setContentText(resultText);
+            resultDialog.showAndWait();
+        });
     }
 
     /**
@@ -384,7 +408,62 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
      */
     @Override
     public void invokePromotion(ChessPiece piece) {
+        // Runs code on Application Thread
+        Platform.runLater(() -> {
+            // Stores the promotion pieces used for JFrame
+            ChessPiece[] promotionPieces = new ChessPiece[]{
+                    new KnightPiece(piece.getSide(), piece.getChessBoard(), (piece.getSide().equals(piece.getChessBoard().getGameRules().getStartingSide()) ? ChessIcon.WHITE_KNIGHT : ChessIcon.BLACK_KNIGHT), -1, -1),
+                    new BishopPiece(piece.getSide(), piece.getChessBoard(), (piece.getSide().equals(piece.getChessBoard().getGameRules().getStartingSide()) ? ChessIcon.WHITE_BISHOP : ChessIcon.BLACK_BISHOP), -1, -1),
+                    new RookPiece(piece.getSide(), piece.getChessBoard(), (piece.getSide().equals(piece.getChessBoard().getGameRules().getStartingSide()) ? ChessIcon.WHITE_ROOK : ChessIcon.BLACK_ROOK), -1, -1),
+                    new QueenPiece(piece.getSide(), piece.getChessBoard(), (piece.getSide().equals(piece.getChessBoard().getGameRules().getStartingSide()) ? ChessIcon.WHITE_QUEEN : ChessIcon.BLACK_QUEEN), -1, -1)
+            };
+            Button[] promotionSquares = new Button[promotionPieces.length];
 
+            Stage promotionDialog = new Stage();
+            promotionDialog.setTitle("Pawn Promotion");
+            promotionDialog.setResizable(false);
+
+            HBox layout = new HBox();
+
+            for (int i = 0; i < promotionPieces.length; i++) {
+                promotionSquares[i] = new Button();
+                promotionSquares[i].setPrefSize(boardDisplay.getSquareSize(), boardDisplay.getSquareSize());
+
+                // i needs to be final in order for us to use it in lambda expression
+                int finalI = i;
+
+                promotionSquares[i].setOnAction(new EventHandler<ActionEvent>() {
+                    /**
+                     * <p>Invoked when a specific event of the type for which this handler is
+                     * registered happens.</p>
+                     *
+                     * @param event the event which occurred
+                     */
+                    @Override
+                    public void handle(ActionEvent event) {
+                        getGameRules().promote(piece, promotionPieces[finalI]);
+                        promotionDialog.close();
+                    }
+                });
+
+                boardDisplay.displayFilledSquare(promotionSquares[i], i, -1, promotionPieces[i]);
+            }
+
+            // Adds the promotion pieces to the layout
+            layout.getChildren().addAll(promotionSquares);
+            layout.setPrefSize(promotionPieces.length * boardDisplay.getSquareSize(), boardDisplay.getSquareSize());
+
+            // Adds a method that sets the default promotion piece to queen if the user doesn't press the button
+            promotionDialog.setOnCloseRequest((e) -> {
+                if (getPiece(piece.getRow(), piece.getColumn()).equals(piece)) // Checks if the pawn hasn't been promoted yet
+                    getGameRules().promote(piece, promotionPieces[3]); // Promotes to queen
+            });
+
+            promotionDialog.setScene(new Scene(layout));
+            promotionDialog.sizeToScene();
+
+            promotionDialog.showAndWait();
+        });
     }
     //endregion
 }

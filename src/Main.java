@@ -13,6 +13,6 @@ public class Main {
      */
     public static void main(String[] args) {
         EuropeanChess game = new EuropeanChess(ChessGame.Side.SOUTH);
-        game.startGame(new SwingEuropeanChessBoard(new SwingEuropeanChessDisplay(), game));
+        game.startGame(new SwingChessBoard(new SwingEuropeanChessDisplay(), game));
     }
 }

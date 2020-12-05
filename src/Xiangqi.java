@@ -2,12 +2,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * <p>Represents the ruleset for a game of Indo-European chess.</p>
+ * <p>Represents the ruleset for a game of Xiangqi.</p>
  *
  * @author Nobel Zhou (nxz157)
- * @version 2.0, 12/2/20
+ * @version 1.0, 12/4/20
  */
-public class EuropeanChess implements ChessGame {
+public class Xiangqi implements ChessGame {
 
     //region FIELDS
     // Stores the starting side; cannot be changed
@@ -16,24 +16,20 @@ public class EuropeanChess implements ChessGame {
     // Stores the side that is currently playing
     private Side currentSide;
 
-    // Stores the game positions of the whole game
-    private final ArrayList<ChessPosition> positions;
-
     // Stores the number of non-pawn, non-capture moves in succession; used for determining the 50 move rule
     private int fiftyMoveRule;
     //endregion
 
     //region CONSTRUCTORS
     /**
-     * <p>Initializes the rules of Indo-European chess.</p>
+     * <p>Initializes the rules of Xiangqi.</p>
      *
      * @param startingSide  the side who starts
      * @since 1.0
      */
-    public EuropeanChess(Side startingSide) {
+    public Xiangqi(Side startingSide) {
         this.startingSide = startingSide;
         currentSide = startingSide;
-        positions = new ArrayList<>();
     }
     //endregion
 
@@ -164,9 +160,6 @@ public class EuropeanChess implements ChessGame {
                 instruction.getMovedPiece().moveDone();
             }
 
-            // Adds the new position to the ArrayList of ChessPositions to check for threefold repetition later
-            positions.add(board.generateChessPosition());
-
             //Now opposite player's turn
             flipSide();
 
@@ -211,7 +204,7 @@ public class EuropeanChess implements ChessGame {
             }
 
             // Checks to see if the king is in check
-            boolean isInCheck = ((KingPiece) cp.getChessBoard().getCentralPiece(cp)).isInCheck();
+            boolean isInCheck = ((XiangqiKingPiece) cp.getChessBoard().getCentralPiece(cp)).isInCheck();
 
             for (int i = 0; i < moveInstructions.length; i++) {
                 ChessPiece.ProposedMove instruction = moveInstructions[i];
@@ -260,14 +253,33 @@ public class EuropeanChess implements ChessGame {
     @Override
     public void handleEndConditions(ChessBoard board, ChessPiece centralPiece) {
         // Gets the king piece of the player's whose turn it is now
-        KingPiece king = ((KingPiece) centralPiece).getOpposingKings()[0];
+        XiangqiKingPiece king = ((XiangqiKingPiece) centralPiece).getOpposingKing();
 
         // Checks for ending conditions
         checkCheckmate(king);
         checkStalemate(king);
-        checkInsufficientMaterial(king);
-        checkThreefoldRepetition(king.getChessBoard());
         checkFiftyMoveRule(king.getChessBoard());
+    }
+
+    /**
+     * <p>Checks for checkmate.</p>
+     *
+     * @param king  the king piece that is subject to checkmate
+     * @since 1.0
+     */
+    private void checkCheckmate(XiangqiKingPiece king) {
+        if (cannotMove(king) && king.isInCheck())
+            king.getChessBoard().terminate(ChessResult.CHECKMATE, king.getOpposingKing().getSide());
+    }
+
+    /**
+     * <p>Checks for stalemate.</p>
+     *
+     * @param king  the king piece that is subject to stalemate
+     */
+    private void checkStalemate(XiangqiKingPiece king) {
+        if (cannotMove(king) && !king.isInCheck())
+            king.getChessBoard().terminate(ChessResult.STALEMATE, king.getOpposingKing().getSide());
     }
 
     /**
@@ -304,11 +316,11 @@ public class EuropeanChess implements ChessGame {
      * <p>Checks for any moves in a position.</p>
      * <p>If there are no moves for the position, the end result is either stalemate or checkmate.</p>
      *
-     * @param piece the king piece
+     * @param piece the xiangqi king piece
      * @return      <code>true</code> if there are no moves in the position for the side of the piece
      * @since 1.0
      */
-    private boolean cannotMove(KingPiece piece) {
+    private boolean cannotMove(XiangqiKingPiece piece) {
         // Stores the same side's pieces
         ChessPiece[] pieces = getSameSidePieces(piece);
 
@@ -344,38 +356,6 @@ public class EuropeanChess implements ChessGame {
     }
 
     /**
-     * <p>Checks for checkmate.</p>
-     *
-     * @param king  the king piece that is subject to checkmate
-     * @since 1.0
-     */
-    private void checkCheckmate(KingPiece king) {
-        if (cannotMove(king) && king.isInCheck())
-            king.getChessBoard().terminate(ChessResult.CHECKMATE, king.getOpposingKings()[0].getSide());
-    }
-
-    /**
-     * <p>Checks for stalemate.</p>
-     *
-     * @param king  the king piece that is subject to stalemate
-     */
-    private void checkStalemate(KingPiece king) {
-        if (cannotMove(king) && !king.isInCheck())
-            king.getChessBoard().terminate(ChessResult.STALEMATE, null);
-    }
-
-    /**
-     * <p>Checks for draw by threefold repetition.</p>
-     *
-     * @param board  the chessboard
-     * @since 1.0
-     */
-    private void checkThreefoldRepetition(ChessBoard board) {
-        if (positions.size() >= 6 && Collections.frequency(positions, positions.get(positions.size() - 1)) >= 3)
-            board.terminate(ChessResult.THREEFOLD_REPETITION, null);
-    }
-
-    /**
      * <p>Checks for draw by the fifty move rule.</p>
      *
      * @param board the chessboard
@@ -387,72 +367,7 @@ public class EuropeanChess implements ChessGame {
     }
 
     /**
-     * <p>Checks for insufficient material.</p>
-     * <p>There are only 4 cases for insufficient material:</p>
-     * <p>King vs. King</p>
-     * <p>King + Knight vs. King</p>
-     * <p>King + Bishop vs. King</p>
-     * <p>King + Bishop vs. King + Bishop of same color</p>
-     *
-     * @param king  the king of the side that is currently playing
-     * @since 1.0
-     */
-    private void checkInsufficientMaterial(KingPiece king) {
-        // Stores the all of the chess pieces on the board
-        ArrayList<ChessPiece> pieces = new ArrayList<>();
-
-        // Iterates for each square of the chess board in search of a piece
-        for (int i = 0; i < getNumRows(); i++) {
-            for (int j = 0; j < getNumColumns(); j++) {
-                //Looks for same side piece in the chess board
-                if (king.getChessBoard().hasPiece(i, j))
-                    pieces.add(king.getChessBoard().getPiece(i, j));
-            }
-        }
-
-        // Checks if it's just bare kings
-        if (pieces.size() == 2) {
-            king.getChessBoard().terminate(ChessResult.INSUFFICIENT_MATERIAL, null);
-        }
-
-        // Looks for insufficient material. All insufficient material must have less than 4 pieces on the board
-        if (pieces.size() <= 4) {
-            // Stores the all of the knight pieces on the board
-            ArrayList<KnightPiece> knights = new ArrayList<>();
-            // Stores the all of the bishop pieces on the board
-            ArrayList<BishopPiece> bishops = new ArrayList<>();
-
-            //Looks for pieces that are knights or bishops
-            for (ChessPiece piece : pieces) {
-                if (piece instanceof BishopPiece)
-                    bishops.add((BishopPiece) piece);
-                else if (piece instanceof KnightPiece)
-                    knights.add((KnightPiece) piece);
-            }
-
-            // If there are not no more 2 knights and bishops, then that must mean that there are pieces other than knights or bishops. In that case, there is not insufficient material
-            if (knights.size() + bishops.size() <= 2) {
-                // King + Bishop vs. King + Bishop of same color is insufficient material
-                if (pieces.size() == 3 || (bishops.size() == 2 && bishops.get(0).isDarkSquared() == bishops.get(1).isDarkSquared()))
-                    king.getChessBoard().terminate(ChessResult.INSUFFICIENT_MATERIAL, null);
-            }
-        }
-    }
-
-    /**
-     * <p>Promotes the <code>ChessPiece</code> to the desired <code>ChessPiece</code> type.</p>
-     *
-     * @param oldPiece  the <code>ChessPiece</code> to be replaced
-     * @param newPiece  the <code>ChessPiece</code> type to be replaced with
-     * @since 1.0
-     */
-    @Override
-    public void promote(ChessPiece oldPiece, ChessPiece newPiece) {
-        oldPiece.getChessBoard().addPiece(newPiece, oldPiece.getRow(), oldPiece.getColumn());
-    }
-
-    /**
-     * <p>Starts a game of Indo-European chess in the North-South orientation.</p>
+     * <p>Starts a game of Xiangqi in the North-South orientation.</p>
      *
      * @param chessBoard    the chess board
      * @since 1.0

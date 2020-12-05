@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * <p>Represents a <code>ChessBoard</code>> that uses Java Swing implementation.</p<
@@ -345,12 +347,18 @@ public class SwingChessBoard implements ChessBoard {
 
             String resultText;
 
+            // Stores the player who won
+            final String s = (side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East";
+
             switch (result) {
                 case CHECKMATE:
-                    resultText = ((side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East") + " has won the game by checkmate!";
+                    resultText = s + " has won the game by checkmate!";
                     break;
                 case STALEMATE:
-                    resultText = "The game is a draw by stalemate.";
+                    if (side != null) {
+                        resultText = s + " has won the game by stalemate!";
+                    } else
+                        resultText = "The game is a draw by stalemate.";
                     break;
                 case INSUFFICIENT_MATERIAL:
                     resultText = "The game is a draw by insufficient material.";
@@ -381,6 +389,64 @@ public class SwingChessBoard implements ChessBoard {
         }
 
         board.dispose();
+    }
+
+    /**
+     * <p>Displays promotion window by letting user choose from <code>ChessPieces</code> that are <code>Promotable</code>.</p>
+     *
+     * @param piece the piece to be promoted
+     * @since 1.0
+     */
+    @Override
+    public void invokePromotion(ChessPiece piece) {
+        // Runs code on separate thread so it doesn't block the Event Dispatch or main threads
+        new Thread(() -> {
+            //Stores the promotion pieces used for JFrame
+            ChessPiece[] promotionPieces = new ChessPiece[]{
+                    new KnightPiece(piece.getSide(), piece.getChessBoard(), (piece.getSide().equals(piece.getChessBoard().getGameRules().getStartingSide()) ? ChessIcon.WHITE_KNIGHT : ChessIcon.BLACK_KNIGHT), -1, -1),
+                    new BishopPiece(piece.getSide(), piece.getChessBoard(), (piece.getSide().equals(piece.getChessBoard().getGameRules().getStartingSide()) ? ChessIcon.WHITE_BISHOP : ChessIcon.BLACK_BISHOP), -1, -1),
+                    new RookPiece(piece.getSide(), piece.getChessBoard(), (piece.getSide().equals(piece.getChessBoard().getGameRules().getStartingSide()) ? ChessIcon.WHITE_ROOK : ChessIcon.BLACK_ROOK), -1, -1),
+                    new QueenPiece(piece.getSide(), piece.getChessBoard(), (piece.getSide().equals(piece.getChessBoard().getGameRules().getStartingSide()) ? ChessIcon.WHITE_QUEEN : ChessIcon.BLACK_QUEEN), -1, -1)
+            };
+            // Stores the JButtons used for JFrame
+            JButton[] promotionSquares = new JButton[promotionPieces.length];
+
+            // Stores the popup window
+            JDialog promotionWindow = new JDialog(board);
+            promotionWindow.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); // Disposes on close so we can then interact with main JFrame
+            promotionWindow.setModal(true); // Stops actions in other JFrame until the popup window closes
+
+            // Adds a method that sets the default promotion piece to queen if the user doesn't press the button
+            promotionWindow.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    if (getPiece(piece.getRow(), piece.getColumn()).equals(piece)) // Checks if the pawn hasn't been promoted yet
+                        getGameRules().promote(piece, promotionPieces[3]); // Promotes to queen
+                }
+            });
+
+            // Stores the layout panel
+            JPanel promotionPanel = new JPanel(new GridLayout(1, promotionPieces.length));
+
+            for (int i = 0; i < promotionPieces.length; i++) {
+                promotionSquares[i] = new JButton();
+                // i needs to be final in order for us to use it in lambda expression
+                int finalI = i;
+
+                promotionSquares[i].addActionListener((e) -> {
+                    getGameRules().promote(piece, promotionPieces[finalI]);
+                    promotionWindow.dispose();
+                });
+                boardDisplay.displayFilledSquare(promotionSquares[i], -1, -1, promotionPieces[i]);
+                promotionPanel.add(promotionSquares[i]);
+            }
+
+            promotionWindow.add(promotionPanel);
+            promotionWindow.setSize(boardDisplay.getSquareSize() * promotionPieces.length, boardDisplay.getSquareSize() + 20);
+            promotionWindow.setTitle("Pawn Promotion");
+
+            promotionWindow.pack();
+            promotionWindow.setVisible(true);
+        }).start();
     }
 }
 

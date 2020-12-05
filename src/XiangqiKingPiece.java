@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * <p>Represents a xiangqi king chess piece.</p>
  * <p>Dictates how a xiangqi king can move.</p>
@@ -59,6 +61,27 @@ public class XiangqiKingPiece extends ChessPiece implements CenterPiece, CanSing
     @Override
     public boolean isInCheck() {
         return getChessBoard().squareThreatened(getRow(), getColumn(), this);
+    }
+
+    /**
+     * <p>Returns a <code>XiangqiKingPiece</code>s representing the opposing xiangqi king.</p>
+     *
+     * @return  the opposing xiangqi king
+     * @since 1.0
+     */
+    public XiangqiKingPiece getOpposingKing() {
+        // Iterates the chess board to look for the opposite side xiangqi king piece
+        for (int i = 0; i < getChessBoard().getGameRules().getNumRows(); i++) {
+            for (int j = 0; j < getChessBoard().getGameRules().getNumColumns(); j++) {
+                // Looks for opposite side king piece
+                try {
+                    if (!getChessBoard().getPiece(i, j).getSide().equals(getSide()))
+                        return (XiangqiKingPiece) getChessBoard().getPiece(i, j);
+                } catch (Exception ignored) {} // Not a XiangqiKingPiece or piece does not exist at that location; continue searching
+            }
+        }
+
+        return null; // XiangqiKingPiece not found
     }
     //endregion
 }
