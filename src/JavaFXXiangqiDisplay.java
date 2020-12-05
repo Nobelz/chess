@@ -1,9 +1,8 @@
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -16,27 +15,111 @@ import java.util.ArrayList;
  */
 public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
 
+    //region NESTED TYPES
+
+    /**
+     * <p>Represents a Xiangqi square image.</p>
+     *
+     * @author Nobel Zhou (nxz157)
+     * @version 1.0, 12/5/2020
+     */
+    private enum XiangqiSquare {
+        XIANGQI_BOTTOM_EDGE("XiangqiBottomEdge.png"),
+        XIANGQI_BOTTOM_LEFT_CORNER("XiangqiBottomLeftCorner.png"),
+        XIANGQI_BOTTOM_LEFT_PALACE_CORNER("XiangqiBottomLeftPalaceCorner.png"),
+        XIANGQI_BOTTOM_LEFT_PALACE_CORNER_EDGE("XiangqiBottomLeftPalaceCornerEdge.png"),
+        XIANGQI_BOTTOM_RIGHT_CORNER("XiangqiBottomRightCorner.png"),
+        XIANGQI_BOTTOM_RIGHT_PALACE_CORNER("XiangqiBottomRightPalaceCorner.png"),
+        XIANGQI_BOTTOM_RIGHT_PALACE_CORNER_EDGE("XiangqiBottomRightPalaceCornerEdge.png"),
+        XIANGQI_BOTTOM_RIVER("XiangqiBottomRiver.png"),
+        XIANGQI_CENTER_PALACE("XiangqiCenterPalace.png"),
+        XIANGQI_LEFT_EDGE("XiangqiLeftEdge.png"),
+        XIANGQI_NORMAL("XiangqiNormal.png"),
+        XIANGQI_RIGHT_EDGE("XiangqiRightEdge.png"),
+        XIANGQI_TOP_EDGE("XiangqiTopEdge.png"),
+        XIANGQI_TOP_LEFT_CORNER("XiangqiTopLeftCorner.png"),
+        XIANGQI_TOP_LEFT_PALACE_CORNER("XiangqiTopLeftPalaceCorner.png"),
+        XIANGQI_TOP_LEFT_PALACE_CORNER_EDGE("XiangqiTopLeftPalaceCornerEdge.png"),
+        XIANGQI_TOP_RIGHT_CORNER("XiangqiTopRightCorner.png"),
+        XIANGQI_TOP_RIGHT_PALACE_CORNER("XiangqiTopRightPalaceCorner.png"),
+        XIANGQI_TOP_RIGHT_PALACE_CORNER_EDGE("XiangqiTopRightPalaceCornerEdge.png"),
+        XIANGQI_TOP_RIVER("XiangqiTopRiver.png"),
+        XIANGQI_TOP_PALACE("XiangqiTopPalace.png"),
+        XIANGQI_BOTTOM_PALACE("XiangqiBottomPalace.png"),
+        XIANGQI_TOP_PALACE_EDGE("XiangqiTopPalaceEdge.png"),
+        XIANGQI_BOTTOM_PALACE_EDGE("XiangqiBottomPalaceEdge.png"),
+        XIANGQI_LEFT_PALACE("XiangqiLeftPalace.png"),
+        XIANGQI_RIGHT_PALACE("XiangqiRightPalace.png");
+
+        // Stores the XiangqiSquare as a BackgroundImage
+        private BackgroundImage image;
+
+        // Stores the side length of the xiangqi square image, set to 1/20 the width of the screen
+        private final int size = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 20;
+
+        /**
+         * <p>Creates a <code>XiangqiSquare</code> from a file name.</p>
+         *
+         * @param fileName  the file name of the xiangqi square image
+         * @since 1.0
+         */
+        XiangqiSquare(String fileName) {
+            image = new BackgroundImage(new Image("/images/xiangqi/" + fileName, size, size, false, true), null, null, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+        }
+
+        /**
+         * <p>Returns an <code>BackgroundImage</code> representing the xiangqi square's image.</p>
+         *
+         * @return  the xiangqi square's image
+         * @since 1.0
+         */
+        public BackgroundImage getImage() {
+            return image;
+        }
+    }
+    //endregion
+
     //region FIELDS
-    // Stores the primary color of the chessboard
-    public static Color primaryColor = Color.rgb(184, 139, 74);
-
-    // Stores the secondary color of the checkerboard
-    public static Color secondaryColor = Color.rgb(227, 193, 111);
-
-    // Stores the color of the SOUTH player
-    public static Color southPlayerColor = Color.YELLOW;
-
-    // Stores the color of the NORTH player
-    public static Color northPlayerColor = Color.GREEN;
-
-    // Stores the color of the EAST player
-    public static Color eastPlayerColor = Color.WHITE;
-
-    // Stores the color of the WEST player
-    public static Color westPlayerColor = Color.GRAY;
-
     // Stores the color to highlight a square
     public static Color highlightColor = Color.rgb(0, 0, 255, 0.3);
+
+    // Stores the images used to paint the chessboard
+    private final XiangqiSquare[][] squares = {
+            {XiangqiSquare.XIANGQI_TOP_LEFT_CORNER, XiangqiSquare.XIANGQI_TOP_EDGE, XiangqiSquare.XIANGQI_TOP_EDGE,
+                    XiangqiSquare.XIANGQI_TOP_LEFT_PALACE_CORNER_EDGE, XiangqiSquare.XIANGQI_TOP_PALACE_EDGE,
+                    XiangqiSquare.XIANGQI_TOP_RIGHT_PALACE_CORNER_EDGE, XiangqiSquare.XIANGQI_TOP_EDGE,
+                    XiangqiSquare.XIANGQI_TOP_EDGE, XiangqiSquare.XIANGQI_TOP_RIGHT_CORNER},
+            {XiangqiSquare.XIANGQI_LEFT_EDGE, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL,
+                    XiangqiSquare.XIANGQI_LEFT_PALACE, XiangqiSquare.XIANGQI_CENTER_PALACE, XiangqiSquare.XIANGQI_RIGHT_PALACE,
+                    XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_RIGHT_EDGE},
+            {XiangqiSquare.XIANGQI_LEFT_EDGE, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL,
+                    XiangqiSquare.XIANGQI_BOTTOM_LEFT_PALACE_CORNER, XiangqiSquare.XIANGQI_BOTTOM_PALACE,
+                    XiangqiSquare.XIANGQI_BOTTOM_RIGHT_PALACE_CORNER, XiangqiSquare.XIANGQI_NORMAL,
+                    XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_RIGHT_EDGE},
+            {XiangqiSquare.XIANGQI_LEFT_EDGE, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL,
+                    XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL,
+                    XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_RIGHT_EDGE},
+            {XiangqiSquare.XIANGQI_LEFT_EDGE, XiangqiSquare.XIANGQI_TOP_RIVER, XiangqiSquare.XIANGQI_TOP_RIVER,
+                    XiangqiSquare.XIANGQI_TOP_RIVER, XiangqiSquare.XIANGQI_TOP_RIVER, XiangqiSquare.XIANGQI_TOP_RIVER,
+                    XiangqiSquare.XIANGQI_TOP_RIVER, XiangqiSquare.XIANGQI_TOP_RIVER, XiangqiSquare.XIANGQI_RIGHT_EDGE},
+            {XiangqiSquare.XIANGQI_LEFT_EDGE, XiangqiSquare.XIANGQI_BOTTOM_RIVER, XiangqiSquare.XIANGQI_BOTTOM_RIVER,
+                    XiangqiSquare.XIANGQI_BOTTOM_RIVER, XiangqiSquare.XIANGQI_BOTTOM_RIVER, XiangqiSquare.XIANGQI_BOTTOM_RIVER,
+                    XiangqiSquare.XIANGQI_BOTTOM_RIVER, XiangqiSquare.XIANGQI_BOTTOM_RIVER, XiangqiSquare.XIANGQI_RIGHT_EDGE},
+            {XiangqiSquare.XIANGQI_LEFT_EDGE, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL,
+                    XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL,
+                    XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_RIGHT_EDGE},
+            {XiangqiSquare.XIANGQI_LEFT_EDGE, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL,
+                    XiangqiSquare.XIANGQI_TOP_LEFT_PALACE_CORNER, XiangqiSquare.XIANGQI_TOP_PALACE,
+                    XiangqiSquare.XIANGQI_TOP_RIGHT_PALACE_CORNER, XiangqiSquare.XIANGQI_NORMAL,
+                    XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_RIGHT_EDGE},
+            {XiangqiSquare.XIANGQI_LEFT_EDGE, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL,
+                    XiangqiSquare.XIANGQI_LEFT_PALACE, XiangqiSquare.XIANGQI_CENTER_PALACE, XiangqiSquare.XIANGQI_RIGHT_PALACE,
+                    XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_NORMAL, XiangqiSquare.XIANGQI_RIGHT_EDGE},
+            {XiangqiSquare.XIANGQI_BOTTOM_LEFT_CORNER, XiangqiSquare.XIANGQI_BOTTOM_EDGE, XiangqiSquare.XIANGQI_BOTTOM_EDGE,
+                    XiangqiSquare.XIANGQI_BOTTOM_LEFT_PALACE_CORNER_EDGE, XiangqiSquare.XIANGQI_BOTTOM_PALACE_EDGE,
+                    XiangqiSquare.XIANGQI_BOTTOM_RIGHT_PALACE_CORNER_EDGE, XiangqiSquare.XIANGQI_BOTTOM_EDGE,
+                    XiangqiSquare.XIANGQI_BOTTOM_EDGE, XiangqiSquare.XIANGQI_BOTTOM_RIGHT_CORNER}
+    };
     //endregion
 
     //region METHODS
@@ -50,7 +133,7 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
      */
     @Override
     public void displayEmptySquare(Button button, int row, int column) {
-        button.setBackground(new Background(new BackgroundFill((row + column) % 2 == 0 ? primaryColor : secondaryColor, CornerRadii.EMPTY, Insets.EMPTY)));
+        button.setBackground(new Background(squares[row][column].getImage()));
         button.setText(null);
         button.setGraphic(null);
         button.resize(getSquareSize(), getSquareSize());
@@ -67,7 +150,7 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
      */
     @Override
     public void displayFilledSquare(Button button, int row, int column, ChessPiece piece) {
-        button.setBackground(new Background(new BackgroundFill((row + column) % 2 == 0 ? primaryColor : secondaryColor, CornerRadii.EMPTY, Insets.EMPTY)));
+        button.setBackground(new Background(squares[row][column].getImage()));
         button.setText(piece.getLabel());
         // button.setGraphic(new ImageView((((ChessIcon) piece.getIcon()).getImage())));
         button.resize(getSquareSize(), getSquareSize());
@@ -87,15 +170,12 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
     public void highlightSquare(boolean highlight, Button button, int row, int column, ChessPiece piece) {
         ArrayList<BackgroundFill> fills = new ArrayList<>(button.getBackground().getFills());
         fills.add(new BackgroundFill(highlightColor, CornerRadii.EMPTY, Insets.EMPTY));
-
         if (highlight) {
-            if (piece == null)
-                button.setBackground(new Background(fills.toArray(new BackgroundFill[0])));
-            else {
-                button.setBackground(new Background(fills.toArray(new BackgroundFill[0])));
+            if (piece != null) {
                 button.setText(piece.getLabel());
                 // button.setGraphic(new ImageView((((ChessIcon) piece.getIcon()).getImage())));
             }
+            button.setBackground(new Background(fills, button.getBackground().getImages()));
         } else if (piece == null)
             displayEmptySquare(button, row, column);
         else
@@ -111,7 +191,7 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
      */
     @Override
     public boolean shouldDisplayPossibleMoves() {
-        return true;
+        return false;
     }
     //endregion
 }
