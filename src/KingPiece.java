@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author Nobel Zhou
  * @version 1.0, 12/2/20
  */
-public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMove {
+public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMove, CenterPiece {
 
     //region CONSTRUCTORS
     /**

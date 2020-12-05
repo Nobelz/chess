@@ -313,51 +313,6 @@ public class SwingChessBoard implements ChessBoard {
     }
 
     /**
-     * <p>Returns <code>true</code> if a particular square is threatened by an opposing piece.</p>
-     *
-     * @param row       the row of the square
-     * @param column    the column of the square
-     * @param piece     an opposing piece
-     * @return          <code>true</code> if the square can be attacked by a piece of an opposing side
-     * @since 1.0
-     */
-    public boolean squareThreatened(int row, int column, ChessPiece piece) {
-        for (int i = 0; i < squares.length; i++) {
-            for (int j = 0; j < squares[i].length; j++) {
-                if (hasPiece(i, j) && getPiece(i, j).getSide() != piece.getSide() &&
-                        getPiece(i, j).isLegalCaptureMove(row, column))
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * <p>Returns a <code>KingPiece</code> that represents the central piece of the game, based on the passed in
-     * piece's side.</p>
-     *
-     * @param piece a piece of the game that has the same side as the central piece
-     * @return      the central piece of the same side
-     * @since 1.0
-     */
-    @Override
-    public KingPiece getCentralPiece(ChessPiece piece) {
-        // Stores the king piece of the same side; placeholder needed
-        KingPiece king = null; // This will never return because we always know that a king with the same side will be present
-
-        // Iterates the chess board to look for the same side king piece
-        for (int i = 0; i < getGameRules().getNumRows(); i++) {
-            for (int j = 0; j < getGameRules().getNumColumns(); j++) {
-                // Looks for same side king piece
-                if (hasPiece(i, j) && getPiece(i, j) instanceof KingPiece && getPiece(i, j).getSide().equals(piece.getSide()))
-                    king = (KingPiece) getPiece(i, j);
-            }
-        }
-
-        return king;
-    }
-
-    /**
      * <p>Generates a <code>ChessPosition</code> object for the chessboard position.</p>
      *
      * @return  the <code>ChessPosition</code> for the chessboard

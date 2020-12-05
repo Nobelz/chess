@@ -1,15 +1,14 @@
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 
 /**
  * <p>Represents a chess piece icon.</p>
- * <p></p>All image icons for the chess pieces are attributed to user CBurnett from Wikimedia Commons, which can be found
- * <a href="https://commons.wikimedia.org/wiki/Category:PNG_chess_pieces/Standard_transparent">here</a>,
- * licensed under the <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">Creative Commons Attribution-Share Alike 3.0 Unported</a> license.</p>
  *
  * @author Nobel Zhou (nxz157)
- * @version 2.0, 12/2/20
+ * @version 3.0, 12/4/20
  */
 enum ChessIcon implements Icon {
     WHITE_KNIGHT("WhiteKnight.png"),
@@ -27,7 +26,13 @@ enum ChessIcon implements Icon {
 
     //region FIELDS
     // Stores the icon in an ImageIcon, to be used with Swing implementations
-    private ImageIcon icon = null;
+    private ImageIcon imageIcon = null;
+
+    // Stores the icon in an Image, to be used with JavaFX implementations
+    private Image image = null;
+
+    // Stores the side length of the chess icon, set to 1/20 the width of the screen
+    private final int size = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 20;
     //endregion
 
     //region CONSTRUCTORS
@@ -39,10 +44,9 @@ enum ChessIcon implements Icon {
      */
     ChessIcon(String fileName) {
         try {
-            icon = new ImageIcon(ImageIO.read(getClass().getResource("/images/" + fileName)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            imageIcon = new ImageIcon(ImageIO.read(getClass().getResource("/images/" + fileName)).getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH));
+            image = new Image("/images/" + fileName, size * 0.75, size * 0.75, false, true);
+        } catch (Exception ignored) {}
     }
     //endregion
 
@@ -58,7 +62,7 @@ enum ChessIcon implements Icon {
      */
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
-        icon.paintIcon(c, g, x, y);
+        imageIcon.paintIcon(c, g, x, y);
     }
 
     /**
@@ -69,7 +73,7 @@ enum ChessIcon implements Icon {
      */
     @Override
     public int getIconHeight() {
-        return icon.getIconHeight();
+        return imageIcon.getIconHeight();
     }
 
     /**
@@ -80,7 +84,29 @@ enum ChessIcon implements Icon {
      */
     @Override
     public int getIconWidth() {
-        return icon.getIconWidth();
+        return imageIcon.getIconWidth();
+    }
+
+    /**
+     * <p>Returns an <code>Image</code> representing the icon's image.</p>
+     * <p>Used for JavaFX implementations.</p>
+     *
+     * @return  the icon's image
+     * @since 2.0
+     */
+    public Image getImage() {
+        return image;
+    }
+
+    /**
+     * <p>Returns an <code>ImageIcon</code> representing the icon's image.</p>
+     * <p>Used for Swing implementations.</p>
+     *
+     * @return  the icon's image
+     * @since 2.0
+     */
+    public ImageIcon getImageIcon() {
+        return imageIcon;
     }
     //endregion
 }

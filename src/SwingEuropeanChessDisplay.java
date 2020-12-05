@@ -12,10 +12,10 @@ public class SwingEuropeanChessDisplay implements SwingChessBoardDisplay {
 
     //region FIELDS
     // Stores the primary color of the chessboard
-    public static Color primaryColor = Color.red;
+    public static Color primaryColor = new Color(184, 139, 74);
 
     // Stores the secondary color of the checkerboard
-    public static Color secondaryColor = Color.black;
+    public static Color secondaryColor = new Color(227, 193, 111);
 
     // Stores the color of the SOUTH player
     public static Color southPlayerColor = Color.yellow;
@@ -75,7 +75,7 @@ public class SwingEuropeanChessDisplay implements SwingChessBoardDisplay {
         }
 
         button.setBackground(pieceColor);
-        button.setIcon((Icon) piece.getIcon());
+        button.setIcon(((ChessIcon) piece.getIcon()).getImageIcon());
     }
 
     /**

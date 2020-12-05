@@ -83,27 +83,6 @@ public interface ChessBoard {
     ChessPiece getPiece(int row, int column);
 
     /**
-     * <p>Checks if the <code>ChessPiece</code> in question is threatened by any of the chess pieces of the
-     * opposing side.</p>
-     *
-     * @param row       the row of the chessboard
-     * @param column    the column of the chessboard
-     * @param piece     the chess piece that is possibly threatened
-     * @return          <code>true</code> if the chess piece is threatened by the opposing side's pieces
-     */
-    boolean squareThreatened(int row, int column, ChessPiece piece);
-
-    /**
-     * <p>Returns a <code>ChessPiece</code> that represents the central piece of the game, based on the passed in
-     * piece's side.</p>
-     *
-     * @param piece a piece of the game that has the same side as the central piece
-     * @return      the central piece of the same side
-     * @since 1.0
-     */
-    ChessPiece getCentralPiece(ChessPiece piece);
-
-    /**
      * <p>Generates a <code>ChessPosition</code> object for the chessboard position.</p>
      *
      * @return  the <code>ChessPosition</code> for the chessboard
@@ -130,5 +109,46 @@ public interface ChessBoard {
      * @since 1.0
      */
     default void invokePromotion(ChessPiece piece) {}
+
+    /**
+     * <p>Returns a <code>ChessPiece</code> that represents the central piece of the game, based on the passed in
+     * piece's side.</p>
+     *
+     * @param piece a piece of the game that has the same side as the central piece
+     * @return      the central piece of the same side
+     * @since 1.0
+     */
+    default ChessPiece getCentralPiece(ChessPiece piece) {
+        // Iterates the chess board to look for the same side king piece
+        for (int i = 0; i < getGameRules().getNumRows(); i++) {
+            for (int j = 0; j < getGameRules().getNumColumns(); j++) {
+                // Looks for same side king piece
+                if (hasPiece(i, j) && getPiece(i, j) instanceof CenterPiece && getPiece(i, j).getSide().equals(piece.getSide()))
+                    return getPiece(i, j);
+            }
+        }
+
+        return null; // Central piece not found
+    }
+
+    /**
+     * <p>Checks if the <code>ChessPiece</code> in question is threatened by any of the chess pieces of the
+     * opposing side.</p>
+     *
+     * @param row       the row of the chessboard
+     * @param column    the column of the chessboard
+     * @param piece     the chess piece that is possibly threatened
+     * @return          <code>true</code> if the chess piece is threatened by the opposing side's pieces
+     */
+    default boolean squareThreatened(int row, int column, ChessPiece piece) {
+        for (int i = 0; i < getGameRules().getNumRows(); i++) {
+            for (int j = 0; j < getGameRules().getNumColumns(); j++) {
+                if (hasPiece(i, j) && getPiece(i, j).getSide() != piece.getSide() &&
+                        getPiece(i, j).isLegalCaptureMove(row, column))
+                    return true;
+            }
+        }
+        return false;
+    }
     //endregion
 }
