@@ -119,6 +119,9 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
                     XiangqiSquare.XIANGQI_BOTTOM_RIGHT_PALACE_CORNER_EDGE, XiangqiSquare.XIANGQI_BOTTOM_EDGE,
                     XiangqiSquare.XIANGQI_BOTTOM_EDGE, XiangqiSquare.XIANGQI_BOTTOM_RIGHT_CORNER}
     };
+
+    // Stores the highlight background image
+    private final BackgroundImage highlightImage = new BackgroundImage(new Image("/images/xiangqi_squares/Highlight.png", getSquareSize(), getSquareSize(), false, true), null, null, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
     //endregion
 
     //region METHODS
@@ -167,10 +170,11 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
     public void highlightSquare(boolean highlight, Button button, int row, int column, ChessPiece piece) {
         ArrayList<BackgroundFill> fills = new ArrayList<>(button.getBackground().getFills());
         fills.add(new BackgroundFill(highlightColor, CornerRadii.EMPTY, Insets.EMPTY));
+        ArrayList<BackgroundImage> images = new ArrayList<>(button.getBackground().getImages());
+        images.add(highlightImage);
+
         if (highlight) {
-            if (piece != null)
-                button.setGraphic(new ImageView((((ChessIcon) piece.getIcon()).getImage())));
-            button.setBackground(new Background(fills, button.getBackground().getImages()));
+            button.setBackground(new Background(fills, images));
         } else if (piece == null)
             displayEmptySquare(button, row, column);
         else
@@ -186,7 +190,7 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
      */
     @Override
     public boolean shouldDisplayPossibleMoves() {
-        return false;
+        return true;
     }
     //endregion
 }
