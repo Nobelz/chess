@@ -18,6 +18,6 @@ public interface CanMove {
     default boolean isValidMove(int row, int column, ChessPiece cp) {
         return row < cp.getChessBoard().getGameRules().getNumRows() &&
                 column < cp.getChessBoard().getGameRules().getNumColumns() &&
-                row >= 0 && column >= 0;
+                row >= 0 && column >= 0 && (row != cp.getRow() || column != cp.getColumn());
     }
 }

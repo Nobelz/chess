@@ -5,9 +5,9 @@ import java.util.ArrayList;
  * <p>Dictates how a xiangqi king can move.</p>
  *
  * @author Nobel Zhou
- * @version 1.0, 12/4/20
+ * @version 1.0, 12/5/20
  */
-public class XiangqiKingPiece extends ChessPiece implements CenterPiece, CanSingleStraightMove, CanPalaceMove {
+public class XiangqiKingPiece extends ChessPiece implements CenterPiece, CanSingleStraightMove, CanPalaceMove, CanFaceKingMove {
 
     //region CONSTRUCTORS
     /**
@@ -49,7 +49,7 @@ public class XiangqiKingPiece extends ChessPiece implements CenterPiece, CanSing
      */
     @Override
     public boolean isLegalCaptureMove(int row, int column) {
-        return isLegalNonCaptureMove(row, column);
+        return isLegalNonCaptureMove(row, column) || isValidFaceKingMove(row, column, this);
     }
 
     /**

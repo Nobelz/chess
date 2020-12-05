@@ -58,6 +58,6 @@ public interface CanStraightMove extends CanMove {
             }
             return true;
         } else
-            return false; // Not a valid diagonal move
+            return false; // Not a valid straight move
     }
 }
