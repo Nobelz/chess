@@ -11,18 +11,32 @@ import java.awt.*;
  * @version 3.0, 12/4/20
  */
 enum ChessIcon implements Icon {
-    WHITE_KNIGHT("WhiteKnight.png"),
-    WHITE_ROOK("WhiteRook.png"),
-    WHITE_QUEEN("WhiteQueen.png"),
-    WHITE_KING("WhiteKing.png"),
-    WHITE_BISHOP("WhiteBishop.png"),
-    WHITE_PAWN("WhitePawn.png"),
-    BLACK_KNIGHT("BlackKnight.png"),
-    BLACK_ROOK("BlackRook.png"),
-    BLACK_QUEEN("BlackQueen.png"),
-    BLACK_KING("BlackKing.png"),
-    BLACK_BISHOP("BlackBishop.png"),
-    BLACK_PAWN("BlackPawn.png");
+    WHITE_KNIGHT("chess_pieces/WhiteKnight.png"),
+    WHITE_ROOK("chess_pieces/WhiteRook.png"),
+    WHITE_QUEEN("chess_pieces/WhiteQueen.png"),
+    WHITE_KING("chess_pieces/WhiteKing.png"),
+    WHITE_BISHOP("chess_pieces/WhiteBishop.png"),
+    WHITE_PAWN("chess_pieces/WhitePawn.png"),
+    BLACK_KNIGHT("chess_pieces/BlackKnight.png"),
+    BLACK_ROOK("chess_pieces/BlackRook.png"),
+    BLACK_QUEEN("chess_pieces/BlackQueen.png"),
+    BLACK_KING("chess_pieces/BlackKing.png"),
+    BLACK_BISHOP("chess_pieces/BlackBishop.png"),
+    BLACK_PAWN("chess_pieces/BlackPawn.png"),
+    BLACK_CANNON("xiangqi_pieces/BlackCannon.png"),
+    BLACK_CHARIOT("xiangqi_pieces/BlackChariot.png"),
+    BLACK_ELEPHANT("xiangqi_pieces/BlackElephant.png"),
+    BLACK_GENERAL("xiangqi_pieces/BlackGeneral.png"),
+    BLACK_GUARD("xiangqi_pieces/BlackGuard.png"),
+    BLACK_HORSE("xiangqi_pieces/BlackHorse.png"),
+    BLACK_SOLDIER("xiangqi_pieces/BlackSoldier.png"),
+    RED_CANNON("xiangqi_pieces/RedCannon.png"),
+    RED_CHARIOT("xiangqi_pieces/RedChariot.png"),
+    RED_ELEPHANT("xiangqi_pieces/RedElephant.png"),
+    RED_GENERAL("xiangqi_pieces/RedGeneral.png"),
+    RED_GUARD("xiangqi_pieces/RedGuard.png"),
+    RED_HORSE("xiangqi_pieces/RedHorse.png"),
+    RED_SOLDIER("xiangqi_pieces/RedSoldier.png");
 
     //region FIELDS
     // Stores the icon in an ImageIcon, to be used with Swing implementations
@@ -37,15 +51,15 @@ enum ChessIcon implements Icon {
 
     //region CONSTRUCTORS
     /**
-     * <p>Creates a <code>ChessIcon</code> from a file name.</p>
+     * <p>Creates a <code>ChessIcon</code> from a file path.</p>
      *
-     * @param fileName  the file name of the icon image
+     * @param filePath  the file path of the icon image
      * @since 1.0
      */
-    ChessIcon(String fileName) {
+    ChessIcon(String filePath) {
         try {
-            imageIcon = new ImageIcon(ImageIO.read(getClass().getResource("/images/" + fileName)).getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH));
-            image = new Image("/images/" + fileName, size * 0.75, size * 0.75, false, true);
+            imageIcon = new ImageIcon(ImageIO.read(getClass().getResource("/images/" + filePath)).getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH));
+            image = new Image("/images/" + filePath, size * 0.75, size * 0.75, false, true);
         } catch (Exception ignored) {}
     }
     //endregion

@@ -373,11 +373,11 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
 
             switch (result) {
                 case CHECKMATE:
-                    resultText = (side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East" + " has won the game by checkmate!";
+                    resultText = ((side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East") + " has won the game by checkmate!";
                     break;
                 case STALEMATE:
                     if (side != null) {
-                        resultText = (side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East" + " has won the game by stalemate!";
+                        resultText = ((side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East") + " has won the game by stalemate!";
                     } else
                         resultText = "The game is a draw by stalemate.";
                     break;

@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
 
     //region NESTED TYPES
-
     /**
      * <p>Represents a Xiangqi square image.</p>
      *
@@ -64,7 +63,7 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
          * @since 1.0
          */
         XiangqiSquare(String fileName) {
-            image = new BackgroundImage(new Image("/images/xiangqi/" + fileName, size, size, false, true), null, null, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+            image = new BackgroundImage(new Image("/images/xiangqi_squares/" + fileName, size, size, false, true), null, null, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
         }
 
         /**
@@ -134,7 +133,6 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
     @Override
     public void displayEmptySquare(Button button, int row, int column) {
         button.setBackground(new Background(squares[row][column].getImage()));
-        button.setText(null);
         button.setGraphic(null);
         button.resize(getSquareSize(), getSquareSize());
     }
@@ -151,8 +149,7 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
     @Override
     public void displayFilledSquare(Button button, int row, int column, ChessPiece piece) {
         button.setBackground(new Background(squares[row][column].getImage()));
-        button.setText(piece.getLabel());
-        // button.setGraphic(new ImageView((((ChessIcon) piece.getIcon()).getImage())));
+        button.setGraphic(new ImageView((((ChessIcon) piece.getIcon()).getImage())));
         button.resize(getSquareSize(), getSquareSize());
     }
 
@@ -171,10 +168,8 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
         ArrayList<BackgroundFill> fills = new ArrayList<>(button.getBackground().getFills());
         fills.add(new BackgroundFill(highlightColor, CornerRadii.EMPTY, Insets.EMPTY));
         if (highlight) {
-            if (piece != null) {
-                button.setText(piece.getLabel());
-                // button.setGraphic(new ImageView((((ChessIcon) piece.getIcon()).getImage())));
-            }
+            if (piece != null)
+                button.setGraphic(new ImageView((((ChessIcon) piece.getIcon()).getImage())));
             button.setBackground(new Background(fills, button.getBackground().getImages()));
         } else if (piece == null)
             displayEmptySquare(button, row, column);

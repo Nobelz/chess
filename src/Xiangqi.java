@@ -376,42 +376,42 @@ public class Xiangqi implements ChessGame {
     public void startGame(ChessBoard chessBoard) {
         // Soldiers
         for (int i = 0; i < 9; i += 2) {
-            chessBoard.addPiece(new SoldierPiece(ChessGame.Side.SOUTH, chessBoard, null, 6, i), 6, i);
-            chessBoard.addPiece(new SoldierPiece(ChessGame.Side.NORTH, chessBoard, null, 3, i), 3, i);
+            chessBoard.addPiece(new SoldierPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_SOLDIER, 6, i), 6, i);
+            chessBoard.addPiece(new SoldierPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_SOLDIER, 3, i), 3, i);
         }
 
         // Rooks
-        chessBoard.addPiece(new RookPiece(ChessGame.Side.SOUTH, chessBoard, null, 9, 0), 9, 0);
-        chessBoard.addPiece(new RookPiece(ChessGame.Side.SOUTH, chessBoard, null, 9, 8), 9, 8);
-        chessBoard.addPiece(new RookPiece(ChessGame.Side.NORTH, chessBoard, null, 0, 0), 0, 0);
-        chessBoard.addPiece(new RookPiece(ChessGame.Side.NORTH, chessBoard, null, 0, 8), 0, 8);
+        chessBoard.addPiece(new RookPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_CHARIOT, 9, 0), 9, 0);
+        chessBoard.addPiece(new RookPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_CHARIOT, 9, 8), 9, 8);
+        chessBoard.addPiece(new RookPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_CHARIOT, 0, 0), 0, 0);
+        chessBoard.addPiece(new RookPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_CHARIOT, 0, 8), 0, 8);
 
         // Cannons
-        chessBoard.addPiece(new CannonPiece(ChessGame.Side.SOUTH, chessBoard, null, 7, 1), 7, 1);
-        chessBoard.addPiece(new CannonPiece(ChessGame.Side.SOUTH, chessBoard, null, 7, 7), 7, 7);
-        chessBoard.addPiece(new CannonPiece(ChessGame.Side.NORTH, chessBoard, null, 2, 1), 2, 1);
-        chessBoard.addPiece(new CannonPiece(ChessGame.Side.NORTH, chessBoard, null, 2, 7), 2, 7);
+        chessBoard.addPiece(new CannonPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_CANNON, 7, 1), 7, 1);
+        chessBoard.addPiece(new CannonPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_CANNON, 7, 7), 7, 7);
+        chessBoard.addPiece(new CannonPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_CANNON, 2, 1), 2, 1);
+        chessBoard.addPiece(new CannonPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_CANNON, 2, 7), 2, 7);
 
         // Horses
-        chessBoard.addPiece(new HorsePiece(ChessGame.Side.SOUTH, chessBoard, null, 9, 1), 9, 1);
-        chessBoard.addPiece(new HorsePiece(ChessGame.Side.SOUTH, chessBoard, null, 9, 7), 9, 7);
-        chessBoard.addPiece(new HorsePiece(ChessGame.Side.NORTH, chessBoard, null, 0, 1), 0, 1);
-        chessBoard.addPiece(new HorsePiece(ChessGame.Side.NORTH, chessBoard, null, 0, 7), 0, 7);
+        chessBoard.addPiece(new HorsePiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_HORSE, 9, 1), 9, 1);
+        chessBoard.addPiece(new HorsePiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_HORSE, 9, 7), 9, 7);
+        chessBoard.addPiece(new HorsePiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_HORSE, 0, 1), 0, 1);
+        chessBoard.addPiece(new HorsePiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_HORSE, 0, 7), 0, 7);
 
         // Elephants
-        chessBoard.addPiece(new ElephantPiece(ChessGame.Side.SOUTH, chessBoard, null, 9, 2), 9, 2);
-        chessBoard.addPiece(new ElephantPiece(ChessGame.Side.SOUTH, chessBoard, null, 9, 6), 9, 6);
-        chessBoard.addPiece(new ElephantPiece(ChessGame.Side.NORTH, chessBoard, null, 0, 2), 0, 2);
-        chessBoard.addPiece(new ElephantPiece(ChessGame.Side.NORTH, chessBoard, null, 0, 6), 0, 6);
+        chessBoard.addPiece(new ElephantPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_ELEPHANT, 9, 2), 9, 2);
+        chessBoard.addPiece(new ElephantPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_ELEPHANT, 9, 6), 9, 6);
+        chessBoard.addPiece(new ElephantPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_ELEPHANT, 0, 2), 0, 2);
+        chessBoard.addPiece(new ElephantPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_ELEPHANT, 0, 6), 0, 6);
 
         // Guards
-        chessBoard.addPiece(new GuardPiece(ChessGame.Side.SOUTH, chessBoard, null, 9, 3), 9, 3);
-        chessBoard.addPiece(new GuardPiece(ChessGame.Side.SOUTH, chessBoard, null, 9, 5), 9, 5);
-        chessBoard.addPiece(new GuardPiece(ChessGame.Side.NORTH, chessBoard, null, 0, 3), 0, 3);
-        chessBoard.addPiece(new GuardPiece(ChessGame.Side.NORTH, chessBoard, null, 0, 5), 0, 5);
+        chessBoard.addPiece(new GuardPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_GUARD, 9, 3), 9, 3);
+        chessBoard.addPiece(new GuardPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_GUARD, 9, 5), 9, 5);
+        chessBoard.addPiece(new GuardPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_GUARD, 0, 3), 0, 3);
+        chessBoard.addPiece(new GuardPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_GUARD, 0, 5), 0, 5);
 
         // Kings
-        chessBoard.addPiece(new XiangqiKingPiece(ChessGame.Side.SOUTH, chessBoard, null, 9, 4), 9, 4);
-        chessBoard.addPiece(new XiangqiKingPiece(ChessGame.Side.NORTH, chessBoard, null, 0, 4), 0, 4);
+        chessBoard.addPiece(new XiangqiKingPiece(ChessGame.Side.SOUTH, chessBoard, ChessIcon.RED_GENERAL, 9, 4), 9, 4);
+        chessBoard.addPiece(new XiangqiKingPiece(ChessGame.Side.NORTH, chessBoard, ChessIcon.BLACK_GENERAL, 0, 4), 0, 4);
     }
 }
