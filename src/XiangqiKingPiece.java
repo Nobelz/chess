@@ -3,18 +3,19 @@
  * <p>Dictates how a xiangqi king can move.</p>
  *
  * @author Nobel Zhou
- * @version 1.0, 12/2/20
+ * @version 1.0, 12/4/20
  */
 public class XiangqiKingPiece extends ChessPiece implements CenterPiece, CanSingleStraightMove, CanPalaceMove {
+
     //region CONSTRUCTORS
     /**
-     * <p>Initializes a king piece based on the given side, chess board, and location.</p>
+     * <p>Initializes a xiangqi king piece based on the given side, chess board, and location.</p>
      *
-     * @param side          the king piece's side
-     * @param chessBoard    the chess board the king piece is on
-     * @param icon          the king piece's icon
-     * @param row           the king piece's starting row
-     * @param column        the king piece's starting column
+     * @param side          the xiangqi king piece's side
+     * @param chessBoard    the chess board the xiangqi king piece is on
+     * @param icon          the xiangqi king piece's icon
+     * @param row           the xiangqi king piece's starting row
+     * @param column        the xiangqi king piece's starting column
      * @since 1.0
      */
     public XiangqiKingPiece(ChessGame.Side side, ChessBoard chessBoard, ChessIcon icon, int row, int column) {
