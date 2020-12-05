@@ -110,6 +110,7 @@ public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMov
      * @return  <code>true</code> if the king is currently in check
      * @since 1.0
      */
+    @Override
     public boolean isInCheck() {
         return getChessBoard().squareThreatened(getRow(), getColumn(), this);
     }
