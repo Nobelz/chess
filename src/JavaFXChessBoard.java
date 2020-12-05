@@ -358,7 +358,6 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
      */
     @Override
     public void terminate(ChessResult result, ChessGame.Side side) {
-
         Platform.runLater(() -> {
             // Stores the popup window
             Alert resultDialog = new Alert(Alert.AlertType.NONE, "", ButtonType.OK);
@@ -368,16 +367,13 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
 
             String resultText;
 
-            // Stores the player who won
-            final String s = (side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East";
-
             switch (result) {
                 case CHECKMATE:
-                    resultText = s + " has won the game by checkmate!";
+                    resultText = (side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East" + " has won the game by checkmate!";
                     break;
                 case STALEMATE:
                     if (side != null) {
-                        resultText = s + " has won the game by stalemate!";
+                        resultText = (side.equals(ChessGame.Side.NORTH)) ? "North" : (side.equals(ChessGame.Side.SOUTH)) ? "South" : (side.equals(ChessGame.Side.WEST)) ? "West" : "East" + " has won the game by stalemate!";
                     } else
                         resultText = "The game is a draw by stalemate.";
                     break;
