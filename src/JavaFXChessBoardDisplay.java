@@ -41,6 +41,18 @@ public interface JavaFXChessBoardDisplay {
      * @since 1.0
      */
     void highlightSquare(boolean highlight, Button button, int row, int column, ChessPiece piece);
+
+    /**
+     * <p>Highlights the central piece in red if it's in check.</p>
+     *
+     * @param highlight     if the square should be highlighted or not
+     * @param button        the button that is used for the chessboard square
+     * @param row           the row of this square on the board
+     * @param column        the column of this square on the board
+     * @param piece         the central piece
+     * @since 1.0
+     */
+    void highlightCheckSquare(boolean highlight, Button button, int row, int column, CenterPiece piece);
     //endregion
 
     //region DEFAULT METHODS

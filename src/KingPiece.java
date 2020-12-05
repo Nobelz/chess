@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author Nobel Zhou
  * @version 1.0, 12/2/20
  */
-public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMove, CenterPiece {
+public class KingPiece extends CenterPiece implements CanSingleMove, CanCastleMove {
 
     //region CONSTRUCTORS
     /**
@@ -105,17 +105,6 @@ public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMov
     }
 
     /**
-     * <p>Returns a boolean representing if the king piece is currently in check.</p>
-     *
-     * @return  <code>true</code> if the king is currently in check
-     * @since 1.0
-     */
-    @Override
-    public boolean isInCheck() {
-        return getChessBoard().squareThreatened(getRow(), getColumn(), this);
-    }
-
-    /**
      * <p>Returns an array of <code>KingPiece</code>s representing the opposing kings.</p>
      * <p>There should be at least 1 opposing king, but in the event of 4 player chess, there will be more than 1;
      * thus, this returns an array.</p>
@@ -123,6 +112,7 @@ public class KingPiece extends ChessPiece implements CanSingleMove, CanCastleMov
      * @return  the opposing kings
      * @since 1.0
      */
+    @Override
     public KingPiece[] getOpposingKings() {
         // Stores all the opposing kings; note that since we don't know how many opposing kings there are, we have to use an ArrayList
         ArrayList<KingPiece> opposingKings = new ArrayList<>();

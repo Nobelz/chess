@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author Nobel Zhou
  * @version 1.0, 12/5/20
  */
-public class XiangqiKingPiece extends ChessPiece implements CenterPiece, CanSingleStraightMove, CanPalaceMove, CanFaceKingMove {
+public class XiangqiKingPiece extends CenterPiece implements CanSingleStraightMove, CanPalaceMove, CanFaceKingMove {
 
     //region CONSTRUCTORS
     /**
@@ -64,24 +64,30 @@ public class XiangqiKingPiece extends ChessPiece implements CenterPiece, CanSing
     }
 
     /**
-     * <p>Returns a <code>XiangqiKingPiece</code>s representing the opposing xiangqi king.</p>
+     * <p>Returns an array of <code>XiangqiKingPiece</code>s representing the opposing kings.</p>
+     * <p>For xiangqi, there will only be 1 opposing king.</p>
      *
-     * @return  the opposing xiangqi king
+     * @return  the opposing kings
      * @since 1.0
      */
-    public XiangqiKingPiece getOpposingKing() {
+    @Override
+    public XiangqiKingPiece[] getOpposingKings() {
+        // Stores all the opposing kings; note that since we don't know how many opposing kings there are, we have to use an ArrayList
+        ArrayList<XiangqiKingPiece> opposingKings = new ArrayList<>();
+
         // Iterates the chess board to look for the opposite side xiangqi king piece
         for (int i = 0; i < getChessBoard().getGameRules().getNumRows(); i++) {
             for (int j = 0; j < getChessBoard().getGameRules().getNumColumns(); j++) {
                 // Looks for opposite side king piece
                 try {
                     if (!getChessBoard().getPiece(i, j).getSide().equals(getSide()))
-                        return (XiangqiKingPiece) getChessBoard().getPiece(i, j);
+                        opposingKings.add((XiangqiKingPiece) getChessBoard().getPiece(i, j));
                 } catch (Exception ignored) {} // Not a XiangqiKingPiece or piece does not exist at that location; continue searching
             }
         }
 
-        return null; // XiangqiKingPiece not found
+        // Returns in array form
+        return opposingKings.toArray(new XiangqiKingPiece[0]);
     }
     //endregion
 }

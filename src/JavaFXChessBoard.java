@@ -1,17 +1,15 @@
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.scene.Node;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.event.ActionEvent;
 
 /**
  * <p>Represents a <code>ChessBoard</code>> that uses Java FX implementation.</p<
@@ -189,6 +187,18 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
 
                 // Checks to see if a move was made; if it was, ending conditions are checked
                 if (moveMade) {
+                    // Stores the central piece of the side that just played
+                    CenterPiece king = getCentralPiece(pieces[row][col]);
+
+                    // Un-highlights the central piece because it is no longer in check, if it was in check before
+                    boardDisplay.highlightCheckSquare(false, squares[king.getRow()][king.getColumn()], king.getRow(), king.getColumn(), king);
+
+                    // Highlights the opposing kings or xiangqi kings if the piece is in check
+                    for (CenterPiece c: king.getOpposingKings()) {
+                        if (c.isInCheck())
+                            boardDisplay.highlightCheckSquare(true, squares[c.getRow()][c.getColumn()], c.getRow(), c.getColumn(), c);
+                    }
+
                     // Runs code on different thread to it from blocking the Application Thread
                     new Thread(new Task<Void>() {
                         /**
@@ -203,6 +213,7 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
                          */
                         @Override
                         protected Void call() {
+                            // Checks for ending conditions
                             getGameRules().handleEndConditions(JavaFXChessBoard.this, getCentralPiece(pieces[row][col]));
                             return null;
                         }

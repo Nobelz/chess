@@ -211,7 +211,7 @@ public class EuropeanChess implements ChessGame {
             }
 
             // Checks to see if the king is in check
-            boolean isInCheck = ((KingPiece) cp.getChessBoard().getCentralPiece(cp)).isInCheck();
+            boolean isInCheck = cp.getChessBoard().getCentralPiece(cp).isInCheck();
 
             for (int i = 0; i < moveInstructions.length; i++) {
                 ChessPiece.ProposedMove instruction = moveInstructions[i];

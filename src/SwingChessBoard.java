@@ -355,10 +355,7 @@ public class SwingChessBoard implements ChessBoard {
                     resultText = s + " has won the game by checkmate!";
                     break;
                 case STALEMATE:
-                    if (side != null) {
-                        resultText = s + " has won the game by stalemate!";
-                    } else
-                        resultText = "The game is a draw by stalemate.";
+                    resultText = "The game is a draw by stalemate.";
                     break;
                 case INSUFFICIENT_MATERIAL:
                     resultText = "The game is a draw by insufficient material.";
@@ -447,6 +444,17 @@ public class SwingChessBoard implements ChessBoard {
             promotionWindow.pack();
             promotionWindow.setVisible(true);
         }).start();
+    }
+
+    /**
+     * <p>Main method that runs the Java Swing Indo-European chessboard.</p>
+     *
+     * @param args  main method arguments
+     * @since 1.0
+     */
+    public static void main(String[] args) {
+        EuropeanChess game = new EuropeanChess(ChessGame.Side.SOUTH);
+        game.startGame(new SwingChessBoard(new SwingEuropeanChessDisplay(), game));
     }
 }
 

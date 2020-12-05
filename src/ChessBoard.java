@@ -118,13 +118,13 @@ public interface ChessBoard {
      * @return      the central piece of the same side
      * @since 1.0
      */
-    default ChessPiece getCentralPiece(ChessPiece piece) {
+    default CenterPiece getCentralPiece(ChessPiece piece) {
         // Iterates the chess board to look for the same side king piece
         for (int i = 0; i < getGameRules().getNumRows(); i++) {
             for (int j = 0; j < getGameRules().getNumColumns(); j++) {
                 // Looks for same side king piece
                 if (hasPiece(i, j) && getPiece(i, j) instanceof CenterPiece && getPiece(i, j).getSide().equals(piece.getSide()))
-                    return getPiece(i, j);
+                    return (CenterPiece) getPiece(i, j);
             }
         }
 

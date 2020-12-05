@@ -1,14 +1,11 @@
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
-import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>Represents the rules for how we want a board to display for a game of Indo-European chess.</p>
@@ -20,25 +17,16 @@ public class JavaFXEuropeanChessDisplay implements JavaFXChessBoardDisplay {
 
     //region FIELDS
     // Stores the primary color of the chessboard
-    public static Color primaryColor = Color.rgb(184, 139, 74);
+    public static BackgroundFill primaryColorFill = new BackgroundFill(Color.rgb(184, 139, 74), CornerRadii.EMPTY, Insets.EMPTY);
 
     // Stores the secondary color of the checkerboard
-    public static Color secondaryColor = Color.rgb(227, 193, 111);
+    public static BackgroundFill secondaryColorFill = new BackgroundFill(Color.rgb(227, 193, 111), CornerRadii.EMPTY, Insets.EMPTY);
 
-    // Stores the color of the SOUTH player
-    public static Color southPlayerColor = Color.YELLOW;
-
-    // Stores the color of the NORTH player
-    public static Color northPlayerColor = Color.GREEN;
-
-    // Stores the color of the EAST player
-    public static Color eastPlayerColor = Color.WHITE;
-
-    // Stores the color of the WEST player
-    public static Color westPlayerColor = Color.GRAY;
+    // Stores the color to highlight a check square
+    public static BackgroundFill checkFill = new BackgroundFill(Color.rgb(255, 0, 0, 0.3), CornerRadii.EMPTY, Insets.EMPTY);
 
     // Stores the color to highlight a square
-    public static Color highlightColor = Color.rgb(0, 0, 255, 0.3);
+    public static BackgroundFill highlightFill = new BackgroundFill(Color.rgb(0, 0, 255, 0.3), CornerRadii.EMPTY, Insets.EMPTY);
     //endregion
 
     //region METHODS
@@ -52,8 +40,7 @@ public class JavaFXEuropeanChessDisplay implements JavaFXChessBoardDisplay {
      */
     @Override
     public void displayEmptySquare(Button button, int row, int column) {
-        button.setBackground(new Background(new BackgroundFill((row + column) % 2 == 0 ? primaryColor : secondaryColor, CornerRadii.EMPTY, Insets.EMPTY)));
-        button.setText(null);
+        button.setBackground(new Background((row + column) % 2 == 0 ? primaryColorFill : secondaryColorFill));
         button.setGraphic(null);
         button.resize(getSquareSize(), getSquareSize());
     }
@@ -69,8 +56,18 @@ public class JavaFXEuropeanChessDisplay implements JavaFXChessBoardDisplay {
      */
     @Override
     public void displayFilledSquare(Button button, int row, int column, ChessPiece piece) {
-        button.setBackground(new Background(new BackgroundFill((row + column) % 2 == 0 ? primaryColor : secondaryColor, CornerRadii.EMPTY, Insets.EMPTY)));
-        button.setText(null);
+        // Stores the background fills
+        ArrayList<BackgroundFill> fills = new ArrayList<>(button.getBackground().getFills());
+
+        // Removes the highlight
+        fills.remove(highlightFill);
+
+        // Checks if there should be a check highlight around the piece
+        if (fills.remove(checkFill))
+            button.setBackground(new Background(((row + column) % 2 == 0 ? primaryColorFill : secondaryColorFill), checkFill));
+        else
+            button.setBackground(new Background((row + column) % 2 == 0 ? primaryColorFill : secondaryColorFill));
+
         button.setGraphic(new ImageView((((ChessIcon) piece.getIcon()).getImage())));
         button.resize(getSquareSize(), getSquareSize());
     }
@@ -88,20 +85,37 @@ public class JavaFXEuropeanChessDisplay implements JavaFXChessBoardDisplay {
     @Override
     public void highlightSquare(boolean highlight, Button button, int row, int column, ChessPiece piece) {
         ArrayList<BackgroundFill> fills = new ArrayList<>(button.getBackground().getFills());
-        fills.add(new BackgroundFill(highlightColor, CornerRadii.EMPTY, Insets.EMPTY));
+        fills.add(highlightFill);
 
         if (highlight) {
-            if (piece == null)
-                button.setBackground(new Background(fills.toArray(new BackgroundFill[0])));
-            else {
-                button.setBackground(new Background(fills.toArray(new BackgroundFill[0])));
-                button.setGraphic(new ImageView((((ChessIcon) piece.getIcon()).getImage())));
-            }
+            button.setBackground(new Background(fills.toArray(new BackgroundFill[0])));
         } else if (piece == null)
             displayEmptySquare(button, row, column);
         else
             displayFilledSquare(button, row, column, piece);
         button.resize(getSquareSize(), getSquareSize());
+    }
+
+    /**
+     * <p>Highlights the central piece in red if it's in check.</p>
+     *
+     * @param highlight if the square should be highlighted or not
+     * @param button    the button that is used for the chessboard square
+     * @param row       the row of this square on the board
+     * @param column    the column of this square on the board
+     * @param piece     the central piece
+     * @since 1.0
+     */
+    @Override
+    public void highlightCheckSquare(boolean highlight, Button button, int row, int column, CenterPiece piece) {
+        if (highlight) {
+            ArrayList<BackgroundFill> fills = new ArrayList<>(button.getBackground().getFills());
+            fills.add(checkFill);
+
+            button.setBackground(new Background(fills.toArray(new BackgroundFill[0])));
+        } else {
+            button.setBackground(new Background((row + column) % 2 == 0 ? primaryColorFill : secondaryColorFill));
+        }
     }
 
     /**

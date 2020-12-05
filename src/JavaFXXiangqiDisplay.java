@@ -1,9 +1,10 @@
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundSize;
 
 import java.util.ArrayList;
 
@@ -51,7 +52,7 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
         XIANGQI_RIGHT_PALACE("XiangqiRightPalace.png");
 
         // Stores the XiangqiSquare as a BackgroundImage
-        private BackgroundImage image;
+        private final BackgroundImage image;
 
         // Stores the side length of the xiangqi square image, set to 1/20 the width of the screen
         private final int size = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 20;
@@ -79,9 +80,6 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
     //endregion
 
     //region FIELDS
-    // Stores the color to highlight a square
-    public static Color highlightColor = Color.rgb(0, 0, 255, 0.3);
-
     // Stores the images used to paint the chessboard
     private final XiangqiSquare[][] squares = {
             {XiangqiSquare.XIANGQI_TOP_LEFT_CORNER, XiangqiSquare.XIANGQI_TOP_EDGE, XiangqiSquare.XIANGQI_TOP_EDGE,
@@ -122,6 +120,9 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
 
     // Stores the highlight background image
     private final BackgroundImage highlightImage = new BackgroundImage(new Image("/images/xiangqi_squares/Highlight.png", getSquareSize(), getSquareSize(), false, true), null, null, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+
+    // Stores the check background image
+    private final BackgroundImage checkImage = new BackgroundImage(new Image("/images/xiangqi_squares/Check.png", getSquareSize(), getSquareSize(), false, true), null, null, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
     //endregion
 
     //region METHODS
@@ -151,7 +152,18 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
      */
     @Override
     public void displayFilledSquare(Button button, int row, int column, ChessPiece piece) {
-        button.setBackground(new Background(squares[row][column].getImage()));
+        // Stores the background images
+        ArrayList<BackgroundImage> images = new ArrayList<>(button.getBackground().getImages());
+
+        // Removes the highlight
+        images.remove(highlightImage);
+
+        // Checks if there should be a check highlight around the piece
+        if (images.remove(checkImage))
+            button.setBackground(new Background(squares[row][column].getImage(), checkImage)); // Adds check highlight again
+        else
+            button.setBackground(new Background(squares[row][column].getImage()));
+
         button.setGraphic(new ImageView((((ChessIcon) piece.getIcon()).getImage())));
         button.resize(getSquareSize(), getSquareSize());
     }
@@ -168,18 +180,38 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
      */
     @Override
     public void highlightSquare(boolean highlight, Button button, int row, int column, ChessPiece piece) {
-        ArrayList<BackgroundFill> fills = new ArrayList<>(button.getBackground().getFills());
-        fills.add(new BackgroundFill(highlightColor, CornerRadii.EMPTY, Insets.EMPTY));
         ArrayList<BackgroundImage> images = new ArrayList<>(button.getBackground().getImages());
         images.add(highlightImage);
 
         if (highlight) {
-            button.setBackground(new Background(fills, images));
+            button.setBackground(new Background(images.toArray(new BackgroundImage[0])));
         } else if (piece == null)
             displayEmptySquare(button, row, column);
         else
             displayFilledSquare(button, row, column, piece);
         button.resize(getSquareSize(), getSquareSize());
+    }
+
+    /**
+     * <p>Highlights the central piece in red if it's in check.</p>
+     *
+     * @param highlight if the square should be highlighted or not
+     * @param button    the button that is used for the chessboard square
+     * @param row       the row of this square on the board
+     * @param column    the column of this square on the board
+     * @param piece     the central piece
+     * @since 1.0
+     */
+    @Override
+    public void highlightCheckSquare(boolean highlight, Button button, int row, int column, CenterPiece piece) {
+        if (highlight) {
+            ArrayList<BackgroundImage> images = new ArrayList<>(button.getBackground().getImages());
+            images.add(checkImage);
+
+            button.setBackground(new Background(images.toArray(new BackgroundImage[0])));
+        } else {
+            button.setBackground(new Background(squares[row][column].getImage()));
+        }
     }
 
     /**

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * <p>Represents the ruleset for a game of Xiangqi.</p>
@@ -204,7 +203,7 @@ public class Xiangqi implements ChessGame {
             }
 
             // Checks to see if the king is in check
-            boolean isInCheck = ((XiangqiKingPiece) cp.getChessBoard().getCentralPiece(cp)).isInCheck();
+            boolean isInCheck = cp.getChessBoard().getCentralPiece(cp).isInCheck();
 
             for (int i = 0; i < moveInstructions.length; i++) {
                 ChessPiece.ProposedMove instruction = moveInstructions[i];
@@ -253,7 +252,7 @@ public class Xiangqi implements ChessGame {
     @Override
     public void handleEndConditions(ChessBoard board, ChessPiece centralPiece) {
         // Gets the king piece of the player's whose turn it is now
-        XiangqiKingPiece king = ((XiangqiKingPiece) centralPiece).getOpposingKing();
+        XiangqiKingPiece king = ((XiangqiKingPiece) centralPiece).getOpposingKings()[0];
 
         // Checks for ending conditions
         checkCheckmate(king);
@@ -269,7 +268,7 @@ public class Xiangqi implements ChessGame {
      */
     private void checkCheckmate(XiangqiKingPiece king) {
         if (cannotMove(king) && king.isInCheck())
-            king.getChessBoard().terminate(ChessResult.CHECKMATE, king.getOpposingKing().getSide());
+            king.getChessBoard().terminate(ChessResult.CHECKMATE, king.getOpposingKings()[0].getSide());
     }
 
     /**
@@ -279,7 +278,7 @@ public class Xiangqi implements ChessGame {
      */
     private void checkStalemate(XiangqiKingPiece king) {
         if (cannotMove(king) && !king.isInCheck())
-            king.getChessBoard().terminate(ChessResult.STALEMATE, king.getOpposingKing().getSide());
+            king.getChessBoard().terminate(ChessResult.STALEMATE, king.getOpposingKings()[0].getSide());
     }
 
     /**
