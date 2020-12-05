@@ -12,8 +12,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 /**
- * <p>Represents a <code>ChessBoard</code>> that uses Java FX implementation.</p<
- * <p>The Java FX chessboard uses a <code>JavaFXChessDisplay</code> to determine how
+ * <p>Represents a <code>ChessBoard</code>> that uses JavaFX implementation.</p<
+ * <p>The JavaFX chessboard uses a <code>JavaFXChessDisplay</code> to determine how
  * the chessboard should be displayed.</p>
  * <p>The chessboard uses a <code>ChessGame</code> object to determine how the chess
  * game should be played.</p>
@@ -52,7 +52,7 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
     }
 
     /**
-     * <p>Sets up the chessboard on the Application Thread.</p>
+     * <p>Sets up the JavaFX chessboard on the Application Thread.</p>
      *
      * @param primaryStage  the primary stage of the application
      * @since 1.0
