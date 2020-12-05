@@ -73,6 +73,10 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
                     pieces = new ChessPiece[gameRules.getNumRows()][gameRules.getNumColumns()];
                     break;
                 case "xiangqi":
+                    boardDisplay = new JavaFXXiangqiDisplay();
+                    gameRules = new Xiangqi(ChessGame.Side.SOUTH);
+                    squares = new Button[gameRules.getNumRows()][gameRules.getNumColumns()];
+                    pieces = new ChessPiece[gameRules.getNumRows()][gameRules.getNumColumns()];
                     break;
                 default:
                     throw new IllegalArgumentException();

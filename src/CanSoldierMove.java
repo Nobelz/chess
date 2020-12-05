@@ -21,22 +21,22 @@ public interface CanSoldierMove extends CanSingleStraightMove {
             switch (cp.getSide()) {
                 case NORTH:
                     if (row != cp.getRow() - 1) {
-                        return (row <= 4 || row == cp.getRow() + 1);
+                        return (row >= 5 || row == cp.getRow() + 1);
                     } else
                         return false;
                 case SOUTH:
                     if (row != cp.getRow() + 1) {
-                        return (row >= 5 || row == cp.getRow() - 1);
+                        return (row <= 4 || row == cp.getRow() - 1);
                     } else
                         return false;
                 case WEST:
                     if (column != cp.getColumn() - 1) {
-                        return (column >= 5 || column == cp.getColumn() + 1);
+                        return (column <= 4 || column == cp.getColumn() + 1);
                     } else
                         return false;
                 default: // EAST
                     if (column != cp.getColumn() + 1) {
-                        return (column <= 4 || column == cp.getColumn() - 1);
+                        return (column >= 5 || column == cp.getColumn() - 1);
                     } else
                         return false;
             }

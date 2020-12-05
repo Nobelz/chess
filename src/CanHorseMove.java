@@ -16,10 +16,10 @@ public interface CanHorseMove extends CanLMove {
      * @since 1.0
      */
     default boolean isValidHorseMove(int row, int column, ChessPiece cp) {
-        return isValidLMove(row, column, cp) && (Math.abs(row - cp.getRow()) == 2) ?
+        return isValidLMove(row, column, cp) && ((Math.abs(row - cp.getRow()) == 2) ?
                 ((row - cp.getRow()) < 0) ?
-                        cp.getChessBoard().hasPiece(row + 1, cp.getColumn()) : cp.getChessBoard().hasPiece(row - 1, cp.getColumn()) :
+                        !cp.getChessBoard().hasPiece(row + 1, cp.getColumn()) : !cp.getChessBoard().hasPiece(row - 1, cp.getColumn()) :
                 ((column - cp.getColumn()) < 0) ?
-                        cp.getChessBoard().hasPiece(cp.getRow(), column + 1) : cp.getChessBoard().hasPiece(cp.getRow(), column - 1);
+                        !cp.getChessBoard().hasPiece(cp.getRow(), column + 1) : !cp.getChessBoard().hasPiece(cp.getRow(), column - 1));
     }
 }

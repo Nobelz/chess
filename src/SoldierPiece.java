@@ -19,7 +19,7 @@ public class SoldierPiece extends ChessPiece implements CanSoldierMove {
      * @since 1.0
      */
     public SoldierPiece(ChessGame.Side side, ChessBoard chessBoard, ChessIcon icon, int row, int column) {
-        super(side, "H", icon, chessBoard, row, column);
+        super(side, "S", icon, chessBoard, row, column);
     }
     //endregion
 
