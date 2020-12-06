@@ -53,17 +53,6 @@ public class XiangqiKingPiece extends CenterPiece implements CanSingleStraightMo
     }
 
     /**
-     * <p>Returns a boolean representing if the xiangqi king piece is currently in check.</p>
-     *
-     * @return <code>true</code> if the xiangqi king piece is currently in check
-     * @since 1.0
-     */
-    @Override
-    public boolean isInCheck() {
-        return getChessBoard().squareThreatened(getRow(), getColumn(), this);
-    }
-
-    /**
      * <p>Returns an array of <code>XiangqiKingPiece</code>s representing the opposing kings.</p>
      * <p>For xiangqi, there will only be 1 opposing king.</p>
      *

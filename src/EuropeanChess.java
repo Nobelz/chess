@@ -43,6 +43,7 @@ public class EuropeanChess implements ChessGame {
      *
      * @since 1.0
      */
+    @Override
     public void flipSide() {
         // Flips the side to the opposite side
         switch (currentSide) {
@@ -103,33 +104,6 @@ public class EuropeanChess implements ChessGame {
     }
 
     /**
-     * <p>Determines if it is legal to play a given piece.</p>
-     * <p>Only returns <code>true</code> if the piece is on the same side and if the piece has any legal moves to play.</p>
-     *
-     * @param piece     the piece to be played
-     * @param row       the row of the square the piece is on
-     * @param column    the column of the square the piece is on
-     * @return          <code>true</code> if the piece is allowed to move on this turn
-     */
-    @Override
-    public boolean legalPieceToPlay(ChessPiece piece, int row, int column) {
-        // Checks if the piece is the correct side
-        if (!piece.getSide().equals(currentSide))
-            return false;
-
-        // Checks for a legal move throughout the whole chess board
-        for (int i = 0; i < getNumRows(); i++) {
-            for (int j = 0; j < getNumColumns(); j++) {
-                // Checks if the piece has a legal move at the row and column specified
-                if ((i != row || j != column) && piece.isLegalMove(i, j) && isCheckMove(i, j, piece))
-                    return true;
-            }
-        }
-
-        return false; // No legal move to play
-    }
-
-    /**
      * <p>Moves a piece to a new position.</p>
      *
      * @param piece     the piece to move
@@ -167,65 +141,12 @@ public class EuropeanChess implements ChessGame {
             // Adds the new position to the ArrayList of ChessPositions to check for threefold repetition later
             positions.add(board.generateChessPosition());
 
-            //Now opposite player's turn
+            // Now opposite player's turn
             flipSide();
 
-            return true; //Successful move
+            return true; // Successful move
         } else
-            return false; //Unsuccessful move
-    }
-
-    /**
-     * <p>Returns a boolean representing if the move will result in the king being in check.</p>
-     * <p>Also returns <code>true</code> if the move is not a valid move.</p>
-     *
-     * @param row       the piece's destination row
-     * @param column    the piece's destination column
-     * @param cp        the chess piece
-     * @return          <code>true</code> if the move results in the king being in check
-     * @since 1.0
-     */
-    @Override
-    public boolean isCheckMove(int row, int column, ChessPiece cp) {
-        // Checks if it's a valid move
-        if (cp.isLegalMove(row, column)) {
-            // Stores the chess board
-            ChessBoard board = cp.getChessBoard();
-            // Stores the move instructions
-            ChessPiece.ProposedMove[] moveInstructions = cp.getMoveInstructions(row, column);
-            // Stores the original rows of the pieces to be moved
-            int[] originalRows = new int[moveInstructions.length];
-            // Stores the original columns of the pieces to be moved
-            int[] originalColumns = new int[moveInstructions.length];
-
-            for (int i = 0; i < moveInstructions.length; i++) {
-                ChessPiece.ProposedMove instruction = moveInstructions[i];
-                originalRows[i] = instruction.getMovedPiece().getRow();
-                originalColumns[i] = instruction.getMovedPiece().getColumn();
-
-                // Simulates the move to check if king is in check
-                board.simulateRemovePiece(originalRows[i], originalColumns[i]);
-                if (instruction.getRemovedPiece() != null)
-                    board.simulateRemovePiece(instruction.getRemovedPiece().getRow(), instruction.getRemovedPiece().getColumn());
-                board.simulateAddPiece(instruction.getMovedPiece(), instruction.getRow(), instruction.getColumn());
-            }
-
-            // Checks to see if the king is in check
-            boolean isInCheck = cp.getChessBoard().getCentralPiece(cp).isInCheck();
-
-            for (int i = 0; i < moveInstructions.length; i++) {
-                ChessPiece.ProposedMove instruction = moveInstructions[i];
-
-                // Reverts the move
-                board.simulateRemovePiece(instruction.getRow(), instruction.getColumn());
-                if (instruction.getRemovedPiece() != null)
-                    board.simulateAddPiece(instruction.getRemovedPiece(), instruction.getRemovedPiece().getRow(), instruction.getRemovedPiece().getColumn());
-                board.simulateAddPiece(instruction.getMovedPiece(), originalRows[i], originalColumns[i]);
-            }
-
-            return !isInCheck;
-        } else
-            return false; // Not a valid move
+            return false; // Unsuccessful move
     }
 
     /**
@@ -268,79 +189,6 @@ public class EuropeanChess implements ChessGame {
         checkInsufficientMaterial(king);
         checkThreefoldRepetition(king.getChessBoard());
         checkFiftyMoveRule(king.getChessBoard());
-    }
-
-    /**
-     * <p>Generates all the legal moves that can be played.</p>
-     *
-     * @param piece a chess piece of the board
-     * @return      an array of <code>Move</code> objects that can be played
-     * @since 1.0
-     */
-    public ChessMove[] generateMoves(ChessPiece piece) {
-        // Stores the same side's pieces
-        ChessPiece[] pieces = getSameSidePieces(piece);
-
-        // Stores all the available moves
-        ArrayList<ChessMove> moves = new ArrayList<>();
-
-        //Iterates through each of the same side pieces
-        for (ChessPiece cp : pieces) {
-            if (legalPieceToPlay(cp, cp.getRow(), cp.getColumn())) {
-                for (int i = 0; i < getNumRows(); i++) {
-                    for (int j = 0; j < getNumColumns(); j++) {
-                        if (cp.isLegalMove(i, j) && isCheckMove(i, j, cp))
-                            moves.add(new ChessMove(cp, i, j));
-                    }
-                }
-            }
-        }
-
-        // Change to array format
-        return moves.toArray(new ChessMove[0]);
-    }
-
-    /**
-     * <p>Checks for any moves in a position.</p>
-     * <p>If there are no moves for the position, the end result is either stalemate or checkmate.</p>
-     *
-     * @param piece the king piece
-     * @return      <code>true</code> if there are no moves in the position for the side of the piece
-     * @since 1.0
-     */
-    private boolean cannotMove(KingPiece piece) {
-        // Stores the same side's pieces
-        ChessPiece[] pieces = getSameSidePieces(piece);
-
-        // Iterates through each of the same side pieces
-        for (ChessPiece cp : pieces) {
-            if (legalPieceToPlay(cp, cp.getRow(), cp.getColumn()))
-                return false;
-        }
-
-        // No move to play
-        return true;
-    }
-
-    /**
-     * <p>Gets all of the pieces that are on the same side as the parameter piece.</p>
-     *
-     * @param piece a piece of the game
-     * @return      an array of <code>ChessPiece</code> that contains all the pieces for that side
-     */
-    private ChessPiece[] getSameSidePieces(ChessPiece piece) {
-        // Stores the same side's pieces
-        ArrayList<ChessPiece> pieces = new ArrayList<>();
-
-        for (int i = 0; i < getNumRows(); i++) {
-            for (int j = 0; j < getNumColumns(); j++) {
-                //Looks for same side piece in the chess board
-                if (piece.getChessBoard().hasPiece(i, j) && piece.getChessBoard().getPiece(i, j).getSide().equals(piece.getSide()))
-                    pieces.add(piece.getChessBoard().getPiece(i, j));
-            }
-        }
-
-        return pieces.toArray(new ChessPiece[0]);
     }
 
     /**
