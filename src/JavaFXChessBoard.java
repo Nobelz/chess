@@ -457,6 +457,8 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
                     }
                 });
 
+                // Displays the button
+                boardDisplay.displayEmptySquare(promotionSquares[i], i, -1);
                 boardDisplay.displayFilledSquare(promotionSquares[i], i, -1, promotionPieces[i]);
             }
 

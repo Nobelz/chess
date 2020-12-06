@@ -47,6 +47,8 @@ public class JavaFXEuropeanChessDisplay implements JavaFXChessBoardDisplay {
 
     /**
      * <p>Displays a nonempty square.</p>
+     * <p>Warning: <code>displayEmptySquare</code> must be called on the button before calling this method; otherwise,
+     * this method will return a <code>NullPointerException</code></p>
      *
      * @param button the button that is used for the chessboard square
      * @param row    the row of this square on the board

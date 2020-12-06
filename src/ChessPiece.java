@@ -302,7 +302,7 @@ public abstract class ChessPiece {
         for (int i = 0; i < getChessBoard().getGameRules().getNumRows(); i++) {
             for (int j = 0; j < getChessBoard().getGameRules().getNumColumns(); j++) {
                 // Checks if a chess piece exists at a square
-                if (i != getRow() && j != getColumn() && getChessBoard().hasPiece(i, j))
+                if ((i != getRow() || j != getColumn()) && getChessBoard().hasPiece(i, j))
                     getChessBoard().getPiece(i, j).resetJustMoved(); // Resets the justMoved of the piece
             }
         }
