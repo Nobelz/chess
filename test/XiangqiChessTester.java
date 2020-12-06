@@ -11,7 +11,7 @@ public class XiangqiChessTester {
 
     //region FIELDS
     //Stores the empty chess boards
-    private TestChessBoard southBoard, westBoard;
+    private BasicChessBoard southBoard, westBoard;
     //endregion
 
     //region CONSTRUCTORS
@@ -21,8 +21,8 @@ public class XiangqiChessTester {
      * @since 1.0
      */
     public XiangqiChessTester() {
-        southBoard = new TestChessBoard(new Xiangqi(ChessGame.Side.SOUTH));
-        westBoard = new TestChessBoard(new Xiangqi(ChessGame.Side.WEST));
+        southBoard = new BasicChessBoard(new Xiangqi(ChessGame.Side.SOUTH));
+        westBoard = new BasicChessBoard(new Xiangqi(ChessGame.Side.WEST));
     }
     //endregion
 
@@ -33,8 +33,8 @@ public class XiangqiChessTester {
      * @since 1.0
      */
     public void reset() {
-        southBoard = new TestChessBoard(new Xiangqi(ChessGame.Side.SOUTH));
-        westBoard = new TestChessBoard(new Xiangqi(ChessGame.Side.WEST));
+        southBoard = new BasicChessBoard(new Xiangqi(ChessGame.Side.SOUTH));
+        westBoard = new BasicChessBoard(new Xiangqi(ChessGame.Side.WEST));
     }
 
     /**
@@ -912,7 +912,7 @@ public class XiangqiChessTester {
         Xiangqi northSouth = new Xiangqi(ChessGame.Side.SOUTH);
 
         // Start game
-        southBoard = new TestChessBoard(northSouth);
+        southBoard = new BasicChessBoard(northSouth);
         northSouth.startGame(southBoard);
 
         // Tests soldiers

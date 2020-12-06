@@ -1,10 +1,10 @@
 /**
- * <p>Represents a chessboard with no GUI made for Unit Testing.</p>
+ * <p>Represents a chessboard with no GUI made for testing and other purposes.</p>
  *
  * @author Nobel Zhou (nxz157)
  * @version 1.0, 12/5/2020
  */
-public class TestChessBoard implements ChessBoard {
+public class BasicChessBoard implements ChessBoard {
 
     //region FIELDS
     // Stores the pieces of the test chessboard
@@ -16,12 +16,12 @@ public class TestChessBoard implements ChessBoard {
 
     //region CONSTRUCTORS
     /**
-     * <p>Creates a test chessboard using the given game rules.</p>
+     * <p>Creates a basic chessboard using the given game rules.</p>
      *
      * @param gameRules    the game rules for the test chessboard
      * @since 1.0
      */
-    public TestChessBoard(ChessGame gameRules) {
+    public BasicChessBoard(ChessGame gameRules) {
         // Initializes the board
         this.gameRules = gameRules;
         pieces = new ChessPiece[gameRules.getNumRows()][gameRules.getNumColumns()];

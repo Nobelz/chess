@@ -443,6 +443,7 @@ public class SwingChessBoard implements ChessBoard {
 
             promotionWindow.pack();
             promotionWindow.setVisible(true);
+            promotionWindow.setModal(true);
         }).start();
     }
 

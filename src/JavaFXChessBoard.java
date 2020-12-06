@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -38,6 +39,9 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
 
     // Stores the primary stage of the JavaFX chessboard
     private static Stage primaryStage;
+
+    // Stores the arguments from the parent application, if any
+    public static String[] parentArguments = null;
     //endregion
 
     //region METHODS
@@ -60,10 +64,19 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
     @Override
     public void start(Stage primaryStage) {
         JavaFXChessBoard.primaryStage = primaryStage;
-
+        
         try {
+            // Stores the game type
+            String gameType;
+
+            // Indicates that it was invoked from parent application
+            if (parentArguments != null) {
+                gameType = parentArguments[0];
+            }  else
+                gameType = getParameters().getRaw().get(0);
+
             // Checks the game type from function parameters: it's either Indo-European chess or Xiangqi
-            switch (getParameters().getRaw().get(0)) {
+            switch (gameType) {
                 case "chess":
                     boardDisplay = new JavaFXEuropeanChessDisplay();
                     gameRules = new EuropeanChess(ChessGame.Side.SOUTH);
@@ -474,7 +487,7 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
 
             promotionDialog.setScene(new Scene(layout));
             promotionDialog.sizeToScene();
-
+            promotionDialog.initModality(Modality.APPLICATION_MODAL);
             promotionDialog.showAndWait();
         });
     }
