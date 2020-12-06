@@ -147,7 +147,7 @@ public class Xiangqi implements ChessGame {
      */
     @Override
     public int getNumRows() {
-        return (getStartingSide() == Side.WEST || getStartingSide() == Side.EAST) ? 10 : 9;
+        return (getStartingSide() == Side.WEST || getStartingSide() == Side.EAST) ? 9 : 10;
     }
 
     /**
@@ -158,7 +158,7 @@ public class Xiangqi implements ChessGame {
      */
     @Override
     public int getNumColumns() {
-        return (getStartingSide() == Side.WEST || getStartingSide() == Side.EAST) ? 9 : 10;
+        return (getStartingSide() == Side.WEST || getStartingSide() == Side.EAST) ? 10 : 9;
     }
 
     /**

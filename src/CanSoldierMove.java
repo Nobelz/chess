@@ -31,12 +31,12 @@ public interface CanSoldierMove extends CanSingleStraightMove {
                         return false;
                 case WEST:
                     if (column != cp.getColumn() - 1) {
-                        return (column <= 4 || column == cp.getColumn() + 1);
+                        return (column >= 5 || column == cp.getColumn() + 1);
                     } else
                         return false;
                 default: // EAST
                     if (column != cp.getColumn() + 1) {
-                        return (column >= 5 || column == cp.getColumn() - 1);
+                        return (column <= 4 || column == cp.getColumn() - 1);
                     } else
                         return false;
             }
