@@ -55,7 +55,7 @@ public class XiangqiChessTester {
     }
 
     /**
-     * <p>Tests the <code>isValidSingleStraightMove</code> in the <code>CanSingleStraightMove</code> interface.</p>
+     * <p>Tests the <code>isValidSingleStraightMove</code> method in the <code>CanSingleStraightMove</code> interface.</p>
      *
      * @since 1.0
      */
@@ -100,7 +100,7 @@ public class XiangqiChessTester {
     }
 
     /**
-     * <p>Tests the <code>isValidPalaceMove</code> in the <code>CanPalaceMove</code> interface.</p>
+     * <p>Tests the <code>isValidPalaceMove</code> method in the <code>CanPalaceMove</code> interface.</p>
      *
      * @since 1.0
      */
@@ -156,7 +156,7 @@ public class XiangqiChessTester {
     }
 
     /**
-     * <p>Tests the <code>isValidFaceKingMove</code> in the <code>CanFaceKingMove</code> interface.</p>
+     * <p>Tests the <code>isValidFaceKingMove</code> method in the <code>CanFaceKingMove</code> interface.</p>
      *
      * @since 1.0
      */
@@ -314,7 +314,7 @@ public class XiangqiChessTester {
     }
 
     /**
-     * <p>Tests the <code>isValidSingleDiagonal</code> in the <code>CanSingleDiagonalMove</code> interface.</p>
+     * <p>Tests the <code>isValidSingleDiagonal</code> method in the <code>CanSingleDiagonalMove</code> interface.</p>
      *
      * @since 1.0
      */
@@ -376,7 +376,7 @@ public class XiangqiChessTester {
     }
 
     /**
-     * <p>Tests the <code>isValidElephantMove</code> in the <code>CanElephantMove</code> interface.</p>
+     * <p>Tests the <code>isValidElephantMove</code> method in the <code>CanElephantMove</code> interface.</p>
      *
      * @since 1.0
      */
@@ -616,7 +616,7 @@ public class XiangqiChessTester {
     }
 
     /**
-     * <p>Tests the <code>isValidSoldierMove</code> in the <code>CanSoldierMove</code> interface.</p>
+     * <p>Tests the <code>isValidSoldierMove</code> method in the <code>CanSoldierMove</code> interface.</p>
      *
      * @since 1.0
      */
@@ -784,7 +784,7 @@ public class XiangqiChessTester {
     }
 
     /**
-     * <p>Tests the <code>isValidCannonMove</code> in the <code>CanCannonMove</code> interface.</p>
+     * <p>Tests the <code>isValidCannonMove</code> method in the <code>CanCannonMove</code> interface.</p>
      *
      * @since 1.0
      */
@@ -844,7 +844,7 @@ public class XiangqiChessTester {
 
 
     /**
-     * <p>Tests the <code>isValidHorseMove</code> in the <code>CanHorseMove</code> interface.</p>
+     * <p>Tests the <code>isValidHorseMove</code> method in the <code>CanHorseMove</code> interface.</p>
      *
      * @since 1.0
      */
@@ -875,6 +875,85 @@ public class XiangqiChessTester {
                 }
             }
         }
+
+        // Reset board
+        reset();
+    }
+
+    /**
+     * <p>Tests the <code>getNumRows</code> and <code>getNumColumns</code> methods in the <code>Xiangqi</code> class.</p>
+     *
+     * @since 1.0
+     */
+    @Test
+    public void testXiangqiDimensions() {
+        // Create Xiangqi games
+        Xiangqi northSouth = new Xiangqi(ChessGame.Side.SOUTH);
+        Xiangqi westEast = new Xiangqi(ChessGame.Side.WEST);
+
+        // North-South should return 10 rows and 9 columns, West-East should return 9 rows and 10 columns
+        assertEquals(northSouth.getNumRows(), 10);
+        assertEquals(northSouth.getNumColumns(), 9);
+        assertEquals(westEast.getNumRows(), 9);
+        assertEquals(westEast.getNumColumns(), 10);
+
+        // Reset board
+        reset();
+    }
+
+    /**
+     * <p>Tests the <code>startGame</code> method in the <code>Xiangqi</code> class.</p>
+     *
+     * @since 1.0
+     */
+    @Test
+    public void testStartGame() {
+        // Create Xiangqi games
+        Xiangqi northSouth = new Xiangqi(ChessGame.Side.SOUTH);
+
+        // Start game
+        southBoard = new TestChessBoard(northSouth);
+        northSouth.startGame(southBoard);
+
+        // Tests soldiers
+        for (int i = 0; i < 9; i += 2) {
+            assertEquals(southBoard.getPiece(6, i), new SoldierPiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_SOLDIER, 6, i));
+            assertEquals(southBoard.getPiece(3, i), new SoldierPiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_SOLDIER, 3, i));
+        }
+
+        // Test rooks
+        assertEquals(southBoard.getPiece(9, 0), new RookPiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_CHARIOT, 9, 0));
+        assertEquals(southBoard.getPiece(9, 8), new RookPiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_CHARIOT, 9, 8));
+        assertEquals(southBoard.getPiece(0, 0), new RookPiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_CHARIOT, 0, 0));
+        assertEquals(southBoard.getPiece(0, 8), new RookPiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_CHARIOT, 0, 8));
+
+        // Tests cannons
+        assertEquals(southBoard.getPiece(7, 1), new CannonPiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_CANNON, 7, 1));
+        assertEquals(southBoard.getPiece(7, 7), new CannonPiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_CANNON, 7, 7));
+        assertEquals(southBoard.getPiece(2, 1), new CannonPiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_CANNON, 2, 1));
+        assertEquals(southBoard.getPiece(2, 7), new CannonPiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_CANNON, 2, 7));
+
+        // Tests horses
+        assertEquals(southBoard.getPiece(9, 1), new HorsePiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_HORSE, 9, 1));
+        assertEquals(southBoard.getPiece(9, 7), new HorsePiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_HORSE, 9, 7));
+        assertEquals(southBoard.getPiece(0, 1), new HorsePiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_HORSE, 0, 1));
+        assertEquals(southBoard.getPiece(0, 7), new HorsePiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_HORSE, 0, 7));
+
+        // Tests elephants
+        assertEquals(southBoard.getPiece(9, 2), new ElephantPiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_ELEPHANT, 9, 2));
+        assertEquals(southBoard.getPiece(9, 6), new ElephantPiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_ELEPHANT, 9, 6));
+        assertEquals(southBoard.getPiece(0, 2), new ElephantPiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_ELEPHANT, 0, 2));
+        assertEquals(southBoard.getPiece(0, 6), new ElephantPiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_ELEPHANT, 0, 6));
+
+        // Tests guards
+        assertEquals(southBoard.getPiece(9, 3), new GuardPiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_GUARD, 9, 3));
+        assertEquals(southBoard.getPiece(9, 5), new GuardPiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_GUARD, 9, 5));
+        assertEquals(southBoard.getPiece(0, 3), new GuardPiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_GUARD, 0, 3));
+        assertEquals(southBoard.getPiece(0, 5), new GuardPiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_GUARD, 0, 5));
+
+        // Tests kings
+        assertEquals(southBoard.getPiece(9, 4), new XiangqiKingPiece(ChessGame.Side.SOUTH, southBoard, ChessIcon.RED_GENERAL, 9, 4));
+        assertEquals(southBoard.getPiece(0, 4), new XiangqiKingPiece(ChessGame.Side.NORTH, southBoard, ChessIcon.BLACK_GENERAL, 0, 4));
 
         // Reset board
         reset();
