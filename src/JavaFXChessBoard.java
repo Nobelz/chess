@@ -78,14 +78,20 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
             // Checks the game type from function parameters: it's either Indo-European chess or Xiangqi
             switch (gameType) {
                 case "chess":
+                    // Setup display and game rules
                     boardDisplay = new JavaFXEuropeanChessDisplay();
                     gameRules = new EuropeanChess(ChessGame.Side.SOUTH);
+
+                    // Setup squares and pieces
                     squares = new Button[gameRules.getNumRows()][gameRules.getNumColumns()];
                     pieces = new ChessPiece[gameRules.getNumRows()][gameRules.getNumColumns()];
                     break;
                 case "xiangqi":
+                    // Setup display and game rules
                     boardDisplay = new JavaFXXiangqiDisplay();
                     gameRules = new Xiangqi(ChessGame.Side.SOUTH);
+
+                    // Setup squares and pieces
                     squares = new Button[gameRules.getNumRows()][gameRules.getNumColumns()];
                     pieces = new ChessPiece[gameRules.getNumRows()][gameRules.getNumColumns()];
                     break;
@@ -235,6 +241,7 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
             }
         };
 
+        // Loops for each square in the board
         for (int i = 0; i < getGameRules().getNumRows(); i++) {
             for (int j = 0; j < getGameRules().getNumColumns(); j++) {
                 squares[i][j] = new Button();
@@ -246,6 +253,7 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
             }
         }
 
+        // Adds the layout to the Scene and displays the stage
         Scene scene = new Scene(layout);
         gameRules.startGame(this);
         primaryStage.setScene(scene);
@@ -443,12 +451,15 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
             };
             Button[] promotionSquares = new Button[promotionPieces.length];
 
+            // Makes new promotionDialog as a stage
             Stage promotionDialog = new Stage();
             promotionDialog.setTitle("Pawn Promotion");
             promotionDialog.setResizable(false);
 
+            // Stores the horizontal layout
             HBox layout = new HBox();
 
+            // Loops for each promotion piece and adds each promotion piece
             for (int i = 0; i < promotionPieces.length; i++) {
                 promotionSquares[i] = new Button();
                 promotionSquares[i].setPrefSize(boardDisplay.getSquareSize(), boardDisplay.getSquareSize());
@@ -487,6 +498,8 @@ public class JavaFXChessBoard extends Application implements ChessBoard {
 
             promotionDialog.setScene(new Scene(layout));
             promotionDialog.sizeToScene();
+
+            // Makes promotion dialog modal so that the opposite side can't move
             promotionDialog.initModality(Modality.APPLICATION_MODAL);
             promotionDialog.showAndWait();
         });

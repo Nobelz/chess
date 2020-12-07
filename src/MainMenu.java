@@ -1,21 +1,19 @@
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 
 /**
  * <p>JavaFX application that starts the main menu.</p>
@@ -67,7 +65,6 @@ public class MainMenu extends Application {
         // JavaFX European chess button
         playButtons[1] = new Button("Play JavaFX European Chess");
         playButtons[1].setOnAction(e -> Platform.runLater(() -> {
-            System.out.println("Hello");
             try {
                 JavaFXChessBoard.parentArguments = new String[] {"chess"};
 
@@ -84,7 +81,6 @@ public class MainMenu extends Application {
         // Xiangqi button
         playButtons[2] = new Button("Play JavaFX Xiangqi");
         playButtons[2].setOnAction(e -> Platform.runLater(() -> {
-            System.out.println("Hello");
             try {
                 JavaFXChessBoard.parentArguments = new String[] {"xiangqi"};
 
