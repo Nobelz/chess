@@ -25,22 +25,34 @@ import javafx.stage.Stage;
 public class JavaFXChessBoard extends Application implements ChessBoard {
 
     //region FIELDS
-    // Stores the squares of the JavaFX chessboard
+    /**
+     * Stores the squares of the JavaFX chessboard.
+     */
     private Button[][] squares;
 
-    // Stores the pieces of the JavaFX chessboard
+    /**
+     * Stores the pieces of the JavaFX chessboard.
+     */
     private ChessPiece[][] pieces;
 
-    // Stores the rules for the JavaFX chessboard
+    /**
+     * Stores the rules for the JavaFX chessboard.
+     */
     private ChessGame gameRules;
 
-    // Stores the display rules for the JavaFX chessboard
+    /**
+     * Stores the display rules for the JavaFX chessboard.
+     */
     private JavaFXChessBoardDisplay boardDisplay;
 
-    // Stores the primary stage of the JavaFX chessboard
+    /**
+     * Stores the primary stage of the JavaFX chessboard.
+     */
     private static Stage primaryStage;
 
-    // Stores the arguments from the parent application, if any
+    /**
+     * Stores the arguments from the parent application, if any.
+     */
     public static String[] parentArguments = null;
     //endregion
 

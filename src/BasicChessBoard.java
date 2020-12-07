@@ -7,10 +7,14 @@
 public class BasicChessBoard implements ChessBoard {
 
     //region FIELDS
-    // Stores the pieces of the test chessboard
+    /**
+     * Stores the pieces of the test chessboard.
+     */
     private final ChessPiece[][] pieces;
 
-    // Stores the rules for the test chessboard
+    /**
+     * Stores the rules for the test chessboard.
+     */
     private final ChessGame gameRules;
     //endregion
 

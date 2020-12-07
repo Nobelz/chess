@@ -16,16 +16,24 @@ import java.util.ArrayList;
 public class JavaFXEuropeanChessDisplay implements JavaFXChessBoardDisplay {
 
     //region FIELDS
-    // Stores the primary color of the chessboard
+    /**
+     * Stores the primary color of the chessboard.
+     */
     public static BackgroundFill primaryColorFill = new BackgroundFill(Color.rgb(184, 139, 74), CornerRadii.EMPTY, Insets.EMPTY);
 
-    // Stores the secondary color of the checkerboard
+    /**
+     * Stores the secondary color of the checkerboard.
+     */
     public static BackgroundFill secondaryColorFill = new BackgroundFill(Color.rgb(227, 193, 111), CornerRadii.EMPTY, Insets.EMPTY);
 
-    // Stores the color to highlight a check square
+    /**
+     * Stores the color to highlight a check square.
+     */
     public static BackgroundFill checkFill = new BackgroundFill(Color.rgb(255, 0, 0, 0.3), CornerRadii.EMPTY, Insets.EMPTY);
 
-    // Stores the color to highlight a square
+    /**
+     * Stores the color to highlight a square.
+     */
     public static BackgroundFill highlightFill = new BackgroundFill(Color.rgb(0, 0, 255, 0.3), CornerRadii.EMPTY, Insets.EMPTY);
     //endregion
 

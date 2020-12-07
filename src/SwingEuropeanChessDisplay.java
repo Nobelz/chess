@@ -11,25 +11,39 @@ import java.awt.*;
 public class SwingEuropeanChessDisplay implements SwingChessBoardDisplay {
 
     //region FIELDS
-    // Stores the primary color of the chessboard
+    /**
+     * Stores the primary color of the chessboard.
+     */
     public static Color primaryColor = new Color(184, 139, 74);
 
-    // Stores the secondary color of the checkerboard
+    /**
+     * Stores the secondary color of the checkerboard.
+     */
     public static Color secondaryColor = new Color(227, 193, 111);
 
-    // Stores the color of the SOUTH player
+    /**
+     * Stores the color of the SOUTH player.
+     */
     public static Color southPlayerColor = Color.yellow;
 
-    // Stores the color of the NORTH player
+    /**
+     * Stores the color of the NORTH player.
+     */
     public static Color northPlayerColor = Color.green;
 
-    // Stores the color of the EAST player
+    /**
+     * Stores the color of the EAST player.
+     */
     public static Color eastPlayerColor = Color.white;
 
-    // Stores the color of the WEST player
+    /**
+     * Stores the color of the WEST player.
+     */
     public static Color westPlayerColor = Color.gray;
 
-    // Stores the color to highlight a square
+    /**
+     * Stores the color to highlight a square.
+     */
     public static Color highlightColor = Color.blue;
     //endregion
 

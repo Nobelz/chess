@@ -23,6 +23,7 @@ import javafx.stage.Stage;
  */
 public class MainMenu extends Application {
 
+    //region METHODS
     /**
      * <p>Main method that launches the program.</p>
      *
@@ -117,4 +118,5 @@ public class MainMenu extends Application {
         primaryStage.sizeToScene();
         primaryStage.show();
     }
+    //endregion
 }

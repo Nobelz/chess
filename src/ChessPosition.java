@@ -7,14 +7,16 @@
  */
 public class ChessPosition {
 
-    /* FIELDS */
-    //Stores the board of the position
+    //region FIELDS
+    /**
+     * Stores the board of the position.
+     */
     private final ChessPiece[][] board;
     //Stores the side of the position
     private final ChessGame.Side player;
+    //endregion FIELDS
 
-    /* CONSTRUCTORS */
-
+    //region CONSTRUCTORS
     /**
      * Initializes a chess position to the board and player.
      *
@@ -26,9 +28,9 @@ public class ChessPosition {
         this.board = board;
         this.player = player;
     }
+    //endregion
 
-    /* METHODS */
-
+    //region METHODS
     /**
      * Returns the 2-dimensional array of GamePieces.
      *
@@ -86,4 +88,5 @@ public class ChessPosition {
         } else
             return false; //Not ChessPosition object
     }
+    //endregion
 }

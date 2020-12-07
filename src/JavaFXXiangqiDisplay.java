@@ -51,10 +51,14 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
         XIANGQI_LEFT_PALACE("XiangqiLeftPalace.png"),
         XIANGQI_RIGHT_PALACE("XiangqiRightPalace.png");
 
-        // Stores the XiangqiSquare as a BackgroundImage
+        /**
+         * Stores the XiangqiSquare as a BackgroundImage
+         */
         private final BackgroundImage image;
 
-        // Stores the side length of the xiangqi square image, set to 1/20 the width of the screen
+        /**
+         * Stores the side length of the xiangqi square image, set to 1/20 the width of the screen.
+         */
         private final int size = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 20;
 
         /**
@@ -80,7 +84,9 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
     //endregion
 
     //region FIELDS
-    // Stores the images used to paint the chessboard
+    /**
+     * Stores the images used to paint the chessboard.
+     */
     private final XiangqiSquare[][] squares = {
             {XiangqiSquare.XIANGQI_TOP_LEFT_CORNER, XiangqiSquare.XIANGQI_TOP_EDGE, XiangqiSquare.XIANGQI_TOP_EDGE,
                     XiangqiSquare.XIANGQI_TOP_LEFT_PALACE_CORNER_EDGE, XiangqiSquare.XIANGQI_TOP_PALACE_EDGE,
@@ -118,10 +124,14 @@ public class JavaFXXiangqiDisplay implements JavaFXChessBoardDisplay {
                     XiangqiSquare.XIANGQI_BOTTOM_EDGE, XiangqiSquare.XIANGQI_BOTTOM_RIGHT_CORNER}
     };
 
-    // Stores the highlight background image
+    /**
+     * Stores the highlight background image.
+     */
     private final BackgroundImage highlightImage = new BackgroundImage(new Image("/images/xiangqi_squares/Highlight.png", getSquareSize(), getSquareSize(), false, true), null, null, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
 
-    // Stores the check background image
+    /**
+     * Stores the check background image.
+     */
     private final BackgroundImage checkImage = new BackgroundImage(new Image("/images/xiangqi_squares/Check.png", getSquareSize(), getSquareSize(), false, true), null, null, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
     //endregion
 

@@ -8,28 +8,44 @@
 public abstract class ChessPiece {
 
     //region FIELDS
-    // Stores the piece's affiliation to which side
+    /**
+     * Stores the piece's affiliation to which side.
+     */
     private final ChessGame.Side side;
 
-    // Stores the label of the piece
+    /**
+     * Stores the label of the piece.
+     */
     private final String label;
 
-    // Stores the graphics icon or image of the piece and how it should be drawn onto the chess board
+    /**
+     * Stores the graphics icon or image of the piece and how it should be drawn onto the chess board.
+     */
     private final Object icon;
 
-    // Stores the row of the piece
+    /**
+     * Stores the row of the piece.
+     */
     private int row;
 
-    // Stores the column of the piece
+    /**
+     * Stores the column of the piece.
+     */
     private int column;
 
-    // Stores the chess board the piece is on
+    /**
+     * Stores the chess board the piece is on.
+     */
     private final ChessBoard chessBoard;
 
-    // Stores the number of moves the chess piece has done
+    /**
+     * Stores the number of moves the chess piece has done.
+     */
     private int numMoves;
 
-    // Stores if the piece moved last turn
+    /**
+     * Stores if the piece moved last turn.
+     */
     private boolean justMoved;
     //endregion
 
@@ -41,19 +57,29 @@ public abstract class ChessPiece {
      * @version 1.0, 12/2/2020
      */
     protected static class ProposedMove {
-        // Stores the piece to be moved
+        /**
+         * Stores the piece to be moved.
+         */
         private final ChessPiece movedPiece;
 
-        // Stores the piece to be captured, if any
+        /**
+         * Stores the piece to be captured, if any.
+         */
         private final ChessPiece removedPiece;
 
-        // Stores the new row of the piece to be moved
+        /**
+         * Stores the new row of the piece to be moved.
+         */
         private final int row;
 
-        // Stores the new column of the piece to be moved
+        /**
+         * Stores the new column of the piece to be moved.
+         */
         private final int column;
 
-        // Stores if the move can be reversible (can the move be manually reversed?)
+        /**
+         * Stores if the move can be reversible (can the move be manually reversed?).
+         */
         private final boolean isReversible;
 
         /**

@@ -19,19 +19,29 @@ import java.awt.event.WindowEvent;
 public class SwingChessBoard implements ChessBoard {
 
     //region FIELDS
-    // Stores the Swing chessboard display window
+    /**
+     * Stores the Swing chessboard display window
+     */
     protected JFrame board;
 
-    // Stores the squares of the Swing chessboard
+    /**
+     * Stores the squares of the Swing chessboard.
+     */
     private final JButton[][] squares;
 
-    // Stores the pieces of the Swing chessboard
+    /**
+     * Stores the pieces of the Swing chessboard.
+     */
     private final ChessPiece[][] pieces;
 
-    // Stores the rules for the Swing chessboard
+    /**
+     * Stores the rules for the Swing chessboard.
+     */
     private final ChessGame gameRules;
 
-    // Stores the display rules for the Swing chessboard
+    /**
+     * Stores the display rules for the Swing chessboard.
+     */
     protected SwingChessBoardDisplay boardDisplay;
     //endregion
 

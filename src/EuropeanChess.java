@@ -10,16 +10,24 @@ import java.util.Collections;
 public class EuropeanChess implements ChessGame {
 
     //region FIELDS
-    // Stores the starting side; cannot be changed
+    /**
+     * Stores the starting side; cannot be changed/
+     */
     private final Side startingSide;
 
-    // Stores the side that is currently playing
+    /**
+     * Stores the side that is currently playing.
+     */
     private Side currentSide;
 
-    // Stores the game positions of the whole game
+    /**
+     * Stores the game positions of the whole game.
+     */
     private final ArrayList<ChessPosition> positions;
 
-    // Stores the number of non-pawn, non-capture moves in succession; used for determining the 50 move rule
+    /**
+     * Stores the number of non-pawn, non-capture moves in succession; used for determining the 50 move rule
+     */
     private int fiftyMoveRule;
     //endregion
 

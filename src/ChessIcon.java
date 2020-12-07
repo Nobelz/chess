@@ -38,13 +38,19 @@ enum ChessIcon implements Icon {
     RED_SOLDIER("xiangqi_pieces/RedSoldier.png");
 
     //region FIELDS
-    // Stores the icon in an ImageIcon, to be used with Swing implementations
+    /**
+     * Stores the icon in an ImageIcon, to be used with Swing implementations.
+     */
     private ImageIcon imageIcon = null;
 
-    // Stores the icon in an Image, to be used with JavaFX implementations
+    /**
+     * Stores the icon in an Image, to be used with JavaFX implementations.
+     */
     private Image image = null;
 
-    // Stores the side length of the chess icon, set to 1/20 the width of the screen
+    /**
+     * Stores the side length of the chess icon, set to 1/20 the width of the screen.
+     */
     private final int size = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 20;
     //endregion
 
